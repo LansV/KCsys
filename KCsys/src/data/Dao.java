@@ -13,13 +13,13 @@ public class Dao {
 		  try{
 	 		   Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 	 	   }catch(ClassNotFoundException e){
-	 		   JOptionPane.showMessageDialog(null,"æ•°æ®åº“é©±åŠ¨åŠ è½½å¤±è´¥ï¼Œè¯·è”ç³»ç®¡ç†å‘˜ï¼");
+	 		   JOptionPane.showMessageDialog(null,"Î´ÕÒµ½µ½Çı¶¯ÎÄ¼ş");
 	 		   System.exit(0);
 	 	   }
 	 	   try{
 	 		   con=DriverManager.getConnection("jdbc:sqlserver://192.168.0.10:1433;DatabaseName=CKsys3","sa","llfaicly1314@^");
 	 	   }catch(SQLException e){
-	 		   JOptionPane.showMessageDialog(null, "è¿æ¥æ•°æ®åº“å¤±è´¥,è¯·æ£€æŸ¥æ•°æ®åº“è·¯å¾„,æ ¸å¯¹Saè´¦æˆ·!");
+	 		   JOptionPane.showMessageDialog(null, "Çë¼ì²éÊı¾İ¿âÂ·¾¶¼°Êı¾İÃû³Æ");
 	 		   System.exit(0);
 	 	   }
 	 	   //System.out.println("ok");
