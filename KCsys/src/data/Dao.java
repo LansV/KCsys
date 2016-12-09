@@ -23,8 +23,10 @@ public class Dao {
 	 		   System.exit(0);
 	 	   }
 	 	   return con;
+	 	   //test
 	}
 	/*
+	 * test
 	public static void main(String[] args){
 		new Dao().getcon();
 	}
