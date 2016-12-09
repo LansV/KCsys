@@ -22,7 +22,6 @@ public class Dao {
 	 		   JOptionPane.showMessageDialog(null, "连接数据库失败,请检查数据库路径,核对Sa账户!");
 	 		   System.exit(0);
 	 	   }
-	 	   //System.out.println("ok");
 	 	   return con;
 	}
 	/*
