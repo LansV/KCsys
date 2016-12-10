@@ -17,8 +17,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -37,11 +39,14 @@ public class XSF{
 	public XSF(){
 		getData gd=new getData();        //调用数据类
 		wData w=new wData();
-		List<String> spcount=new ArrayList<String>();
-		List<Integer> kccount=new ArrayList<Integer>();
+		List<String> spcount=new ArrayList<String>();   //商品名称
+		List<Integer> kccount=new ArrayList<Integer>(); //库存数量
 		//-------------------------------------显示表格---------------------------------------------------
 		JPanel mp=new JPanel();
 		JScrollPane msp=new JScrollPane();
+		JPopupMenu rightmenu=new JPopupMenu();
+		JMenuItem deleteItem=new JMenuItem("删除");
+		rightmenu.add(deleteItem);
 		JTable mtable=new JTable(){
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
@@ -75,6 +80,19 @@ public class XSF{
 			      super.setValueAt(aValue,rowIndex,columnIndex);
 			}
 		};
+		//=======================================add table menu listener==================== 
+		mtable.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==3){
+					int r=mtable.rowAtPoint(e.getPoint());
+					if(mtable.getRowSelectionAllowed()==true){
+						mtable.setRowSelectionInterval(r,r);
+						rightmenu.show(mtable,e.getX(),e.getY());
+					}
+				}
+			}
+		});
+		//=================================tablemodel========================================
 		String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注"};
 		DefaultTableModel mdm=new DefaultTableModel(){
 			/**
@@ -110,6 +128,23 @@ public class XSF{
     	cktablecdw.setPreferredWidth(40);   
     	cktablecdw.setMinWidth(40);
     	cktablecdw.setMaxWidth(40);
+    	//============================================删除行============================
+		deleteItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				int r=mtable.getSelectedRow();
+				mdm.removeRow(r);
+				spcount.remove(r);
+				kccount.remove(r);
+				int rowcount=mtable.getRowCount();
+			    for(int i=0;i<rowcount;i++){
+					mtable.setValueAt(i+1,i,0);
+				}
+				System.out.println(rowcount);
+			}
+		});
+		//=============================================================================
 		msp.setViewportView(mtable);
 		msp.setBounds(0,0,700,450);
 		mp.setLayout(null);
