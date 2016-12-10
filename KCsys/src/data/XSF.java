@@ -10,7 +10,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import test.Printclass;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -43,6 +45,16 @@ public class XSF{
 		JTable mtable=new JTable(){
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
+				if(columnIndex==5){
+					try{
+						String st=aValue.toString();
+						@SuppressWarnings("unused")
+						Double price=Double.parseDouble(st);
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						return;
+					}
+				}
 				if(columnIndex==6){
 	                try {
 	                	String st=(String) aValue;
@@ -70,7 +82,7 @@ public class XSF{
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm==4||colunm==6){
+				if(colunm>3&&colunm<7){
 					return true;
 				}
 				return false;
@@ -226,11 +238,11 @@ public class XSF{
 		//------------------------------------主表模型监听-------------------------------------------------
 		mdm.addTableModelListener(new TableModelListener(){
 			@Override
-			public void tableChanged(TableModelEvent e) {
+			public void tableChanged(TableModelEvent e){
 				// TODO Auto-generated method stub
 				int r=e.getFirstRow();
 				int c=e.getColumn();
-				if(c==6||c==4){
+				if(3<c&&c<7){
 					String c4=mtable.getValueAt(r,4).toString().trim();
 					String c6=mtable.getValueAt(r,6).toString().trim();
 					if(c6.length()==0){
