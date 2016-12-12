@@ -34,8 +34,8 @@ public class XSF{
 	String lxr="";						//全局联系人	
 	String lxtel="";					//全局联系电话
 	String addr="";						//全局地址
-	Double hj;
-	JLabel showhj=new JLabel();
+	Double hj;                           //合计
+	JLabel showhj=new JLabel();           //显示合计
 	public XSF(){
 		getData gd=new getData();        //调用数据类
 		wData w=new wData();
@@ -131,7 +131,7 @@ public class XSF{
     	//============================================删除行============================
 		deleteItem.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0){
 				// TODO Auto-generated method stub
 				int r=mtable.getSelectedRow();
 				mdm.removeRow(r);
@@ -141,7 +141,15 @@ public class XSF{
 			    for(int i=0;i<rowcount;i++){
 					mtable.setValueAt(i+1,i,0);
 				}
-				System.out.println(rowcount);
+			    Double chj=0.0;
+				for(int i=0;i<mtable.getRowCount();i++){
+					String s=mtable.getValueAt(i,7).toString().trim();
+					Double d=Double.parseDouble(s);
+					chj=chj+d;
+				}
+				hj=chj;
+				showhj.setText(String.format("%.2f",hj));
+				//System.out.println(rowcount);
 			}
 		});
 		//=============================================================================
