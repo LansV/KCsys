@@ -30,6 +30,8 @@ public class YS {
 	public YS(){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
+	    //=====================================详细面板================================================
+	    
 	    //--------------------------------------退货数量-------------------------------------------------------------
 		JFrame thf=new JFrame("退货");
 		thf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

@@ -43,6 +43,7 @@ public class Printclass {
 	}
 	public  Printclass(){
 		JFrame jf=new JFrame();
+		jf.setTitle("打印预览");
 		jf.setResizable(false);
 		jf.setSize(595,842);
 		Container c=jf.getContentPane();
@@ -80,9 +81,9 @@ public class Printclass {
 									g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString("结算:",420,65);
 									g2.drawString("客户:",20,85);g2.drawString("联系人:",240,85);g2.drawString("联系电话:",420,85);
 									g2.drawString("地址:",20,105);
-									//g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
-									//g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
-									//g2.drawString(add,50,105);
+									g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
+									g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
+									g2.drawString(add,50,105);
 									List<String> ls=new ArrayList<String>();
 									ls.add("序号");ls.add("商品种类");ls.add("商品名称");ls.add("单位");
 									ls.add("折扣");ls.add("单价");ls.add("数量");ls.add("金额");ls.add("备注");
@@ -93,11 +94,11 @@ public class Printclass {
 									int row=0;
 									int count=0;
 									List<Object> lsx=new ArrayList<Object>();
-									for(int i=0;i<11;i++){
+						/*			for(int i=0;i<11;i++){
 										lsx.add("");lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 										lsx.add("");lsx.add("");lsx.add("");lsx.add("");
-									}
-									//lsx=sp;
+									}*/
+									lsx=sp;
 									//System.out.println(lsx.size());
 									for(int i=0;i<lsx.size()/9+3;i++){    //画横线
 										y=115+row*18;
@@ -147,40 +148,31 @@ public class Printclass {
 												//System.out.println(j+"    "+x);
 												switch(j){
 												case 0:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
-													g2.drawString("1",x+10,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
 													break;
 												case 1:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
-													g2.drawString("103026",x+13,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
 													break;
 												case 2:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-													g2.drawString("1",x+3,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 													break;
 												case 3:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
-													g2.drawString("台",x+8,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
 													break;
 												case 4:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
-													g2.drawString("9.8",x+8,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
 													break;
 												case 5:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-													g2.drawString("1",x+3,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 													break;
 												case 6:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-													g2.drawString("1",x+3,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 													break;
 												case 7:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-													g2.drawString("1",x+3,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 													break;
 												case 8:
-													//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-													g2.drawString("1",x+3,y-5);
+													g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 													break;
 												}
 												
@@ -188,10 +180,9 @@ public class Printclass {
 											count++;
 										}
 										if(i==lsx.size()/9+2){
-											//g2.drawString(hj.get(0).toString().trim(),51,y-5);
-											//g2.drawString(hj.get(1).toString().trim(),387,y-5);
-											//g2.drawString(hj.get(2).toString().trim(),415,y-5);
-											g2.drawString("1",415,y-5);
+											g2.drawString(hj.get(0).toString().trim(),51,y-5);
+											g2.drawString(hj.get(1).toString().trim(),387,y-5);
+											g2.drawString(hj.get(2).toString().trim(),415,y-5);
 										}
 										g2.drawLine(20,y,538,y);//横线
 										row++;
@@ -213,8 +204,8 @@ public class Printclass {
 										}
 									}
 									//System.out.println(y);
-									g2.drawString("开单人:                                   经手人:                          收货人:",20,y+20);
-									g2.drawString("白色:存根联         红色:记账联      蓝色:收款联         黄色:收货联",20,y+40);
+									g2.drawString("开单人:杨永莲                                经手人:                          收货人:",20,y+20);
+									g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 									return Printable.PAGE_EXISTS;
 								}
 							}
@@ -269,6 +260,7 @@ public class Printclass {
 										int x=20;
 										int y=115;
 										int row=0;
+										@SuppressWarnings("unused")
 										int count=0;
 										List<Object> lsx=new ArrayList<Object>();
 										for(int i=0;i<10;i++){
@@ -441,9 +433,9 @@ public class Printclass {
 			g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString("结算:",420,65);
 			g2.drawString("客户:",20,85);g2.drawString("联系人:",240,85);g2.drawString("联系电话:",420,85);
 			g2.drawString("地址:",20,105);
-			//g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
-			//g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
-			//g2.drawString(add,50,105);
+			g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
+			g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
+			g2.drawString(add,50,105);
 			List<String> ls=new ArrayList<String>();
 			ls.add("序号");ls.add("商品种类");ls.add("商品名称");ls.add("单位");
 			ls.add("折扣");ls.add("单价");ls.add("数量");ls.add("金额");ls.add("备注");
@@ -454,10 +446,10 @@ public class Printclass {
 			int row=0;
 			int count=0;
 			List<Object> lsx=new ArrayList<Object>();
-			for(int i=0;i<11;i++){
+/*			for(int i=0;i<11;i++){
 				lsx.add("");lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 				lsx.add("");lsx.add("");lsx.add("");lsx.add("");
-			}
+			}*/
 			lsx=sp;
 			//System.out.println(lsx.size());
 			for(int i=0;i<lsx.size()/9+3;i++){    //画横线
@@ -508,40 +500,31 @@ public class Printclass {
 						//System.out.println(j+"    "+x);
 						switch(j){
 						case 0:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
-							g2.drawString("1",x+10,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
 							break;
 						case 1:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
-							g2.drawString("103026",x+13,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
 							break;
 						case 2:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-							g2.drawString("1",x+3,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 							break;
 						case 3:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
-							g2.drawString("台",x+8,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
 							break;
 						case 4:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
-							g2.drawString("9.8",x+8,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+8,y-5);    // 写入当行数据
 							break;
 						case 5:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-							g2.drawString("1",x+3,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 							break;
 						case 6:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-							g2.drawString("1",x+3,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 							break;
 						case 7:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-							g2.drawString("1",x+3,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 							break;
 						case 8:
-							//g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
-							g2.drawString("1",x+3,y-5);
+							g2.drawString(lsx.get(j+count*9).toString().trim(),x+3,y-5);    // 写入当行数据
 							break;
 						}
 						
@@ -549,10 +532,9 @@ public class Printclass {
 					count++;
 				}
 				if(i==lsx.size()/9+2){
-					//g2.drawString(hj.get(0).toString().trim(),51,y-5);
-					//g2.drawString(hj.get(1).toString().trim(),387,y-5);
-					//g2.drawString(hj.get(2).toString().trim(),415,y-5);
-					g2.drawString("1",415,y-5);
+					g2.drawString(hj.get(0).toString().trim(),51,y-5);
+					g2.drawString(hj.get(1).toString().trim(),387,y-5);
+					g2.drawString(hj.get(2).toString().trim(),415,y-5);
 				}
 				g2.drawLine(20,y,538,y);//横线
 				row++;
@@ -574,8 +556,8 @@ public class Printclass {
 				}
 			}
 			//System.out.println(y);
-			g2.drawString("开单人:                                   经手人:                          收货人:",20,y+20);
-			g2.drawString("白色:存根联         红色:记账联      蓝色:收款联         黄色:收货联",20,y+40);
+			g2.drawString("开单人:杨永莲                                经手人:                          收货人:",20,y+20);
+			g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 		}
 	}
 }

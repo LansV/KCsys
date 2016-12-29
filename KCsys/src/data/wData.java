@@ -725,14 +725,15 @@ public class wData {
 	}
 	//-------------------------------------------------写入销售单---------------------------------------------
 	public Boolean wxs(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz) {
+			Double dj, int sl, Double je, String bz,String skfs) {
 		Boolean b=true;
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
 			sql.execute("insert into XSD values"
-					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"')");
+					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
+					+ ",'"+skfs+"')");
 		}catch(Exception e){
 			b=false;
 			JOptionPane.showMessageDialog(null,"错误");
