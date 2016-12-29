@@ -98,7 +98,7 @@ public class Printclass {
 										lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 									}
 									//lsx=sp;
-									System.out.println(lsx.size());
+									//System.out.println(lsx.size());
 									for(int i=0;i<lsx.size()/9+3;i++){    //画横线
 										y=115+row*18;
 										if(i==1){
@@ -129,7 +129,7 @@ public class Printclass {
 													break;
 												case 7:
 													g2.drawString(ls.get(j),x+18,y-5); //写入表头数据
-													System.out.println(x);
+													//System.out.println(x);
 													break;
 												case 8:
 													g2.drawString(ls.get(j),x+24,y-5); //写入表头数据
@@ -275,8 +275,8 @@ public class Printclass {
 											lsx.add("");lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 											lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 										}
-										//lsx=sp;
-										System.out.println(lsx.size());
+										lsx=sp;
+										//System.out.println(lsx.size());
 										for(int i=0;i<lsx.size()/9+3;i++){    //画横线
 											y=115+row*18;
 											if(i==1){
@@ -307,7 +307,7 @@ public class Printclass {
 														break;
 													case 7:
 														g2.drawString(ls.get(j),x+18,y-5); //写入表头数据
-														System.out.println(x);
+														//System.out.println(x);
 														break;
 													case 8:
 														g2.drawString(ls.get(j),x+24,y-5); //写入表头数据
@@ -458,8 +458,8 @@ public class Printclass {
 				lsx.add("");lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 				lsx.add("");lsx.add("");lsx.add("");lsx.add("");
 			}
-			//lsx=sp;
-			System.out.println(lsx.size());
+			lsx=sp;
+			//System.out.println(lsx.size());
 			for(int i=0;i<lsx.size()/9+3;i++){    //画横线
 				y=115+row*18;
 				if(i==1){
@@ -490,7 +490,7 @@ public class Printclass {
 							break;
 						case 7:
 							g2.drawString(ls.get(j),x+18,y-5); //写入表头数据
-							System.out.println(x);
+							//System.out.println(x);
 							break;
 						case 8:
 							g2.drawString(ls.get(j),x+24,y-5); //写入表头数据
