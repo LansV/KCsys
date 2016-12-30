@@ -30,7 +30,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 public class KCx {
-	KCxdate wx=new KCxdate();
+	KCxdata wx=new KCxdata();
 	JTable mtt;
 	public JTable mt(String[][] arr){
 		JTable maintable=new JTable(){

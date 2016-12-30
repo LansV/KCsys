@@ -16,16 +16,16 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 public class YSXXtest {
 	public YSXXtest(){
-		String[][] arr={{"","","","","","","","","",""}};
-		JLabel showhj=new JLabel();
-		JFrame mf=new JFrame("销售单据");
-		mf.setResizable(false);
-		Container mfc=mf.getContentPane();
+		String[][] xxarr={{"","","","","","","","","",""}};
+		JLabel showhj=new JLabel("10000.00");
+		JFrame xxf=new JFrame("销售单据");
+		xxf.setResizable(false);
+		Container xxfc=xxf.getContentPane();
 		//=====================================================table===========================
 		JTable xxtable=new JTable();
 		xxtable.getTableHeader().setResizingAllowed(false);
 		String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注"};
-		DefaultTableModel mdm=new DefaultTableModel(){
+		DefaultTableModel xxmdm=new DefaultTableModel(){
 			/**
 			 * 
 			 */
@@ -34,8 +34,7 @@ public class YSXXtest {
 				return false;
 			}
 		};
-		mdm.setDataVector(arr,mcn);
-		xxtable.setModel(mdm);
+		xxtable.setModel(xxmdm);
 		JPanel mp=new JPanel();
 		JScrollPane msp=new JScrollPane();
 		msp.setViewportView(xxtable);
@@ -43,6 +42,7 @@ public class YSXXtest {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 	    tcr.setHorizontalAlignment(JLabel.CENTER);
 	    xxtable.setDefaultRenderer(Object.class, tcr);
+	    xxmdm.setDataVector(xxarr,mcn);
     	TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
     	cktablecxh.setPreferredWidth(40);   
     	cktablecxh.setMinWidth(40);
@@ -105,24 +105,24 @@ public class YSXXtest {
 		mp.setLayout(null);
 		JButton print_b=new JButton("打印");
 		print_b.setBounds(330,560,60,25);
-		mfc.add(print_b);
+		xxfc.add(print_b);
 		mp.add(msp);
 		mp.setBounds(18,100,750,450);
 		showhj.setBounds(600,560,60,25);
-		mfc.setLayout(null);
-		mfc.add(jtp);
-		mfc.add(ml);
-		mfc.add(mp);
-		mfc.add(showhj);
-		mf.setBounds(20,50,750,630);
-		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		mf.addWindowListener(new WindowAdapter(){
+		xxfc.setLayout(null);
+		xxfc.add(jtp);
+		xxfc.add(ml);
+		xxfc.add(mp);
+		xxfc.add(showhj);
+		xxf.setBounds(20,50,750,630);
+		xxf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		xxf.addWindowListener(new WindowAdapter(){
 			public void windowClosed(WindowEvent e) {
 				// TODO Auto-generated method stub
 				
 			}
 		});
-		mf.setVisible(true);
+		xxf.setVisible(true);
 	}
 	public static void main(String[] args){
 		new YSXXtest();

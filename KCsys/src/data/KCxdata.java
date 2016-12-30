@@ -11,7 +11,7 @@ import java.util.List;
 
 import javax.swing.JOptionPane;
 
-public class KCxdate {
+public class KCxdata {
 	Statement sql=null;
    	ResultSet res=null;
    	Dao d=new Dao();

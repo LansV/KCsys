@@ -507,29 +507,6 @@ public class wData {
 		     	 }
 		}
 	}
-	//---------------------------------------------写入坏账--------------------------------------------------
-	public void whz(String dh,String kh,Double je,String bz){
-		Date date2=new Date();
-		String ckd=String.format("%tF", date2);
-		try{
-			sql = con.createStatement();
-			sql.execute("update YSB set zt=2 where dh='"+dh+"';update YSB set date='"+ckd+"' where dh='"+dh+"';"
-					+ "insert into HZ values('"+dh+"','"+kh+"',"+je+",'"+ckd+"','"+bz+"')");
-		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"添加应收数据错误");
-		}finally{
-		   	 try{
-		     	   if(res!=null){
-		     		   res.close();
-		     	   }
-		     	   if(sql!=null){
-		     		   sql.close();
-		     	   }
-		     	 }catch(Exception e){
-		     		 JOptionPane.showMessageDialog(null,"断开错误");
-		     	 }
-		}
-	}
 	//---------------------------------------------------更新应收------------------------------------------------
 	public void updateys(String dh,Double ys,int zt){
 		Date date2=new Date();
@@ -600,8 +577,8 @@ public class wData {
 		try{
 			sql = con.createStatement();
 			sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";"
-					    + "UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
-						+ "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','admin','"+ckd+"','"+time+"','NULL')");
+					  + "UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
+					  + "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','admin','"+ckd+"','"+time+"','NULL')");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"写入库存错误");
 		}finally{
@@ -725,7 +702,7 @@ public class wData {
 	}
 	//-------------------------------------------------写入销售单---------------------------------------------
 	public Boolean wxs(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz,String skfs) {
+			Double dj, int sl, Double je, String bz,int skfs) {
 		Boolean b=true;
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
@@ -733,7 +710,7 @@ public class wData {
 			sql = con.createStatement();
 			sql.execute("insert into XSD values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
-					+ ",'"+skfs+"')");
+					+ ","+skfs+")");
 		}catch(Exception e){
 			b=false;
 			JOptionPane.showMessageDialog(null,"错误");
