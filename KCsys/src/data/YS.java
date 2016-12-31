@@ -277,8 +277,8 @@ public class YS {
 											dje=Double.parseDouble(String.format("%.2f",thsl*dj));     //得到退货总价
 										}
 										//w.gth(dh,kh,sp,thsl,yysl,dj,je,dj,yy);
-										Double ysje=Double.parseDouble(String.format("%.2f",hj-dje));
-										Double xsje=Double.parseDouble(String.format("%.2f",yzj-dje));
+										Double ysje=Double.parseDouble(String.format("%.2f",hj-dje)); // alter total proceeds
+										Double xsje=Double.parseDouble(String.format("%.2f",yzj-dje));//alter commodity proceeds
 										d.gth(dh,bh,kh,sp,thsl,yysl,dj,dje,ysje,xsje,yy);
 										w.wkcin(xh,sp,thsl,kh+"退货");
 										/*System.out.println(yzj);
