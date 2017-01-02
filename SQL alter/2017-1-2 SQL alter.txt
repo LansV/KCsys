@@ -1,0 +1,4 @@
+alter table XSD add skfs int 
+alter table XSD add skje money 
+alter table XSD add skdate date
+alter table XSD add skstatus int
