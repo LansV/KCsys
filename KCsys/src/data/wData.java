@@ -708,12 +708,12 @@ public class wData {
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into XSD values"
+			sql.execute("insert into XSD(dh,khmc,bh,xh,sp,dw,zk,dj,sl,je,bz,date,skfs,skstatus) values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
-					+ ","+skfs+")");
+					+ ","+skfs+",1)");
 		}catch(Exception e){
 			b=false;
-			JOptionPane.showMessageDialog(null,"错误");
+			JOptionPane.showMessageDialog(null,"添加销售单错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){

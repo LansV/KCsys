@@ -555,8 +555,8 @@ public class XSF{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wkcout(xh,sp,sl,"1,"+dh);
 								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex());
+								w.wkcout(xh,sp,sl,"1,"+dh);
 								String[][] sparr=gd.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 									private static final long serialVersionUID = 1L;
