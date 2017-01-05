@@ -73,20 +73,20 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select dh,kh,zj,ys,zj-ys as s,date from YSB where kh like '%"+s+"%' and zt=1 order by dh");
+			res = sql.executeQuery("select dh,khmc,je,skje,je-skje as s,skdate from XSD where khmc like '%"+s+"%' and skstatus=1 order by dh");
 			while(res.next()){
 				if(res.getDouble("s")==0){
 					
 				}else{
 					ls.add(res.getString("dh").trim());
-					ls.add(res.getString("kh").trim());
-					ls.add(String.format("%.2f",res.getDouble("zj")));
-					ls.add(String.format("%.2f",res.getDouble("ys")));
+					ls.add(res.getString("khmc").trim());
+					ls.add(String.format("%.2f",res.getDouble("je")));
+					ls.add(String.format("%.2f",res.getDouble("skje")));
 					ls.add(String.format("%.2f",res.getDouble("s")));
-					if(res.getString("date")==null){
-						ls.add(res.getString("date"));
+					if(res.getString("skdate")==null){
+						ls.add(res.getString("skdate"));
 					}else{
-						ls.add(res.getString("date").trim());
+						ls.add(res.getString("skdate").trim());
 					}
 				}
 			}
@@ -172,14 +172,14 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,bz from XSD where dh = '"+dh+"' and sl !=0 order by bh");
+			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,bz,skstatus,je-skje as xs,skje from XSD where dh = '"+dh+"' and sl !=0 order by bh");
 			while(res.next()){
 				ls.add(res.getString("bh").trim());
 				ls.add(res.getString("xh").trim());
 				ls.add(res.getString("sp").trim());
 				ls.add(res.getString("dw").trim());
 				if(res.getString("zk")==null){
-					ls.add(res.getString("zk"));
+					ls.add("");
 				}else{
 					ls.add(res.getString("zk").trim());	
 				}
@@ -187,6 +187,17 @@ public class YSdata {
 				ls.add(res.getString("sl").trim());
 				ls.add(String.format("%.2f",res.getDouble("je")));
 				ls.add(res.getString("bz").trim());
+				if(res.getInt("skstatus")==0){
+					ls.add("已付");
+				}else if(res.getInt("skstatus")==1){
+					if(res.getString("xs")==null){
+						ls.add("收"+String.format("%.2f",res.getDouble("je")));
+					}else{
+						ls.add("收"+String.format("%.2f",res.getDouble("xs")));
+					}
+				}else{
+					ls.add("退货");
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -203,7 +214,7 @@ public class YSdata {
 		     		 
 		     	 }
 		}
-		int xl=9;
+		int xl=10;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //行
@@ -221,12 +232,12 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select kh,SUM(zj-ys) as zj,MAX(date) as date from YSB where zt=1 group by kh");
+			res = sql.executeQuery("select khmc,SUM(je-skje) as zj,MAX(skdate) as date from XSD where skstatus=1 group by khmc");
 			while(res.next()){
 				if(res.getDouble("zj")==0){
 					
 				}else{
-					ls.add(res.getString("kh").trim());
+					ls.add(res.getString("khmc").trim());
 					ls.add(String.format("%.2f",res.getDouble("zj")));
 					if(res.getString("date")==null){
 						ls.add(res.getString("date"));

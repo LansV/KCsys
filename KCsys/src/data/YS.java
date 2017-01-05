@@ -10,7 +10,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -25,8 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import test.Printclass;
+
 public class YS {
 	YSdata d=new YSdata();
 	wData w=new wData();
@@ -38,12 +37,12 @@ public class YS {
 	public YS(){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
-	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注"};
+	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注","状态"};
 	    //================product return popup menu=================
 	    JPopupMenu thpm=new JPopupMenu();
 		JMenuItem th=new JMenuItem("退货");
 		thpm.add(th);
-	    //--------------------------------------退货面板-------------------------------------------------------------
+	    //=================================================退货面板=======================================
 		JFrame thf=new JFrame("退货");
 		thf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		Container thc=thf.getContentPane();
@@ -97,7 +96,7 @@ public class YS {
 		msp.setViewportView(xxtable);
 		xxtable.setRowHeight(20);
 	    xxtable.setDefaultRenderer(Object.class, tcr);
-    	//===========================================================table================
+    	//==================================================table==========================================
 		JComboBox<String> jc=new JComboBox<String>();
 		jc.addItem("快递代收");
 		jc.addItem("现金");
@@ -145,7 +144,7 @@ public class YS {
 		print_b.setBounds(330,560,60,25);
 		print_b.addActionListener(new ActionListener(){
 			@Override
-			public void actionPerformed(ActionEvent arg0) {
+			public void actionPerformed(ActionEvent arg0){
 				// TODO Auto-generated method stub
 				List<Object> listkh=new ArrayList<Object>();
 				List<Object> listsp=new ArrayList<Object>();
@@ -169,7 +168,11 @@ public class YS {
 					int sl=Integer.parseInt(xhs6);
 					slhj=slhj+sl;
 					String xhs7=xxtable.getValueAt(i,7).toString().trim();
-					String bz=xxtable.getValueAt(i,8).toString().trim();
+					String xstatus=xxtable.getValueAt(i,9).toString().trim();
+					String bz="";
+					if(xstatus.substring(0,1).equals("退")){
+						bz="退货";
+					}
 					listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 					listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
 				}
@@ -296,14 +299,14 @@ public class YS {
 											hj=Double.parseDouble(xxtable.getValueAt(i,7).toString());
 										}
 										showhj.setText(String.format("%.2f",hj));
-									   	TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
+										TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 								    	cktablecxh.setPreferredWidth(40);   
 								    	cktablecxh.setMinWidth(40);
 								    	cktablecxh.setMaxWidth(40);
 								    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
-								    	cktableczl.setPreferredWidth(120);   
-								    	cktableczl.setMinWidth(120);
-								    	cktableczl.setMaxWidth(120);
+								    	cktableczl.setPreferredWidth(70);   
+								    	cktableczl.setMinWidth(70);
+								    	cktableczl.setMaxWidth(70);
 								    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
 								    	cktableccp.setPreferredWidth(180);   
 								    	cktableccp.setMinWidth(180);
@@ -312,6 +315,18 @@ public class YS {
 								    	cktablecdw.setPreferredWidth(40);   
 								    	cktablecdw.setMinWidth(40);
 								    	cktablecdw.setMaxWidth(40);
+								    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
+								    	cktablezk.setPreferredWidth(40);   
+								    	cktablezk.setMinWidth(40);
+								    	cktablezk.setMaxWidth(40);
+								    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
+								    	cktablesl.setPreferredWidth(40);   
+								    	cktablesl.setMinWidth(40);
+								    	cktablesl.setMaxWidth(40);
+								    	TableColumn xxtablestatus=xxtable.getColumnModel().getColumn(9);
+										xxtablestatus.setPreferredWidth(80);
+										xxtablestatus.setMaxWidth(80);
+										xxtablestatus.setMinWidth(80);
 										xxf.setEnabled(true);
 										thtsl.setEnabled(false);
 										thtsl.setText("");
@@ -479,9 +494,9 @@ public class YS {
 		    	cktablecxh.setMinWidth(40);
 		    	cktablecxh.setMaxWidth(40);
 		    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
-		    	cktableczl.setPreferredWidth(120);   
-		    	cktableczl.setMinWidth(120);
-		    	cktableczl.setMaxWidth(120);
+		    	cktableczl.setPreferredWidth(70);   
+		    	cktableczl.setMinWidth(70);
+		    	cktableczl.setMaxWidth(70);
 		    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
 		    	cktableccp.setPreferredWidth(180);   
 		    	cktableccp.setMinWidth(180);
@@ -490,6 +505,18 @@ public class YS {
 		    	cktablecdw.setPreferredWidth(40);   
 		    	cktablecdw.setMinWidth(40);
 		    	cktablecdw.setMaxWidth(40);
+		    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
+		    	cktablezk.setPreferredWidth(40);   
+		    	cktablezk.setMinWidth(40);
+		    	cktablezk.setMaxWidth(40);
+		    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
+		    	cktablesl.setPreferredWidth(40);   
+		    	cktablesl.setMinWidth(40);
+		    	cktablesl.setMaxWidth(40);
+		    	TableColumn xxtablestatus=xxtable.getColumnModel().getColumn(9);
+				xxtablestatus.setPreferredWidth(80);
+				xxtablestatus.setMaxWidth(80);
+				xxtablestatus.setMinWidth(80);
 				xxf.setVisible(true);
 			}
 		});
@@ -534,7 +561,7 @@ public class YS {
 		f.setBounds(1000,50,320,650);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		String[][] arr=d.ys();
-		String[] cxcn={"客户名称","应收","待定"};
+		String[] cxcn={"客户名称","应收","最后日期"};
 		JScrollPane jsp=new JScrollPane();
 		JTable jtab=new JTable();
 		jtab.getTableHeader().setReorderingAllowed(false);

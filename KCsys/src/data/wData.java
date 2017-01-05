@@ -708,9 +708,9 @@ public class wData {
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into XSD(dh,khmc,bh,xh,sp,dw,zk,dj,sl,je,bz,date,skfs,skstatus) values"
+			sql.execute("insert into XSD(dh,khmc,bh,xh,sp,dw,zk,dj,sl,je,bz,date,skfs,skje,skstatus,skdate) values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
-					+ ","+skfs+",1)");
+					+ ","+skfs+",0,1,'"+ckd+"')");
 		}catch(Exception e){
 			b=false;
 			JOptionPane.showMessageDialog(null,"添加销售单错误");
