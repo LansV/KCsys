@@ -1,0 +1,2 @@
+if this product is all returned that amount collected(XSD.skje) must be zero 
+add return module

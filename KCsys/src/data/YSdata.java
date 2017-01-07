@@ -73,13 +73,13 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select dh,khmc,je,skje,je-skje as s,skdate from XSD where khmc like '%"+s+"%' and skstatus=1 order by dh");
+			res = sql.executeQuery("select dh,SUM(je) as je,SUM(skje) as skje,SUM(je-skje) as s ,MAX(skdate) as skdate from XSD where khmc like '%"+s+"%' and skstatus=1 group by dh order by dh");
 			while(res.next()){
 				if(res.getDouble("s")==0){
 					
 				}else{
 					ls.add(res.getString("dh").trim());
-					ls.add(res.getString("khmc").trim());
+					ls.add(s);
 					ls.add(String.format("%.2f",res.getDouble("je")));
 					ls.add(String.format("%.2f",res.getDouble("skje")));
 					ls.add(String.format("%.2f",res.getDouble("s")));
@@ -279,28 +279,10 @@ public class YSdata {
 			Double xsje,String yy){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
-		// 0为收款完成  1为未收款  2为坏账  3为全单退货 4为商品退货
+		// 0为收款完成  1为未收款  2商品退货
 		try{
 			sql = con.createStatement();
-			int hsl=yysl-sl;
-			if(ysje==0){
-				sql.execute(  "update YSB set date='"+ckd+"' where dh='"+dh+"';"  //修改应收修改时间
-						+ "update YSB set zj="+ysje+" where dh='"+dh+"';"     //修改应收金额
-						+ "update YSB set zt=4 where dh='"+dh+"';"
-						+ "update XSD set sl="+hsl+" where dh='"+dh+"' and bh='"+bh+"';"  //修改销售单数量
-						+ "update XSD set je='"+xsje+"' where dh='"+dh+"' and bh='"+bh+"';"   //修改销售单金额
-						+ "update XSD set date='"+ckd+"' where dh='"+dh+"' and bh='"+bh+"';"  //修改销售单修改时间
-						+ "insert into THB(dh,kh,sp,sl,dj,je,zl,yz,date)values"      //插入THB
-						+ "('"+dh+"','"+kh+"','"+sp+"',"+sl+","+dj+","+dje+",4,'"+yy+"','"+ckd+"')");
-			}else{
-				sql.execute(  "update YSB set date='"+ckd+"' where dh='"+dh+"';"  //修改应收修改时间
-						+ "update YSB set zj="+ysje+" where dh='"+dh+"';"     //修改应收金额
-						+ "update XSD set sl="+hsl+" where dh='"+dh+"' and bh='"+bh+"';"  //修改销售单数量
-						+ "update XSD set je='"+xsje+"' where dh='"+dh+"' and bh='"+bh+"';"   //修改销售单金额
-						+ "update XSD set date='"+ckd+"' where dh='"+dh+"' and bh='"+bh+"';"  //修改销售单修改时间
-						+ "insert into THB(dh,kh,sp,sl,dj,je,zl,yz,date)values"      //插入THB
-						+ "('"+dh+"','"+kh+"','"+sp+"',"+sl+","+dj+","+dje+",4,'"+yy+"','"+ckd+"')");
-			}
+			
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"添加退货数据错误");
 		}finally{
