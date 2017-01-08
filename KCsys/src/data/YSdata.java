@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -275,14 +276,16 @@ public class YSdata {
 		return data;
 	}
 	//------------------------------------------------------部分退货----------------------------------------
-	public void gth(String dh,int bh,String kh,String sp,int sl,int yysl,Double dj,Double dje,Double ysje,
-			Double xsje,String yy){
+	public void gth(String dh,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy ){
 		Date date2=new Date();
+		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+		String time=timeFormat.format(date2);
 		String ckd=String.format("%tF", date2);
 		// 0为收款完成  1为未收款  2商品退货
 		try{
 			sql = con.createStatement();
-			
+			sql.execute("insert into THD values ('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","
+					+ ""+dj+","+sl+","+thje+",'"+yy+"','"+ckd+"','"+time+"')");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"添加退货数据错误");
 		}finally{

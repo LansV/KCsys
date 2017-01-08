@@ -1,5 +1,5 @@
 alter database //修改数据库 table XSD //XSD表
-收款方式 int 
-收款金额 money
-收款日期 date
-收款状态 int 0 已结清 1 未结清 2 退货 
+skfs 收款方式 int  
+skje 收款金额 money
+skdate 收款日期 date
+skstatus 收款状态 int 0 已结清 1 未结清 2 单件退货 3 全部退货

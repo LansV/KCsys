@@ -268,21 +268,19 @@ public class YS {
 										int bh=Integer.parseInt(xxtable.getValueAt(r,0).toString().trim());
 										String xh=xxtable.getValueAt(r,1).toString().trim();   //get product model
 										String sp=xxtable.getValueAt(r,2).toString().trim();   //获取商品名称
-										String szk = null;
+										String dw=xxtable.getValueAt(r,3).toString().trim();
+										String szk=xxtable.getValueAt(r,4).toString().trim();
 										Double dj=Double.parseDouble(xxtable.getValueAt(r,5).toString().trim());//获取商品单价
-										Double yzj=Double.parseDouble(xxtable.getValueAt(r,7).toString().trim());//获取原价
-										Double dje = null;
-										try{
-											szk=xxtable.getValueAt(r,4).toString().trim();   //获取折扣
-											Double zk=Double.parseDouble(szk.trim());
-											dje=Double.parseDouble(String.format("%.2f",zk/10*thsl*dj));   //得到退货总价
-										}catch(Exception e2){
-											dje=Double.parseDouble(String.format("%.2f",thsl*dj));     //得到退货总价
+										Double zk = null;
+										Double thje = null;
+										if(szk.length()==0){
+											thje=dj*thsl;
+										}else{
+											zk=Double.parseDouble(szk);
+											thje=dj*thsl*zk/10;
 										}
-										//w.gth(dh,kh,sp,thsl,yysl,dj,je,dj,yy);
-										Double ysje=Double.parseDouble(String.format("%.2f",hj-dje)); // alter total proceeds
-										Double xsje=Double.parseDouble(String.format("%.2f",yzj-dje));//alter commodity proceeds
-										d.gth(dh,bh,kh,sp,thsl,yysl,dj,dje,ysje,xsje,yy);
+										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy);
+										//d.gth();
 										w.wkcin(xh,sp,thsl,kh+"退货");
 										/*System.out.println(yzj);
 										System.out.println(dje);

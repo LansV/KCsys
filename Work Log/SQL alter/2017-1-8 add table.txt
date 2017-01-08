@@ -1,0 +1,16 @@
+create table THD 
+(
+ dh varchar(15),
+ khmc varchar(100),
+ bh int,
+ xh varchar(15),
+ sp varchar(100),
+ dw varchar(12),
+ zk float,
+ dj float,
+ tsl int,
+ tje money,
+ bz varchar(100),
+ tdate date,
+ ttime time(7)
+)
