@@ -37,7 +37,7 @@ public class YS {
 	public YS(){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
-	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注","状态"};
+	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","收款","备注"};
 	    //================product return popup menu=================
 	    JPopupMenu thpm=new JPopupMenu();
 		JMenuItem th=new JMenuItem("退货");
@@ -168,11 +168,7 @@ public class YS {
 					int sl=Integer.parseInt(xhs6);
 					slhj=slhj+sl;
 					String xhs7=xxtable.getValueAt(i,7).toString().trim();
-					String xstatus=xxtable.getValueAt(i,9).toString().trim();
 					String bz="";
-					if(xstatus.substring(0,1).equals("退")){
-						bz="退货";
-					}
 					listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 					listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
 				}
@@ -280,12 +276,7 @@ public class YS {
 											thje=dj*thsl*zk/10;
 										}
 										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy);
-										//d.gth();
 										w.wkcin(xh,sp,thsl,kh+"退货");
-										/*System.out.println(yzj);
-										System.out.println(dje);
-										System.out.println(ysje);
-										System.out.println(xsje);*/
 										if(dh.substring(0,1).equals("X")){
 											xxmdm.setDataVector(d.wxd(dh),mcn);
 										}else{
@@ -294,7 +285,8 @@ public class YS {
 										int row=xxtable.getRowCount();
 										Double hj=0.0;
 										for(int i=0;i<row;i++){
-											hj=Double.parseDouble(xxtable.getValueAt(i,7).toString());
+											Double sk=Double.parseDouble(xxtable.getValueAt(i,8).toString());
+											hj=Double.parseDouble(xxtable.getValueAt(i,7).toString())+hj-sk;
 										}
 										showhj.setText(String.format("%.2f",hj));
 										TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
@@ -321,10 +313,6 @@ public class YS {
 								    	cktablesl.setPreferredWidth(40);   
 								    	cktablesl.setMinWidth(40);
 								    	cktablesl.setMaxWidth(40);
-								    	TableColumn xxtablestatus=xxtable.getColumnModel().getColumn(9);
-										xxtablestatus.setPreferredWidth(80);
-										xxtablestatus.setMaxWidth(80);
-										xxtablestatus.setMinWidth(80);
 										xxf.setEnabled(true);
 										thtsl.setEnabled(false);
 										thtsl.setText("");
@@ -484,7 +472,8 @@ public class YS {
 				int row=xxtable.getRowCount();
 				hj=0.0;
 				for(int i=0;i<row;i++){
-					hj=Double.parseDouble(xxtable.getValueAt(i, 7).toString())+hj;
+					Double sk=Double.parseDouble(xxtable.getValueAt(i, 8).toString());
+					hj=Double.parseDouble(xxtable.getValueAt(i, 7).toString())+hj-sk;
 				}
 				showhj.setText(String.format("%.2f",hj));
 		    	TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
@@ -511,10 +500,6 @@ public class YS {
 		    	cktablesl.setPreferredWidth(40);   
 		    	cktablesl.setMinWidth(40);
 		    	cktablesl.setMaxWidth(40);
-		    	TableColumn xxtablestatus=xxtable.getColumnModel().getColumn(9);
-				xxtablestatus.setPreferredWidth(80);
-				xxtablestatus.setMaxWidth(80);
-				xxtablestatus.setMinWidth(80);
 				xxf.setVisible(true);
 			}
 		});

@@ -74,7 +74,12 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select dh,SUM(je) as je,SUM(skje) as skje,SUM(je-skje) as s ,MAX(skdate) as skdate from XSD where khmc like '%"+s+"%' and skstatus=1 group by dh order by dh");
+			res = sql.executeQuery(""
+					+ "select dh,SUM(zj) as je,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from"
+					+ "(select dh,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khmc = '"+s+"'group by dh "
+					+ "union "
+					+ "select dh,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc= '"+s+"' group by dh) "
+					+ "temp group by dh");
 			while(res.next()){
 				if(res.getDouble("s")==0){
 					
@@ -173,7 +178,14 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,bz,skstatus,je-skje as xs,skje from XSD where dh = '"+dh+"' and sl !=0 order by bh");
+			res = sql.executeQuery("select  max(bh) as bh,xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,"
+					+ "max(dj) as dj,sum(sl) as sl,sum(je) as je,sum(skje) as skje,MAX(bz) as bz from "
+					+ "("
+					+ "select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from XSD where dh='"+dh+"' "
+					+ "union "
+					+ "select max(bh),xh,max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz "
+					+ "from THD where dh='"+dh+"' group by xh"
+					+ ") temp group by xh order by bh");
 			while(res.next()){
 				ls.add(res.getString("bh").trim());
 				ls.add(res.getString("xh").trim());
@@ -187,18 +199,8 @@ public class YSdata {
 				ls.add(String.format("%.2f",res.getDouble("dj")));
 				ls.add(res.getString("sl").trim());
 				ls.add(String.format("%.2f",res.getDouble("je")));
+				ls.add(String.format("%.2f",res.getDouble("skje")));
 				ls.add(res.getString("bz").trim());
-				if(res.getInt("skstatus")==0){
-					ls.add("已付");
-				}else if(res.getInt("skstatus")==1){
-					if(res.getString("xs")==null){
-						ls.add("收"+String.format("%.2f",res.getDouble("je")));
-					}else{
-						ls.add("收"+String.format("%.2f",res.getDouble("xs")));
-					}
-				}else{
-					ls.add("退货");
-				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -233,17 +235,22 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select khmc,SUM(je-skje) as zj,MAX(skdate) as date from XSD where skstatus=1 group by khmc");
+			res = sql.executeQuery("select*from"
+					+ "("
+					+ "select khmc,SUM(je) as zj,MAX(lastdate) as fdate from (select khmc,SUM(je)-SUM(skje) as je ,"
+					+ "MAX (date) as lastdate from XSD group by khmc union select khmc,-SUM(tje) as je, "
+					+ "Max(tdate) as lastdate from THD group by khmc ) temp group by khmc"
+					+ ") temp where zj>0");
 			while(res.next()){
 				if(res.getDouble("zj")==0){
 					
 				}else{
 					ls.add(res.getString("khmc").trim());
 					ls.add(String.format("%.2f",res.getDouble("zj")));
-					if(res.getString("date")==null){
-						ls.add(res.getString("date"));
+					if(res.getString("fdate")==null){
+						ls.add(res.getString("fdate"));
 					}else{
-						ls.add(res.getString("date").trim());
+						ls.add(res.getString("fdate").trim());
 					}
 				}
 			}
