@@ -424,13 +424,12 @@ public class YS {
 				if(e.getButton()==1&&e.getClickCount()==2){
 					ff.setEnabled(false);
 					int r=table.getSelectedRow();
-					String s=table.getValueAt(r,4).toString().trim();
-					try{
-						ys=Double.parseDouble(s);
-					}catch(Exception e1){
-						JOptionPane.showMessageDialog(null,"数据错误");
+					String st=table.getValueAt(r,0).toString().trim();
+					if(st.substring(0,1).equals("X")){
+						xxmdm.setDataVector(d.wxd(st),mcn);
+					}else{
+						xxmdm.setDataVector(d.xsd(st),mcn);
 					}
-					tabler=table.getRowCount();
 					xf.setVisible(true);
 				}
 			}
@@ -603,65 +602,14 @@ public class YS {
 					}else{
 						try{
 							Double sk=Double.parseDouble(s);
-							if(ys-sk<0){       //proceeds greater than receivables
-								String dh=table.getValueAt(sr,0).toString().trim();    //获取单号
-								String ssq=table.getValueAt(sr,3).toString().trim();  //获取上期金额
-								Double sq1=Double.parseDouble(ssq);
-								Double zj=ys+sq1;
-								d.updateys(dh,zj,0);
-								table.setValueAt(String.format("%.2f",ys+sq1),sr,3);
-								table.setValueAt(0,sr,4);
-								sk=Double.parseDouble(String.format("%.2f",sk-ys));
-								if(tabler>1){ //如果为多单号
-									JOptionPane.showMessageDialog(null,"超本单金额,将自动分配余下金额");
-									for(int i=0;i<tabler;i++){
-										if(sr==i){
-											//跳过选择行
-										}else{
-											String gdh=table.getValueAt(i,0).toString().trim();    //获取单号
-											String st=table.getValueAt(i,4).toString().trim();  //获取应收金额
-											String st2=table.getValueAt(i,3).toString().trim();  //获取上期金额
-											Double zys=Double.parseDouble(st);
-											Double sq=Double.parseDouble(st2);
-											if(sk-zys>0||sk-zys==0){        //判断是否有剩款
-												sk=sk-zys;
-												Double gzj=zys+sq;
-												table.setValueAt(String.format("%.2f",zys+sq),i,3);
-												table.setValueAt(0,i,4);
-												d.updateys(gdh,gzj,0);
-												if(sk>0&&i==tabler-1){      //最后一行如果还有剩款 JP提示
-													JOptionPane.showMessageDialog(null,"超出总应收"+String.format("%.2f",sk)+"元");
-												}
-											}else{  
-												table.setValueAt(String.format("%.2f",sk+sq),i,3);  
-												table.setValueAt(String.format("%.2f",zys-sk),i,4);
-												Double gzj=sk+sq;
-												d.updateys(gdh,gzj,1);
-												break;                     //跳出循环
-											}
-										}
-									}
+							if(sk>0){
+								if(ys-sk<0){       //proceeds greater than receivables
+									
 								}else{
-									if(sk>0){
-										JOptionPane.showMessageDialog(null,"超出总应收"+String.format("%.2f",sk)+"元");
-									}
+									
 								}
-								ff.setEnabled(true);
-								xf.dispose();
-							}else if(ys-sk>0||ys-sk==0){  //proceeds less than receivable or proceeds equality receivable
-								String dh=table.getValueAt(sr,0).toString().trim();
-								String ssq=table.getValueAt(sr,3).toString().trim();  //获取上期金额
-								Double sq1=Double.parseDouble(ssq);
-								table.setValueAt(sk+sq1,sr,3);
-								table.setValueAt(String.format("%.2f",ys-sk),sr,4);
-								Double gzj=sk+sq1;
-								if(ys-sk==0){
-									d.updateys(dh,gzj,0);
-								}else{
-									d.updateys(dh,gzj,1);
-								}
-								ff.setEnabled(true);
-								xf.dispose();
+							}else{
+								JOptionPane.showMessageDialog(null,"输入为负");
 							}
 						}catch(Exception e1){
 							JOptionPane.showMessageDialog(null,"非法输入");
