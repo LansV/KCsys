@@ -25,11 +25,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import test.Printclass;
-
+ 
 public class YS {
 	YSdata d=new YSdata();
 	wData w=new wData();
-	Double ys;
 	Double hj;
 	int tabler;
 	int wzx;
@@ -603,6 +602,8 @@ public class YS {
 						try{
 							Double sk=Double.parseDouble(s);
 							if(sk>0){
+								Double ys=Double.parseDouble(table.getValueAt(sr,4).toString());
+								System.out.println(ys);
 								if(ys-sk<0){       //proceeds greater than receivables
 									
 								}else{
@@ -618,6 +619,7 @@ public class YS {
 						String[][] xarr=d.xys(kh);
 						xdm.setDataVector(xarr, xcn);
 						xt.setText("");
+						xf.dispose();
 					}
 				}
 			}
