@@ -1,0 +1,1 @@
+alter table THD add ttype int

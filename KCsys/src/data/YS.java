@@ -25,7 +25,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import test.Printclass;
- 
+
 public class YS {
 	YSdata d=new YSdata();
 	wData w=new wData();
@@ -37,9 +37,21 @@ public class YS {
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
 	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","收款","备注"};
+		//--------------------------------------填写金额------------------------------------
+		JFrame xf=new JFrame("收款");
+		xf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		Container xfc=xf.getContentPane();
+		xfc.setLayout(null);
+		xf.setBounds(800,380,200,100);
+		JTextField xt=new JTextField();
+		xt.setBounds(10,20,160,25);
+		xfc.add(xt);
+		xf.setResizable(false);
 	    //================product return popup menu=================
 	    JPopupMenu thpm=new JPopupMenu();
+	    JMenuItem sk=new JMenuItem("收款");
 		JMenuItem th=new JMenuItem("退货");
+		thpm.add(sk);
 		thpm.add(th);
 	    //=================================================退货面板=======================================
 		JFrame thf=new JFrame("退货");
@@ -62,7 +74,7 @@ public class YS {
 		thc.add(thtsl);
 		thf.setResizable(false);
 	    //======================================detailed panel=================================
-		JLabel showhj=new JLabel("",JLabel.CENTER);
+		JLabel xxf_ShowTotal=new JLabel("",JLabel.CENTER);
 		JFrame xxf=new JFrame("销售单据");
 		xxf.setResizable(false);
 		Container xxfc=xxf.getContentPane();
@@ -81,6 +93,24 @@ public class YS {
 		xxtable.setModel(xxmdm);
 		xxtable.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
+				if(e.getButton()==1&&e.getClickCount()==2){
+					xxf.setEnabled(false);
+					int r=xxtable.getSelectedRow();
+					int sl=Integer.parseInt(xxtable.getValueAt(r, 6).toString());
+					if(sl==0){
+						xxf.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"此商品已全部退货");
+					}else{
+						Double zj=Double.parseDouble(xxtable.getValueAt(r, 7).toString());
+						Double sk=Double.parseDouble(xxtable.getValueAt(r, 8).toString());
+						if(zj.equals(sk)){
+							xxf.setEnabled(true);
+							JOptionPane.showMessageDialog(null,"此商品已付清货款");
+						}else{
+							xf.setVisible(true);
+						}
+					}
+				}
 				if(e.getButton()==3){
 					int r=xxtable.rowAtPoint(e.getPoint());
 					if(xxtable.getRowSelectionAllowed()==true){
@@ -134,11 +164,94 @@ public class YS {
 		addrt.setEditable(false);
 		addrt.setBounds(50,60,300,25);
 		jtp.add(addrt);
-		JLabel ml=new JLabel("");
-		ml.setBounds(20,560,80,25);
+		JLabel xxf_ShowNo=new JLabel("");
+		xxf_ShowNo.setBounds(20,560,80,25);
 		jtp.setBounds(0,0,750,90);
 		msp.setBounds(0,0,700,450);
 		mp.setLayout(null);
+		JButton xxf_OldSaleReceipt_b=new JButton("查看原单");
+		xxf_OldSaleReceipt_b.setVisible(false);
+		xxf_OldSaleReceipt_b.setBounds(380,60,90,25);
+		xxf_OldSaleReceipt_b.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")){
+					sk.setEnabled(false);
+					th.setEnabled(false);
+					xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
+					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
+			    	cktablecxh.setPreferredWidth(40);   
+			    	cktablecxh.setMinWidth(40);
+			    	cktablecxh.setMaxWidth(40);
+			    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
+			    	cktableczl.setPreferredWidth(70);   
+			    	cktableczl.setMinWidth(70);
+			    	cktableczl.setMaxWidth(70);
+			    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
+			    	cktableccp.setPreferredWidth(180);   
+			    	cktableccp.setMinWidth(180);
+			    	cktableccp.setMaxWidth(180);
+			    	TableColumn cktablecdw=xxtable.getColumnModel().getColumn(3);   //设置列宽    
+			    	cktablecdw.setPreferredWidth(40);   
+			    	cktablecdw.setMinWidth(40);
+			    	cktablecdw.setMaxWidth(40);
+			    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
+			    	cktablezk.setPreferredWidth(40);   
+			    	cktablezk.setMinWidth(40);
+			    	cktablezk.setMaxWidth(40);
+			    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
+			    	cktablesl.setPreferredWidth(40);   
+			    	cktablesl.setMinWidth(40);
+			    	cktablesl.setMaxWidth(40);
+			    	int row=xxtable.getRowCount();
+					Double hj=0.0;
+					for(int i=0;i<row;i++){
+						Double sk=Double.parseDouble(xxtable.getValueAt(i,8).toString());
+						hj=Double.parseDouble(xxtable.getValueAt(i,7).toString())+hj-sk;
+					}
+					xxf_ShowTotal.setText(String.format("%.2f",hj));
+			    	xxf_OldSaleReceipt_b.setText("查看现单");
+				}else{
+					sk.setEnabled(true);
+					th.setEnabled(true);
+					xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()), mcn);
+					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
+			    	cktablecxh.setPreferredWidth(40);   
+			    	cktablecxh.setMinWidth(40);
+			    	cktablecxh.setMaxWidth(40);
+			    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
+			    	cktableczl.setPreferredWidth(70);   
+			    	cktableczl.setMinWidth(70);
+			    	cktableczl.setMaxWidth(70);
+			    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
+			    	cktableccp.setPreferredWidth(180);   
+			    	cktableccp.setMinWidth(180);
+			    	cktableccp.setMaxWidth(180);
+			    	TableColumn cktablecdw=xxtable.getColumnModel().getColumn(3);   //设置列宽    
+			    	cktablecdw.setPreferredWidth(40);   
+			    	cktablecdw.setMinWidth(40);
+			    	cktablecdw.setMaxWidth(40);
+			    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
+			    	cktablezk.setPreferredWidth(40);   
+			    	cktablezk.setMinWidth(40);
+			    	cktablezk.setMaxWidth(40);
+			    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
+			    	cktablesl.setPreferredWidth(40);   
+			    	cktablesl.setMinWidth(40);
+			    	cktablesl.setMaxWidth(40);
+			    	int row=xxtable.getRowCount();
+					Double hj=0.0;
+					for(int i=0;i<row;i++){
+						Double sk=Double.parseDouble(xxtable.getValueAt(i,8).toString());
+						hj=Double.parseDouble(xxtable.getValueAt(i,7).toString())+hj-sk;
+					}
+					xxf_ShowTotal.setText(String.format("%.2f",hj));
+			    	xxf_OldSaleReceipt_b.setText("查看原单");
+				}
+			}
+		});
+		jtp.add(xxf_OldSaleReceipt_b);
 		JButton print_b=new JButton("打印");
 		print_b.setBounds(330,560,60,25);
 		print_b.addActionListener(new ActionListener(){
@@ -148,14 +261,16 @@ public class YS {
 				List<Object> listkh=new ArrayList<Object>();
 				List<Object> listsp=new ArrayList<Object>();
 				List<Object> listhj=new ArrayList<Object>();
-				listkh.add(ml.getText().trim());
+				listkh.add(xxf_ShowNo.getText().trim());
 				listkh.add(mct.getText().trim());
 				listkh.add(lxrt.getText().trim());
 				listkh.add(lxrtelt.getText().trim());
 				listkh.add(addrt.getText().trim());
 				listkh.add(jc.getSelectedItem());
+				listkh.add("补单");
 				int cr=xxtable.getRowCount();
 				int slhj=0;
+				Double hj=0.0;
 				for(int i=0;i<cr;i++){
 					String xhs=xxtable.getValueAt(i,0).toString().trim();
 					String xh=xxtable.getValueAt(i,1).toString().trim();
@@ -167,6 +282,8 @@ public class YS {
 					int sl=Integer.parseInt(xhs6);
 					slhj=slhj+sl;
 					String xhs7=xxtable.getValueAt(i,7).toString().trim();
+					Double jg=Double.parseDouble(xhs7);
+					hj=jg+hj;
 					String bz="";
 					listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 					listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
@@ -183,12 +300,12 @@ public class YS {
 		xxfc.add(print_b);
 		mp.add(msp);
 		mp.setBounds(18,100,750,450);
-		showhj.setBounds(593,560,60,25);
+		xxf_ShowTotal.setBounds(593,560,60,25);
 		xxfc.setLayout(null);
 		xxfc.add(jtp);
-		xxfc.add(ml);
+		xxfc.add(xxf_ShowNo);
 		xxfc.add(mp);
-		xxfc.add(showhj);
+		xxfc.add(xxf_ShowTotal);
 		xxf.setBounds(20,50,750,630);
 		xxf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//=============================================above is detailed panel=========================
@@ -198,20 +315,18 @@ public class YS {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				xxf.setEnabled(false);
-				thtsl.setEnabled(true);
-				thf.setVisible(true);
+				int r=xxtable.getSelectedRow();
+				int sl=Integer.parseInt(xxtable.getValueAt(r, 6).toString());
+				if(sl==0){
+					xxf.setEnabled(true);
+					JOptionPane.showMessageDialog(null,"此商品已全部退货");
+				}else{
+					thtsl.setEnabled(true);
+					thf.setVisible(true);
+				}
 			}
 		});
-		//--------------------------------------填写金额------------------------------------
-		JFrame xf=new JFrame("收款");
-		xf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		Container xfc=xf.getContentPane();
-		xfc.setLayout(null);
-		xf.setBounds(800,380,200,100);
-		JTextField xt=new JTextField();
-		xt.setBounds(10,20,160,25);
-		xfc.add(xt);
-		xf.setResizable(false);
+
 		//--------------------------------------------填写坏账记录--------------------------
 		JFrame hzf=new JFrame("坏账");
 		hzf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -222,6 +337,29 @@ public class YS {
 		hzt.setBounds(10,20,160,25);
 		hzc.add(hzt);
 		hzf.setResizable(false);
+		//=====================================销售单内收款监听=========================
+		sk.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				xxf.setEnabled(false);
+				int r=xxtable.getSelectedRow();
+				int sl=Integer.parseInt(xxtable.getValueAt(r, 6).toString());
+				if(sl==0){
+					xxf.setEnabled(true);
+					JOptionPane.showMessageDialog(null,"此商品已全部退货");
+				}else{
+					Double zj=Double.parseDouble(xxtable.getValueAt(r, 7).toString());
+					Double sk=Double.parseDouble(xxtable.getValueAt(r, 8).toString());
+					if(zj.equals(sk)){
+						xxf.setEnabled(true);
+						JOptionPane.showMessageDialog(null,"此商品已付清货款");
+					}else{
+						xf.setVisible(true);
+					}
+				}
+			}
+		});
 		//-------------------------------------overview panel-------------------------------------------
 		JFrame ff=new JFrame("总览");
 		ff.setResizable(false);
@@ -240,6 +378,7 @@ public class YS {
 			}
 		};
 		table.setModel(xdm);
+		table.setRowHeight(20);
 		//-------------------------------------退货原因输入监听------------------------------------------
 		thtyz.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
@@ -258,7 +397,7 @@ public class YS {
 									int yysl=Integer.parseInt(xxtable.getValueAt(r,6).toString().trim());
 									if(thsl<=yysl){
 										String yy=thtyz.getText().trim(); //退货原因
-										String dh=ml.getText().trim(); //获取单号
+										String dh=xxf_ShowNo.getText().trim(); //获取单号
 										String kh=mct.getText().trim();   //获取客户名称
 										int bh=Integer.parseInt(xxtable.getValueAt(r,0).toString().trim());
 										String xh=xxtable.getValueAt(r,1).toString().trim();   //get product model
@@ -274,7 +413,7 @@ public class YS {
 											zk=Double.parseDouble(szk);
 											thje=dj*thsl*zk/10;
 										}
-										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy);
+										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2);
 										w.wkcin(xh,sp,thsl,kh+"退货");
 										if(dh.substring(0,1).equals("X")){
 											xxmdm.setDataVector(d.wxd(dh),mcn);
@@ -287,7 +426,7 @@ public class YS {
 											Double sk=Double.parseDouble(xxtable.getValueAt(i,8).toString());
 											hj=Double.parseDouble(xxtable.getValueAt(i,7).toString())+hj-sk;
 										}
-										showhj.setText(String.format("%.2f",hj));
+										xxf_ShowTotal.setText(String.format("%.2f",hj));
 										TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 								    	cktablecxh.setPreferredWidth(40);   
 								    	cktablecxh.setMinWidth(40);
@@ -334,15 +473,30 @@ public class YS {
 							String yy=thtyz.getText().trim();
 							String dh=table.getValueAt(r,0).toString().trim();
 							String kh=table.getValueAt(r,1).toString().trim();
-							Double je=Double.parseDouble(table.getValueAt(r,2).toString().trim());
-							d.dth(dh,kh,je,yy);
 							int xrc=xxtable.getRowCount();
 							for(int i=0;i<xrc;i++){
 								String xh=xxtable.getValueAt(i,1).toString().trim();
 								String sp=xxtable.getValueAt(i,2).toString().trim();
 								String str=xxtable.getValueAt(i,6).toString().trim();
+								String dw=xxtable.getValueAt(i,3).toString().trim();
+								String szk=xxtable.getValueAt(i,4).toString().trim();
+								String tdj=xxtable.getValueAt(i,5).toString().trim();
+								Double dj=Double.parseDouble(tdj);
 								int sl=Integer.parseInt(str);
-								w.wkcin(xh,sp,sl,kh+"退货");
+								if(sl>0){
+									Double zk = null;
+									Double thje = null;
+									if(szk.length()==0){
+										thje=dj*sl;
+									}else{
+										zk=Double.parseDouble(szk);
+										thje=dj*sl*zk/10;
+									}
+									d.gth(dh,kh,i+1,xh,sp,dw,zk,dj,sl,thje,yy,3);
+									w.wkcin(xh,sp,sl,kh+"退货");
+								}else{
+									d.alterSkstatus(dh,i+1,3);
+								}
 							}
 							xdm.setDataVector(d.xys(kh),xcn);
 							TableColumn cktablecxh=table.getColumnModel().getColumn(1);   //设置列宽    
@@ -369,13 +523,73 @@ public class YS {
 							JOptionPane.showMessageDialog(null,"数量为空");
 						}else{
 							try{
-								int ths=Integer.parseInt(sth);
-								System.out.println(ths);
-								xxf.setEnabled(true);
-								thtsl.setEnabled(false);
-								thtsl.setText("");
-								thtyz.setText("");
-								thf.dispose();
+								int thsl=Integer.parseInt(sth);
+								int r=xxtable.getSelectedRow();
+								int yysl=Integer.parseInt(xxtable.getValueAt(r,6).toString().trim());
+								if(thsl<=yysl){
+									String yy=thtyz.getText().trim(); //退货原因
+									String dh=xxf_ShowNo.getText().trim(); //获取单号
+									String kh=mct.getText().trim();   //获取客户名称
+									int bh=Integer.parseInt(xxtable.getValueAt(r,0).toString().trim());
+									String xh=xxtable.getValueAt(r,1).toString().trim();   //get product model
+									String sp=xxtable.getValueAt(r,2).toString().trim();   //获取商品名称
+									String dw=xxtable.getValueAt(r,3).toString().trim();
+									String szk=xxtable.getValueAt(r,4).toString().trim();
+									Double dj=Double.parseDouble(xxtable.getValueAt(r,5).toString().trim());//获取商品单价
+									Double zk = null;
+									Double thje = null;
+									if(szk.length()==0){
+										thje=dj*thsl;
+									}else{
+										zk=Double.parseDouble(szk);
+										thje=dj*thsl*zk/10;
+									}
+									d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2);
+									w.wkcin(xh,sp,thsl,kh+"退货");
+									if(dh.substring(0,1).equals("X")){
+										xxmdm.setDataVector(d.wxd(dh),mcn);
+									}else{
+										xxmdm.setDataVector(d.xsd(dh),mcn);
+									}
+									int row=xxtable.getRowCount();
+									Double hj=0.0;
+									for(int i=0;i<row;i++){
+										Double sk=Double.parseDouble(xxtable.getValueAt(i,8).toString());
+										hj=Double.parseDouble(xxtable.getValueAt(i,7).toString())+hj-sk;
+									}
+									xxf_ShowTotal.setText(String.format("%.2f",hj));
+									TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
+							    	cktablecxh.setPreferredWidth(40);   
+							    	cktablecxh.setMinWidth(40);
+							    	cktablecxh.setMaxWidth(40);
+							    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
+							    	cktableczl.setPreferredWidth(70);   
+							    	cktableczl.setMinWidth(70);
+							    	cktableczl.setMaxWidth(70);
+							    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
+							    	cktableccp.setPreferredWidth(180);   
+							    	cktableccp.setMinWidth(180);
+							    	cktableccp.setMaxWidth(180);
+							    	TableColumn cktablecdw=xxtable.getColumnModel().getColumn(3);   //设置列宽    
+							    	cktablecdw.setPreferredWidth(40);   
+							    	cktablecdw.setMinWidth(40);
+							    	cktablecdw.setMaxWidth(40);
+							    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
+							    	cktablezk.setPreferredWidth(40);   
+							    	cktablezk.setMinWidth(40);
+							    	cktablezk.setMaxWidth(40);
+							    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
+							    	cktablesl.setPreferredWidth(40);   
+							    	cktablesl.setMinWidth(40);
+							    	cktablesl.setMaxWidth(40);
+									xxf.setEnabled(true);
+									thtsl.setEnabled(false);
+									thtsl.setText("");
+									thtyz.setText("");
+									thf.dispose();
+								}else{
+									JOptionPane.showMessageDialog(null,"超出销售数量");
+								}
 							}catch(Exception e1){
 								JOptionPane.showMessageDialog(null,"输入非法");
 							}
@@ -443,7 +657,7 @@ public class YS {
 				if(st.substring(0,1).equals("X")){
 					xxmdm.setDataVector(d.wxd(st),mcn);
 				}else{
-					xxmdm.setDataVector(d.xsd(st),mcn);
+						xxmdm.setDataVector(d.xsd(st),mcn);
 				}
 				thf.setVisible(true);
 				ff.setEnabled(false);
@@ -457,7 +671,7 @@ public class YS {
 				int r=table.getSelectedRow();
 				String st=table.getValueAt(r,0).toString().trim();
 				String sn=table.getValueAt(r,1).toString().trim();
-				ml.setText(st);
+				xxf_ShowNo.setText(st);
 				ff.setEnabled(false);
 				List<String> ls=d.getcustomerinfo(sn);
 				mct.setText(ls.get(0));lxrt.setText(ls.get(1));lxrtelt.setText(ls.get(2));addrt.setText(ls.get(3));
@@ -473,7 +687,7 @@ public class YS {
 					Double sk=Double.parseDouble(xxtable.getValueAt(i, 8).toString());
 					hj=Double.parseDouble(xxtable.getValueAt(i, 7).toString())+hj-sk;
 				}
-				showhj.setText(String.format("%.2f",hj));
+				xxf_ShowTotal.setText(String.format("%.2f",hj));
 		    	TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 		    	cktablecxh.setPreferredWidth(40);   
 		    	cktablecxh.setMinWidth(40);
@@ -498,6 +712,9 @@ public class YS {
 		    	cktablesl.setPreferredWidth(40);   
 		    	cktablesl.setMinWidth(40);
 		    	cktablesl.setMaxWidth(40);
+		    	if(d.pdj(st).isEmpty()==false){
+		    		xxf_OldSaleReceipt_b.setVisible(true);
+		    	}
 				xxf.setVisible(true);
 			}
 		});
@@ -539,8 +756,10 @@ public class YS {
 		f.setResizable(false);
 		Container fc=f.getContentPane();
 		fc.setLayout(null);
-		f.setBounds(1000,50,320,650);
+		f.setBounds(1000,50,380,670);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		JLabel fhj=new JLabel("");
+		fhj.setBounds(210,605,200,20);
 		String[][] arr=d.ys();
 		String[] cxcn={"客户名称","应收","最后日期"};
 		JScrollPane jsp=new JScrollPane();
@@ -553,11 +772,19 @@ public class YS {
 			}
 		};
 		jtab.setModel(dm);
+		jtab.setRowHeight(20);
 		TableColumn cj=jtab.getColumnModel().getColumn(0);   //设置列宽    
-    	cj.setPreferredWidth(140);   
-    	cj.setMinWidth(140);
-    	cj.setMaxWidth(40);
+    	cj.setPreferredWidth(180);   
+    	cj.setMinWidth(180);
+    	cj.setMaxWidth(180);
 		jtab.setDefaultRenderer(Object.class, tcr);
+		Double fthj=0.0;
+		int fjtabr=jtab.getRowCount();
+		for(int fx=0;fx<fjtabr;fx++){
+			Double t=Double.parseDouble(jtab.getValueAt(fx,1).toString());
+			fthj=t+fthj;
+		}
+		fhj.setText("合计: "+String.format("%.2f",fthj));
 		jtab.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
 				// TODO Auto-generated method stub
@@ -585,6 +812,8 @@ public class YS {
 		    	cktablecxh.setPreferredWidth(180);   
 		    	cktablecxh.setMinWidth(180);
 		    	cktablecxh.setMaxWidth(180);
+		    	xxf_OldSaleReceipt_b.setText("查看原单");
+		    	xxf_OldSaleReceipt_b.setVisible(false);
 				ff.setEnabled(true);
 				xxf.dispose();
 			}
@@ -594,32 +823,129 @@ public class YS {
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode()=='\n'){
-					int sr=table.getSelectedRow();
-					String s=xt.getText().trim();
-					if(s.length()==0){
-						JOptionPane.showMessageDialog(null,"金额为空值");
-					}else{
-						try{
-							Double sk=Double.parseDouble(s);
-							if(sk>0){
-								Double ys=Double.parseDouble(table.getValueAt(sr,4).toString());
-								System.out.println(ys);
-								if(ys-sk<0){       //proceeds greater than receivables
-									
+					if(xxf.isVisible()==true){
+						int sr=xxtable.getSelectedRow();
+						String s=xt.getText().trim();
+						if(s.length()==0){
+							JOptionPane.showMessageDialog(null,"金额为空值");
+						}else{
+							try{
+								Double sk=Double.parseDouble(s);
+								if(sk>0){
+									Double zj=Double.parseDouble(xxtable.getValueAt(sr,7).toString());
+									Double ys=Double.parseDouble(xxtable.getValueAt(sr,8).toString());
+									if(sk>zj-ys){       //proceeds more than receivables
+										d.updateys(xxf_ShowNo.getText(),sr+1,zj,0);
+									}else if(sk<zj-ys){
+										d.updateys(xxf_ShowNo.getText(),sr+1,sk+ys,1);
+									}else if(sk.equals(zj-ys)){
+										d.updateys(xxf_ShowNo.getText(),sr+1,zj,0);
+									}
 								}else{
-									
+									JOptionPane.showMessageDialog(null,"输入为负");
 								}
-							}else{
-								JOptionPane.showMessageDialog(null,"输入为负");
+							}catch(Exception e1){
+								JOptionPane.showMessageDialog(null,"非法输入");
 							}
-						}catch(Exception e1){
-							JOptionPane.showMessageDialog(null,"非法输入");
+							String st=xxf_ShowNo.getText();
+							if(st.substring(0,1).equals("X")){
+								xxmdm.setDataVector(d.wxd(st),mcn);
+							}else{
+								xxmdm.setDataVector(d.xsd(st),mcn);
+							}
+							hj=0.0;
+							for(int i=0;i<xxtable.getRowCount();i++){
+								Double sk=Double.parseDouble(xxtable.getValueAt(i, 8).toString());
+								hj=Double.parseDouble(xxtable.getValueAt(i, 7).toString())+hj-sk;
+							}
+							xxf_ShowTotal.setText(String.format("%.2f",hj));
+					    	TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
+					    	cktablecxh.setPreferredWidth(40);   
+					    	cktablecxh.setMinWidth(40);
+					    	cktablecxh.setMaxWidth(40);
+					    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
+					    	cktableczl.setPreferredWidth(70);   
+					    	cktableczl.setMinWidth(70);
+					    	cktableczl.setMaxWidth(70);
+					    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
+					    	cktableccp.setPreferredWidth(180);   
+					    	cktableccp.setMinWidth(180);
+					    	cktableccp.setMaxWidth(180);
+					    	TableColumn cktablecdw=xxtable.getColumnModel().getColumn(3);   //设置列宽    
+					    	cktablecdw.setPreferredWidth(40);   
+					    	cktablecdw.setMinWidth(40);
+					    	cktablecdw.setMaxWidth(40);
+					    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
+					    	cktablezk.setPreferredWidth(40);   
+					    	cktablezk.setMinWidth(40);
+					    	cktablezk.setMaxWidth(40);
+					    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
+					    	cktablesl.setPreferredWidth(40);   
+					    	cktablesl.setMinWidth(40);
+					    	cktablesl.setMaxWidth(40);
+							xxf.setEnabled(true);
+							xt.setText("");
+							xf.dispose();
 						}
-						String kh=table.getValueAt(sr,1).toString().trim();
-						String[][] xarr=d.xys(kh);
-						xdm.setDataVector(xarr, xcn);
-						xt.setText("");
-						xf.dispose();
+					}else{
+						int sr=table.getSelectedRow();
+						String s=xt.getText().trim();
+						if(s.length()==0){
+							JOptionPane.showMessageDialog(null,"金额为空值");
+						}else{
+							try{
+								Double sk=Double.parseDouble(s);
+								if(sk>0){
+									Double ys=Double.parseDouble(table.getValueAt(sr,4).toString());
+									String dh=table.getValueAt(sr,0).toString();
+									if(sk>ys){       //proceeds more than receivables
+										int j=xxtable.getRowCount();
+										for(int i=0;i<j;i++){
+											Double je=Double.parseDouble(xxtable.getValueAt(i,7).toString());
+											d.updateys(dh,i+1,je,0);
+										}
+									}else if(sk<ys){
+										//System.out.println("<");
+										int j=xxtable.getRowCount();
+										for(int i=0;i<j;i++){
+											Double zje=Double.parseDouble(xxtable.getValueAt(i,7).toString());
+											Double ysk=Double.parseDouble(xxtable.getValueAt(i,8).toString());
+											if(zje>ysk){
+												//System.out.println(i+1);
+												if(sk-(zje-ysk)>=0){
+													d.updateys(dh,i+1,zje,0);
+													sk=sk-(zje-ysk);
+												}else{
+													d.updateys(dh,i+1,sk+ysk,1);
+													break;
+												}
+											}
+										}
+									}else{
+									//	System.out.println("=");
+										int j=xxtable.getRowCount();
+										for(int i=0;i<j;i++){
+											Double je=Double.parseDouble(xxtable.getValueAt(i,7).toString());
+											d.updateys(dh,i+1,je,0);
+										}
+									}
+								}else{
+									JOptionPane.showMessageDialog(null,"输入为负或为零");
+								}
+							}catch(Exception e1){
+								JOptionPane.showMessageDialog(null,"非法输入");
+							}
+							String kh=table.getValueAt(sr,1).toString().trim();
+							String[][] xarr=d.xys(kh);
+							xdm.setDataVector(xarr, xcn);
+							TableColumn cktablecxh=table.getColumnModel().getColumn(1);   //设置列宽    
+					    	cktablecxh.setPreferredWidth(180);   
+					    	cktablecxh.setMinWidth(180);
+					    	cktablecxh.setMaxWidth(180);
+							ff.setEnabled(true);
+							xt.setText("");
+							xf.dispose();
+						}
 					}
 				}
 			}
@@ -631,9 +957,16 @@ public class YS {
 				String[][] arr2=d.ys();
 				dm.setDataVector(arr2,cxcn);
 				TableColumn cj=jtab.getColumnModel().getColumn(0);   //设置列宽    
-		    	cj.setPreferredWidth(140);   
-		    	cj.setMinWidth(140);
-		    	cj.setMaxWidth(40);
+		    	cj.setPreferredWidth(180);   
+		    	cj.setMinWidth(180);
+		    	cj.setMaxWidth(180);
+		    	Double fthj=0.0;
+				int fjtabr=jtab.getRowCount();
+				for(int fx=0;fx<fjtabr;fx++){
+					Double t=Double.parseDouble(jtab.getValueAt(fx,1).toString());
+					fthj=t+fthj;
+				}
+				fhj.setText("合计: "+String.format("%.2f",fthj));
 				f.setEnabled(true);
 				ff.dispose();
 			}
@@ -650,17 +983,24 @@ public class YS {
 		xf.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				ff.setEnabled(true);
-				xf.dispose();
+				if(xxf.isVisible()){
+					xxf.setEnabled(true);
+					xf.dispose();
+				}else{
+					ff.setEnabled(true);
+					xf.dispose();
+				}
+				
 			}
 		});
 		//-------------------------------------------------------------------------------------------------------
 		jsp.setViewportView(jtab);
-		jsp.setBounds(0,0,295,600);
+		jsp.setBounds(0,0,355,600);
 		JPanel jp=new JPanel();
-		jp.setBounds(8,10,295,600);
+		jp.setBounds(8,10,380,640);
 		jp.setLayout(null);
 		jp.add(jsp);
+		jp.add(fhj);
 		fc.add(jp);
 		f.setVisible(true);
 	}

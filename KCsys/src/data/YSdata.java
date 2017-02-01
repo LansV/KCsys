@@ -173,6 +173,56 @@ public class YSdata {
 	   	count=0;
 		return data;
 	}
+	//----------------------------------------------------------------获取原始销售单--------------------------------
+	public String[][] yxsd(String dh){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from XSD where dh='"+dh+"'");
+			while(res.next()){
+				ls.add(res.getString("bh").trim());
+				ls.add(res.getString("xh").trim());
+				ls.add(res.getString("sp").trim());
+				ls.add(res.getString("dw").trim());
+				if(res.getString("zk")==null){
+					ls.add("");
+				}else{
+					ls.add(res.getString("zk").trim());	
+				}
+				ls.add(String.format("%.2f",res.getDouble("dj")));
+				ls.add(res.getString("sl").trim());
+				ls.add(String.format("%.2f",res.getDouble("je")));
+				ls.add("0.00");
+				ls.add(res.getString("bz").trim());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=10;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
 	//----------------------------------------------------------------获取销售单--------------------------------
 	public String[][] xsd(String dh){
 		List<String> ls=new ArrayList<String>();
@@ -201,6 +251,7 @@ public class YSdata {
 				ls.add(String.format("%.2f",res.getDouble("je")));
 				ls.add(String.format("%.2f",res.getDouble("skje")));
 				ls.add(res.getString("bz").trim());
+				
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -282,8 +333,55 @@ public class YSdata {
 	   	count=0;
 		return data;
 	}
+	//==============================================单据是否存在退货=============================================
+	public List<Integer> pdj(String dh){
+		List<Integer> ls=new ArrayList<Integer>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select*from THD where dh='"+dh+"'");
+			while(res.next()){
+				ls.add(res.getInt("bh"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return ls;
+	}
+	//==============================================修改收款状态=============================================
+	public void alterSkstatus(String dh,int bh,int type){
+		try {
+			sql = con.createStatement();
+			sql.execute("update XSD set skstatus="+type+" where dh='"+dh+"' and bh="+bh+"");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+	}
 	//------------------------------------------------------部分退货----------------------------------------
-	public void gth(String dh,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy ){
+	public void gth(String dh,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy,int type ){
 		Date date2=new Date();
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		String time=timeFormat.format(date2);
@@ -292,7 +390,8 @@ public class YSdata {
 		try{
 			sql = con.createStatement();
 			sql.execute("insert into THD values ('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","
-					+ ""+dj+","+sl+","+thje+",'"+yy+"','"+ckd+"','"+time+"')");
+					+ ""+dj+","+sl+","+thje+",'"+yy+"','"+ckd+"','"+time+"',"+type+");"
+					+ "update XSD set skstatus="+type+" where dh='"+dh+"' and bh="+bh+"");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"添加退货数据错误");
 		}finally{
@@ -333,19 +432,15 @@ public class YSdata {
 		}
 	}
 	//---------------------------------------------------更新应收------------------------------------------------
-	public void updateys(String dh,Double ys,int zt){
+	public void updateys(String dh,int bh,Double je,int zt){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			if(zt==0){
-				sql.execute("update YSB set ys="+ys+" where dh like '"+dh+"';update YSB set date='"+ckd+"' where dh like '"+dh+"'"
-						+ "update YSB set zt="+zt+" where dh like '"+dh+"'");
-			}else{
-				sql.execute("update YSB set ys="+ys+" where dh like '"+dh+"';update YSB set date='"+ckd+"' where dh like '"+dh+"'");
-			}
+				sql.execute("update XSD set skje="+je+" where dh='"+dh+"' and bh="+bh+";update XSD set skdate='"+ckd+"' where dh='"+dh+"' and bh="+bh+";"
+						+ "update XSD set skstatus="+zt+" where dh='"+dh+"' and bh="+bh+"");
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"更新应收数据错误");
+			JOptionPane.showMessageDialog(null,"更新收款数据错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){

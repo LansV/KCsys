@@ -21,6 +21,7 @@ public class Printclass {
 	static String khm;
 	static String add;
 	static String js;
+	static String receiptStatus="";
 	static List<Object> kh=new ArrayList<Object>();
 	static List<Object> sp=new ArrayList<Object>();
 	static List<Object> hj=new ArrayList<Object>();
@@ -32,6 +33,9 @@ public class Printclass {
 		tel=kh.get(3).toString().trim();
 		add=kh.get(4).toString().trim();
 		js=kh.get(5).toString().trim();
+		if(kh.size()==7){
+			receiptStatus=kh.get(6).toString().trim();
+		}
 		Date d=new Date();
 		date=String.format("%tF",d);
 	}
@@ -78,14 +82,15 @@ public class Printclass {
 									g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
 									font3=new Font("宋体",Font.PLAIN,10);
 									g2.setFont(font3);
-									g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString("结算:",420,65);
+									g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString(receiptStatus,330,65);
+									g2.drawString("结算:",420,65);
 									g2.drawString("客户:",20,85);g2.drawString("联系人:",240,85);g2.drawString("联系电话:",420,85);
 									g2.drawString("地址:",20,105);
 									g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
 									g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
 									g2.drawString(add,50,105);
 									List<String> ls=new ArrayList<String>();
-									ls.add("序号");ls.add("商品种类");ls.add("商品名称");ls.add("单位");
+									ls.add("序号");ls.add("商品编号");ls.add("商品名称");ls.add("单位");
 									ls.add("折扣");ls.add("单价");ls.add("数量");ls.add("金额");ls.add("备注");
 									int n[]=new int[]{0,2,4,12,2,2,4,2,4,5};
 									int s=0;
@@ -246,14 +251,15 @@ public class Printclass {
 										g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
 										font3=new Font("宋体",Font.PLAIN,10);
 										g2.setFont(font3);
-										g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString("结算:",420,65);
+										g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString(receiptStatus,330,65);
+										g2.drawString("结算:",420,65);
 										g2.drawString("客户:",20,85);g2.drawString("联系人:",240,85);g2.drawString("联系电话:",420,85);
 										g2.drawString("地址:",20,105);
 										//g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
 										//g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
 										//g2.drawString(add,50,105);
 										List<String> ls=new ArrayList<String>();
-										ls.add("序号");ls.add("商品种类");ls.add("商品名称");ls.add("单位");
+										ls.add("序号");ls.add("商品编号");ls.add("商品名称");ls.add("单位");
 										ls.add("折扣");ls.add("单价");ls.add("数量");ls.add("金额");ls.add("备注");
 										int n[]=new int[]{0,2,4,12,2,2,4,2,4,5};
 										int s=0;
@@ -430,14 +436,15 @@ public class Printclass {
 			g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
 			font3=new Font("宋体",Font.PLAIN,10);
 			g2.setFont(font3);
-			g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString("结算:",420,65);
+			g2.drawString("单号:",20,65);g2.drawString("日期:",240,65);g2.drawString(receiptStatus,330,65);
+			g2.drawString("结算:",420,65);
 			g2.drawString("客户:",20,85);g2.drawString("联系人:",240,85);g2.drawString("联系电话:",420,85);
 			g2.drawString("地址:",20,105);
 			g2.drawString(dh,50,65);g2.drawString(date,270,65);g2.drawString(js,445,65);
 			g2.drawString(khm,50,85);g2.drawString(lxr,280,85);g2.drawString(tel,470,85);
 			g2.drawString(add,50,105);
 			List<String> ls=new ArrayList<String>();
-			ls.add("序号");ls.add("商品种类");ls.add("商品名称");ls.add("单位");
+			ls.add("序号");ls.add("商品编号");ls.add("商品名称");ls.add("单位");
 			ls.add("折扣");ls.add("单价");ls.add("数量");ls.add("金额");ls.add("备注");
 			int n[]=new int[]{0,2,4,12,2,2,4,2,4,5};
 			int s=0;
