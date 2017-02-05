@@ -70,15 +70,24 @@ public class QuerySaleAndRepairDate{
 		return ls;
 	}
 	//--------------------------------------------------------获取指定客户应收-----------------------------------
-	public String[][] xys(String s){
+	public String[][] xys(String QueryName,String QueryNo,String QueryDate1,String QueryDate2){
 		List<String> ls=new ArrayList<String>();
+		if(QueryDate1.length()==0){
+			QueryDate1="2000-1-1";
+		}
+		if(QueryDate2.length()==0){
+			Date cDate=new Date();
+			QueryDate2=String.format("%tF",cDate);
+		}
 		try {
 			sql = con.createStatement();
 			res = sql.executeQuery(""
 					+ "select dh,max(khmc) as khmc,SUM(zj) as je,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from"
-					+ "(select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khmc like '%"+s+"%'group by dh "
+					+ "(select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khmc like '%"+QueryName+"%' "
+					+ "and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' group by dh "
 					+ "union "
-					+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc like '%"+s+"%' group by dh) "
+					+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc like '%"+QueryName+"%' "
+					+ "and dh like '%"+QueryNo+"%' and tdate between '"+QueryDate1+"' and '"+QueryDate2+"' group by dh) "
 					+ "temp group by dh");
 			while(res.next()){
 				if(res.getDouble("s")==0){
@@ -98,7 +107,12 @@ public class QuerySaleAndRepairDate{
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+	        String sOut = "";
+	         StackTraceElement[] trace = e.getStackTrace();
+	         for (StackTraceElement s : trace) {
+	             sOut += "\tat " + s + "\r\n";
+	         }
+			JOptionPane.showMessageDialog(null,"获取单据错误\n"+sOut);
 		}finally{
 		   	 try{
 		     	   if(res!=null){

@@ -8,7 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -361,7 +363,7 @@ public class QuerySaleAndRepair {
 			}
 		});
 		//-------------------------------------overview panel-------------------------------------------
-		JFrame qSAR_MainFrame=new JFrame("总览");
+		JFrame qSAR_MainFrame=new JFrame("单据查询");
 		qSAR_MainFrame.setResizable(false);
 		qSAR_MainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		Container qSAR_MainFrame_Content=qSAR_MainFrame.getContentPane();
@@ -389,7 +391,7 @@ public class QuerySaleAndRepair {
 		qSAR_MainTable.getTableHeader().setReorderingAllowed(false);
 	    qSAR_MainTable.setDefaultRenderer(Object.class, tcr);
 		String[] qSAR_MainTable_ColumnName={"单号","名称","总计","已收","应收","最后更新"};
-		DefaultTableModel xdm=new DefaultTableModel(d.xys(""),qSAR_MainTable_ColumnName){
+		DefaultTableModel xdm=new DefaultTableModel(d.xys("","","",""),qSAR_MainTable_ColumnName){
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int column){
 				return false;  //返回不可编辑
@@ -406,7 +408,67 @@ public class QuerySaleAndRepair {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				String QueryName=qSAR_MainFrame_QueryName.getText().trim();
+				String QueryNo=qSAR_MainFrame_QueryNo.getText().trim();
+				String QueryDate1=qSAR_MainFrame_QueryDate1.getText().trim();
+				String QueryDate2=qSAR_MainFrame_QueryDate2.getText().trim();
+				if(QueryDate1.length()==0){
+					QueryDate1="2000-1-1";
+				}
+				if(QueryDate2.length()==0){
+					Date cDate=new Date();
+					QueryDate2=String.format("%tF",cDate);
+				}
+				try{
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+					@SuppressWarnings("unused")
+					Date cDate = sdf.parse(QueryDate1); 
+					@SuppressWarnings("unused")
+					Date xDate = sdf.parse(QueryDate2);
+					xdm.setDataVector(d.xys(QueryName,QueryNo,QueryDate1,QueryDate2),qSAR_MainTable_ColumnName);
+					TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
+			    	cktablecxh.setPreferredWidth(180);   
+			    	cktablecxh.setMinWidth(180);
+			    	cktablecxh.setMaxWidth(180);
+				}catch(Exception e1){
+					JOptionPane.showMessageDialog(null,"日期格式错误");
+				}
+			}
+		});
+		qSAR_MainFrame_QueryName.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
+		qSAR_MainFrame_QueryNo.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
+		qSAR_MainFrame_QueryDate1.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
+		qSAR_MainFrame_QueryDate2.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
 			}
 		});
 		//-------------------------------------退货原因输入监听------------------------------------------
@@ -528,7 +590,7 @@ public class QuerySaleAndRepair {
 									d.alterSkstatus(dh,i+1,3);
 								}
 							}
-							xdm.setDataVector(d.xys(kh),qSAR_MainTable_ColumnName);
+							xdm.setDataVector(d.xys(kh,"","",""),qSAR_MainTable_ColumnName);
 							TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
 					    	cktablecxh.setPreferredWidth(180);   
 					    	cktablecxh.setMinWidth(180);
@@ -759,7 +821,7 @@ public class QuerySaleAndRepair {
 					Double je=Double.parseDouble(st);
 					String bz=hzt.getText().trim();
 					d.whz(dh,kh,je,bz);
-					String[][] xarr=d.xys(kh);
+					String[][] xarr=d.xys(kh,"","","");
 					xdm.setDataVector(xarr, qSAR_MainTable_ColumnName);
 					hzt.setText("");
 					qSAR_MainFrame.setEnabled(true);
@@ -916,7 +978,7 @@ public class QuerySaleAndRepair {
 								JOptionPane.showMessageDialog(null,"非法输入");
 							}
 							String kh=qSAR_MainTable.getValueAt(sr,1).toString().trim();
-							String[][] xarr=d.xys(kh);
+							String[][] xarr=d.xys(kh,"","","");
 							xdm.setDataVector(xarr, qSAR_MainTable_ColumnName);
 							TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
 					    	cktablecxh.setPreferredWidth(180);   

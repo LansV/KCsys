@@ -143,6 +143,16 @@ public class MF {
 		});
 		tjchf.setBounds(20,170,60,30);
 		mfc.add(tjchf);
+		JButton qSAR=new JButton("≤È—Ø");
+		qSAR.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new QuerySaleAndRepair();
+			}
+		});
+		qSAR.setBounds(90,170,60,30);
+		mfc.add(qSAR);
 		mf.setVisible(true);
 	}
 	public static void main(String[] args){
