@@ -17,7 +17,7 @@ public class Dao {
 	 		   System.exit(0);
 	 	   }
 	 	   try{
-	 		   con=DriverManager.getConnection("jdbc:sqlserver://192.168.0.10:1433;DatabaseName=CKsys3","sa","llfaicly1314@^");
+	 		   con=DriverManager.getConnection("jdbc:sqlserver://127.0.0.1:1433;DatabaseName=CKsys3","sa","llfaicly1314@^");
 	 	   }catch(SQLException e){
 	 		   JOptionPane.showMessageDialog(null, "连接数据库失败,请检查数据库路径,核对Sa账户!");
 	 		   System.exit(0);

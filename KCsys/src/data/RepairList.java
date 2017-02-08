@@ -10,7 +10,9 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import test.Printclass;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -597,9 +599,57 @@ public class RepairList{
 				}
 		});
 		mxsb.setBounds(300,560,60,25);
-		JButton RL_MainFrame_LabourB=new JButton("人工费");
-		RL_MainFrame_LabourB.setBounds(450,560,75,25);
-		mfc.add(RL_MainFrame_LabourB);
+		//----------------------------------------------------------------------
+		JFrame rL_LabourFrame=new JFrame("人工费");
+		rL_LabourFrame.setResizable(false);
+		rL_LabourFrame.setBounds(700,150,250,120);
+		Container rL_LabourFrame_Content=rL_LabourFrame.getContentPane();
+		rL_LabourFrame_Content.setLayout(null);
+		JTextField rL_LabourFrame_TextF=new JTextField();
+		rL_LabourFrame_TextF.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				int mr=mtable.getRowCount();
+				if(e.getKeyChar()=='\n'){
+					mdm.addRow(row);
+					mtable.setValueAt(mr+1,mr,0);
+					mtable.setValueAt("",mr,1);
+					mtable.setValueAt("人工费",mr,2);
+					mtable.setValueAt("件",mr,3);
+					mtable.setValueAt("",mr,4);
+					mtable.setValueAt(rL_LabourFrame_TextF.getText().trim(),mr,5);
+					kccount.add(1);
+					mtable.setValueAt("1",mr,6);
+					mf.setEnabled(true);
+					rL_LabourFrame.dispose();
+					spcount.add("人工费");
+					rL_LabourFrame_TextF.setText("");
+				}
+			}
+		});
+		rL_LabourFrame_TextF.setBounds(10,27,120,25);
+		rL_LabourFrame_Content.add(rL_LabourFrame_TextF);
+		JButton rL_LabourFrame_LabourB=new JButton("人工费");
+		rL_LabourFrame_LabourB.setBounds(450,560,75,25);
+		rL_LabourFrame_LabourB.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(spcount.size()==0){
+					rL_LabourFrame.setVisible(true);
+				}else{
+					for(int i=0;i<spcount.size();i++){
+						if(spcount.get(i).equals("人工费")==true){
+							JOptionPane.showMessageDialog(rL_LabourFrame,"请勿重复添加");
+						}else{
+							rL_LabourFrame.setVisible(true);
+						}
+					}
+				}
+			}
+		});
+		mfc.add(rL_LabourFrame_LabourB);
 		mfc.setLayout(null);
 		mfc.add(jtp);
 		mfc.add(mxsb);

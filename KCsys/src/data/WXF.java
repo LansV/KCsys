@@ -438,13 +438,13 @@ public class WXF{
 		});
 		mbutton.setBounds(650,560,60,25);
 		//----------------------------------------------------------------------
-		JFrame rg=new JFrame("人工费");
-		rg.setResizable(false);
-		rg.setBounds(700,150,250,120);
-		Container rgc=rg.getContentPane();
-		rgc.setLayout(null);
-		JTextField rgtx=new JTextField();
-		rgtx.addKeyListener(new KeyAdapter(){
+		JFrame rL_LabourFrame=new JFrame("人工费");
+		rL_LabourFrame.setResizable(false);
+		rL_LabourFrame.setBounds(700,150,250,120);
+		Container rL_LabourFrame_Content=rL_LabourFrame.getContentPane();
+		rL_LabourFrame_Content.setLayout(null);
+		JTextField rL_LabourFrame_TextF=new JTextField();
+		rL_LabourFrame_TextF.addKeyListener(new KeyAdapter(){
 			@Override
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
@@ -456,24 +456,24 @@ public class WXF{
 					mtable.setValueAt("人工费",mr,2);
 					mtable.setValueAt("件",mr,3);
 					mtable.setValueAt("",mr,4);
-					mtable.setValueAt(rgtx.getText().trim(),mr,5);
+					mtable.setValueAt(rL_LabourFrame_TextF.getText().trim(),mr,5);
 					kccount.add(1);
 					mtable.setValueAt("1",mr,6);
 					mf.setEnabled(true);
-					rg.dispose();
+					rL_LabourFrame.dispose();
 					spcount.add("人工费");
 				}
 			}
 		});
-		rgtx.setBounds(10,27,120,25);
-		rgc.add(rgtx);
+		rL_LabourFrame_TextF.setBounds(10,27,120,25);
+		rL_LabourFrame_Content.add(rL_LabourFrame_TextF);
 		JButton tjrg=new JButton("人工");
 		tjrg.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				mf.setEnabled(false);
-				rg.setVisible(true);
+				rL_LabourFrame.setVisible(true);
 			}
 		});
 		tjrg.setBounds(500,560,60,25);
@@ -597,11 +597,11 @@ public class WXF{
 			}
 		});
 		//------------------------------------------------------------------
-		rg.addWindowListener(new WindowAdapter(){
+		rL_LabourFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
 				mf.setEnabled(true);
-				rg.dispose();
+				rL_LabourFrame.dispose();
 			}
 		});
 		//--------------------------------------客户选择监听-------------------------------------------------
