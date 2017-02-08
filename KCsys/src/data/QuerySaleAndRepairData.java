@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-public class QuerySaleAndRepairDate{
+public class QuerySaleAndRepairData{
 	Statement sql=null;
    	ResultSet res=null;
    	Dao d=new Dao();

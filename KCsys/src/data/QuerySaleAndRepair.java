@@ -29,7 +29,7 @@ import javax.swing.table.TableColumn;
 import test.Printclass;
 
 public class QuerySaleAndRepair {
-	QuerySaleAndRepairDate d=new QuerySaleAndRepairDate();
+	QuerySaleAndRepairData d=new QuerySaleAndRepairData();
 	wData w=new wData();
 	Double hj;
 	int tabler;
