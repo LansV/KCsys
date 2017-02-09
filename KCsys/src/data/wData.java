@@ -617,15 +617,14 @@ public class wData {
 			sql = con.createStatement();
 			if(qx.length()>1){
 				String[] st=qx.split(",");
-				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
+				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
 						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','admin','"+ckd+"','"+time+"','"+st[1]+"')");
 			}else{
 				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
 						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','admin','"+ckd+"','"+time+"','NULL')");
 			}
-			
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"¿â´æ´íÎó");
+			JOptionPane.showMessageDialog(null,"³ö¿â´íÎó");
 		}finally{
 		   	 try{
 		     	   if(res!=null){
@@ -674,17 +673,16 @@ public class wData {
 		}
 	}
 	//-------------------------------------------------Ð´ÈëÎ¬ÐÞ---------------------------------------------
-	public Boolean wx(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz) {
-		Boolean b=true;
+	public void wx(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
+			Double dj, int sl, Double je, String bz,int skfs) {
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into WXB values"
-					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"')");
+			sql.execute("insert into WXD values"
+					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
+					+ ","+skfs+",0,'"+ckd+"',1)");
 		}catch(Exception e){
-			b=false;
 			JOptionPane.showMessageDialog(null,"´íÎó");
 		}finally{
 		   	 try{
@@ -698,7 +696,6 @@ public class wData {
 		     		 JOptionPane.showMessageDialog(null,"¶Ï¿ª´íÎó");
 		     	 }
 		}
-		return b;
 	}
 	//-------------------------------------------------Ð´ÈëÏúÊÛµ¥---------------------------------------------
 	public Boolean wxs(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,

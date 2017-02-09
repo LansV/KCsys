@@ -172,36 +172,36 @@ public class YS {
 		JButton xxf_OldSaleReceipt_b=new JButton("查看原单");
 		xxf_OldSaleReceipt_b.setVisible(false);
 		xxf_OldSaleReceipt_b.setBounds(380,60,90,25);
-		xxf_OldSaleReceipt_b.addActionListener(new ActionListener(){
+		xxf_OldSaleReceipt_b.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")){
+				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")) {
 					sk.setEnabled(false);
 					th.setEnabled(false);
 					xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
-			    	cktablecxh.setPreferredWidth(40);   
+			    	cktablecxh.setPreferredWidth(40);
 			    	cktablecxh.setMinWidth(40);
 			    	cktablecxh.setMaxWidth(40);
 			    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
-			    	cktableczl.setPreferredWidth(70);   
+			    	cktableczl.setPreferredWidth(70);
 			    	cktableczl.setMinWidth(70);
 			    	cktableczl.setMaxWidth(70);
 			    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
-			    	cktableccp.setPreferredWidth(180);   
+			    	cktableccp.setPreferredWidth(180);  
 			    	cktableccp.setMinWidth(180);
 			    	cktableccp.setMaxWidth(180);
 			    	TableColumn cktablecdw=xxtable.getColumnModel().getColumn(3);   //设置列宽    
-			    	cktablecdw.setPreferredWidth(40);   
+			    	cktablecdw.setPreferredWidth(40); 
 			    	cktablecdw.setMinWidth(40);
 			    	cktablecdw.setMaxWidth(40);
 			    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
-			    	cktablezk.setPreferredWidth(40);   
+			    	cktablezk.setPreferredWidth(40);
 			    	cktablezk.setMinWidth(40);
 			    	cktablezk.setMaxWidth(40);
 			    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
-			    	cktablesl.setPreferredWidth(40);   
+			    	cktablesl.setPreferredWidth(40);
 			    	cktablesl.setMinWidth(40);
 			    	cktablesl.setMaxWidth(40);
 			    	int row=xxtable.getRowCount();
@@ -527,8 +527,8 @@ public class YS {
 								int r=xxtable.getSelectedRow();
 								int yysl=Integer.parseInt(xxtable.getValueAt(r,6).toString().trim());
 								if(thsl<=yysl){
-									String yy=thtyz.getText().trim(); //退货原因
-									String dh=xxf_ShowNo.getText().trim(); //获取单号
+									String yy=thtyz.getText().trim();    //退货原因
+									String dh=xxf_ShowNo.getText().trim();   //获取单号
 									String kh=mct.getText().trim();   //获取客户名称
 									int bh=Integer.parseInt(xxtable.getValueAt(r,0).toString().trim());
 									String xh=xxtable.getValueAt(r,1).toString().trim();   //get product model

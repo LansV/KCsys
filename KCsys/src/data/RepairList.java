@@ -10,9 +10,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-
 import test.Printclass;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -531,6 +529,10 @@ public class RepairList{
 						listkh.add(jc.getSelectedItem());
 						if(mct.isEditable()==true){
 							w.wkh(mc,lxr,lxtel,addr);
+							mct.setEditable(false);
+							lxrt.setEditable(false);
+							lxrtelt.setEditable(false);
+							addrt.setEditable(false);
 						}
 							for(int i=0;i<cr;i++){
 								String xhs=mtable.getValueAt(i,0).toString().trim();
@@ -555,26 +557,28 @@ public class RepairList{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex());
-								w.wkcout(xh,sp,sl,"1,"+dh);
-								String[][] sparr=gd.spcxdj(spjt.getText().trim());
-								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
-									private static final long serialVersionUID = 1L;
-									public boolean isCellEditable(int row,int colunm){
-										return false;
-									}
-								};
-								spdm.setColumnIdentifiers(spcn);
-								sptable.setModel(spdm);
-								TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
-						    	sptablecl1.setPreferredWidth(80);   
-						    	sptablecl1.setMinWidth(80);
-						    	sptablecl1.setMaxWidth(80);
-						    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
-						    	sptablecl.setPreferredWidth(180);   
-						    	sptablecl.setMinWidth(180);
-						    	sptablecl.setMaxWidth(180);
+								w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex());
+								if(sp.equals("人工费")==false){
+									w.wkcout(xh,sp,sl,"2,"+dh);
+								}
 							}
+							String[][] sparr=gd.spcxdj(spjt.getText().trim());
+							DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
+								private static final long serialVersionUID = 1L;
+								public boolean isCellEditable(int row,int colunm){
+									return false;
+								}
+							};
+							spdm.setColumnIdentifiers(spcn);
+							sptable.setModel(spdm);
+							TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
+					    	sptablecl1.setPreferredWidth(80);   
+					    	sptablecl1.setMinWidth(80);
+					    	sptablecl1.setMaxWidth(80);
+					    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
+					    	sptablecl.setPreferredWidth(180);   
+					    	sptablecl.setMinWidth(180);
+					    	sptablecl.setMaxWidth(180);
 							w.wys(dh,mc,hj);
 							listhj.add(changenum(hj));
 							listhj.add(slhj);
@@ -612,19 +616,28 @@ public class RepairList{
 				// TODO Auto-generated method stub
 				int mr=mtable.getRowCount();
 				if(e.getKeyChar()=='\n'){
-					mdm.addRow(row);
-					mtable.setValueAt(mr+1,mr,0);
-					mtable.setValueAt("",mr,1);
-					mtable.setValueAt("人工费",mr,2);
-					mtable.setValueAt("件",mr,3);
-					mtable.setValueAt("",mr,4);
-					mtable.setValueAt(rL_LabourFrame_TextF.getText().trim(),mr,5);
-					kccount.add(1);
-					mtable.setValueAt("1",mr,6);
-					mf.setEnabled(true);
-					rL_LabourFrame.dispose();
-					spcount.add("人工费");
-					rL_LabourFrame_TextF.setText("");
+					try{
+						Double LF_labour=Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
+						if(LF_labour<=0){
+							JOptionPane.showMessageDialog(null,"人工费必须大于零");
+						}else{
+							mdm.addRow(row);
+							mtable.setValueAt(mr+1,mr,0);
+							mtable.setValueAt("",mr,1);
+							mtable.setValueAt("人工费",mr,2);
+							mtable.setValueAt("件",mr,3);
+							mtable.setValueAt("",mr,4);
+							mtable.setValueAt(String.format("%.2f",LF_labour),mr,5);
+							kccount.add(1);
+							mtable.setValueAt("1",mr,6);
+							mf.setEnabled(true);
+							rL_LabourFrame.dispose();
+							spcount.add("人工费");
+							rL_LabourFrame_TextF.setText("");
+						}
+					}catch(Exception e1){
+						JOptionPane.showMessageDialog(null,"请输入数字");
+					}
 				}
 			}
 		});

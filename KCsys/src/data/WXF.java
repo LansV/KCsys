@@ -538,7 +538,7 @@ public class WXF{
 								}else{
 									w.wkcout(xh,sp,sl,"2,"+dh);   //ø‚¥Êºı…Ÿ
 								}
-								w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz); // –¥»ÎŒ¨–ﬁ±Ì
+								//w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz); // –¥»ÎŒ¨–ﬁ±Ì
 								String[][] sparr=gd.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 									private static final long serialVersionUID = 1L;

@@ -766,7 +766,7 @@ public class getData {
 		String st=null;
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select max(dh) as dh from WXB where dh like '"+s+"%'");
+			res = sql.executeQuery("select max(dh) as dh from WXD where dh like '"+s+"%'");
 				while(res.next()){
 					st=res.getString("dh");
 					if(st==null){

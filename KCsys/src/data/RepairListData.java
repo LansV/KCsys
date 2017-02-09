@@ -114,7 +114,7 @@ public class RepairListData {
 		String st=null;
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select max(dh) as dh from WXB where dh like '"+s+"%'");
+			res = sql.executeQuery("select max(dh) as dh from WXD where dh like '"+s+"%'");
 				while(res.next()){
 					st=res.getString("dh");
 					if(st==null){
@@ -136,7 +136,12 @@ public class RepairListData {
 				}
  		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null,"¥ÌŒÛ");
+ 		   String sOut = "";
+	         StackTraceElement[] trace = e.getStackTrace();
+	         for (StackTraceElement s1 : trace) {
+	             sOut += "\tat " + s1 + "\r\n";
+	         }
+			JOptionPane.showMessageDialog(null,"ªÒ»°Œ¨–ﬁµ•¥ÌŒÛ\n"+sOut);
 		}finally{
 		   	 try{
 		     	   if(res!=null){

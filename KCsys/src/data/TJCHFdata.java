@@ -31,7 +31,7 @@ public class TJCHFdata {
 				res = sql.executeQuery("select dh,xh,sp,dw,sl,KC_jhj,dj,zk,date from XSD,KC where xh=KC_sbh "
 						+ "and date between '"+qdate+"' and '"+edate+"' and sp like '%"+sp+"%' "
 						+ "union all "
-						+ "select dh,xh,sp,dw,sl,KC_jhj,dj,zk,date from WXB,KC where xh=KC_sbh "
+						+ "select dh,xh,sp,dw,sl,KC_jhj,dj,zk,date from WXD,KC where xh=KC_sbh "
 						+ "and date between '"+qdate+"' and '"+edate+"' and sp like '%"+sp+"%' "
 						+ "union all "
 						+ "select qx,bh,sp,KC_dw,sl,KC_jhj,NULL,NULL,jldate from KCJL,KC where Stata=0 and qx!=1 "
@@ -43,7 +43,7 @@ public class TJCHFdata {
 						+ "and date between '"+qdate+"' and '"+edate+"' and sp like '%"+sp+"%' order by dh");
 	
 			}else if(qx.equals("Î¬ÐÞ")){
-				res = sql.executeQuery("select dh,xh,sp,dw,sl,KC_jhj,dj,zk,date from WXB,KC where xh=KC_sbh "
+				res = sql.executeQuery("select dh,xh,sp,dw,sl,KC_jhj,dj,zk,date from WXD,KC where xh=KC_sbh "
 						+ "and date between '"+qdate+"' and '"+edate+"' and sp like '%"+sp+"%' order by dh");
 			}else if(qx.equals("×é×°")){
 				res = sql.executeQuery("select qx as dh,bh as xh,sp,KC_dw as dw,sl,KC_jhj,NULL as dj,NULL as zk,jldate as date from KCJL,KC where Stata=0 and qx!=1 "
