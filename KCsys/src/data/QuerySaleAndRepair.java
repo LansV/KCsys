@@ -27,7 +27,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import test.Printclass;
-
 public class QuerySaleAndRepair {
 	QuerySaleAndRepairData d=new QuerySaleAndRepairData();
 	wData w=new wData();
@@ -181,7 +180,11 @@ public class QuerySaleAndRepair {
 				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")){
 					sk.setEnabled(false);
 					th.setEnabled(false);
-					xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
+					if(xxf_ShowNo.getText().trim().substring(0,1).equals("X")){
+						xxmdm.setDataVector(d.ywxd(xxf_ShowNo.getText().trim()),mcn);
+					}else{
+						xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()),mcn);
+					}
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 			    	cktablecxh.setPreferredWidth(40);   
 			    	cktablecxh.setMinWidth(40);
@@ -217,7 +220,11 @@ public class QuerySaleAndRepair {
 				}else{
 					sk.setEnabled(true);
 					th.setEnabled(true);
-					xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()), mcn);
+					if(xxf_ShowNo.getText().trim().substring(0,1).equals("X")){
+						xxmdm.setDataVector(d.wxd(xxf_ShowNo.getText().trim()),mcn);
+					}else{
+						xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()),mcn);
+					}
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 			    	cktablecxh.setPreferredWidth(40);   
 			    	cktablecxh.setMinWidth(40);
@@ -421,11 +428,9 @@ public class QuerySaleAndRepair {
 				}
 				try{
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
-					@SuppressWarnings("unused")
 					Date cDate = sdf.parse(QueryDate1); 
-					@SuppressWarnings("unused")
 					Date xDate = sdf.parse(QueryDate2);
-					xdm.setDataVector(d.xys(QueryName,QueryNo,QueryDate1,QueryDate2),qSAR_MainTable_ColumnName);
+					xdm.setDataVector(d.xys(QueryName,QueryNo,String.format("%tF",cDate),String.format("%tF",xDate)),qSAR_MainTable_ColumnName);
 					TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
 			    	cktablecxh.setPreferredWidth(180);   
 			    	cktablecxh.setMinWidth(180);

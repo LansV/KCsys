@@ -82,20 +82,35 @@ public class QuerySaleAndRepairData{
 		try {
 			sql = con.createStatement();
 			res = sql.executeQuery(""
-					+ "select dh,max(khmc) as khmc,SUM(zj) as je,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from"
-					+ "(select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khmc like '%"+QueryName+"%' "
-					+ "and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' group by dh "
-					+ "union "
-					+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc like '%"+QueryName+"%' "
-					+ "and dh like '%"+QueryNo+"%' and tdate between '"+QueryDate1+"' and '"+QueryDate2+"' group by dh) "
+					+ "select dh,max(khmc) as khmc,sum(zj) as zj,sum(skje) as skje,Sum(zj)-SUM(skje) as s,max(skdate) as skdate from"
+					+ "("
+					+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD "
+					+ "where khmc like '%"+QueryName+"%' and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' "
+					+ " group by dh"
+					+ " union "
+					+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from WXD "
+					+ "where khmc like '%"+QueryName+"%' and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' "
+					+ " group by dh"
+					+ " union "
+					+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD "
+					+ "where khmc like '%"+QueryName+"%' and dh like '%"+QueryNo+"%' and tdate between '"+QueryDate1+"' and '"+QueryDate2+"'"
+					+ " group by dh"
+					+ ") "
 					+ "temp group by dh");
+			/*""
+			+ "select dh,max(khmc) as khmc,SUM(zj) as je,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from"
+			+ "("
+			+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khmc like '%"+QueryName+"%' "
+			+ "and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' group by dh "
+			+ "union "
+			+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc like '%"+QueryName+"%' "
+			+ "and dh like '%"+QueryNo+"%' and tdate between '"+QueryDate1+"' and '"+QueryDate2+"' group by dh"
+			+ ") "
+			+ "temp group by dh"*/
 			while(res.next()){
-				if(res.getDouble("s")==0){
-					
-				}else{
 					ls.add(res.getString("dh").trim());
 					ls.add(res.getString("khmc").trim());
-					ls.add(String.format("%.2f",res.getDouble("je")));
+					ls.add(String.format("%.2f",res.getDouble("zj")));
 					ls.add(String.format("%.2f",res.getDouble("skje")));
 					ls.add(String.format("%.2f",res.getDouble("s")));
 					if(res.getString("skdate")==null){
@@ -103,7 +118,6 @@ public class QuerySaleAndRepairData{
 					}else{
 						ls.add(res.getString("skdate").trim());
 					}
-				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -138,12 +152,12 @@ public class QuerySaleAndRepairData{
 	   	count=0;
 		return data;
 	}
-	//----------------------------------------------------------------获取维修单--------------------------------
-	public String[][] wxd(String dh){
+	//----------------------------------------------------------------获取原始销售单--------------------------------
+	public String[][] ywxd(String dh){
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,bz from WXB where dh = '"+dh+"' and sl !=0 order by bh");
+			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from WXD where dh='"+dh+"'");
 			while(res.next()){
 				ls.add(res.getString("bh").trim());
 				ls.add(res.getString("xh").trim());
@@ -157,6 +171,7 @@ public class QuerySaleAndRepairData{
 				ls.add(String.format("%.2f",res.getDouble("dj")));
 				ls.add(res.getString("sl").trim());
 				ls.add(String.format("%.2f",res.getDouble("je")));
+				ls.add("0.00");
 				ls.add(res.getString("bz").trim());
 			}
 		} catch (SQLException e) {
@@ -174,7 +189,64 @@ public class QuerySaleAndRepairData{
 		     		 
 		     	 }
 		}
-		int xl=9;
+		int xl=10;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
+	//----------------------------------------------------------------获取维修单--------------------------------
+	public String[][] wxd(String dh){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select  max(bh) as bh,xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,"
+					+ "max(dj) as dj,sum(sl) as sl,sum(je) as je,sum(skje) as skje,MAX(bz) as bz from "
+					+ "("
+					+ "select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from WXD where dh='"+dh+"' "
+					+ "union "
+					+ "select max(bh),xh,max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz "
+					+ "from THD where dh='"+dh+"' group by xh"
+					+ ") temp group by xh order by bh");
+			while(res.next()){
+				ls.add(res.getString("bh").trim());
+				ls.add(res.getString("xh").trim());
+				ls.add(res.getString("sp").trim());
+				ls.add(res.getString("dw").trim());
+				if(res.getString("zk")==null){
+					ls.add("");
+				}else{
+					ls.add(res.getString("zk").trim());	
+				}
+				ls.add(String.format("%.2f",res.getDouble("dj")));
+				ls.add(res.getString("sl").trim());
+				ls.add(String.format("%.2f",res.getDouble("je")));
+				ls.add(String.format("%.2f",res.getDouble("skje")));
+				ls.add(res.getString("bz").trim());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=10;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //行

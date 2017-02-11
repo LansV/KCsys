@@ -179,7 +179,12 @@ public class YS {
 				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")) {
 					sk.setEnabled(false);
 					th.setEnabled(false);
-					xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
+					if(xxf_ShowNo.getText().trim().substring(0,1).equals("X")){
+						xxmdm.setDataVector(d.ywxd(xxf_ShowNo.getText().trim()),mcn);
+					}else{
+						xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()),mcn);
+					}
+					//xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 			    	cktablecxh.setPreferredWidth(40);
 			    	cktablecxh.setMinWidth(40);
@@ -215,7 +220,12 @@ public class YS {
 				}else{
 					sk.setEnabled(true);
 					th.setEnabled(true);
-					xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()), mcn);
+					if(xxf_ShowNo.getText().trim().substring(0,1).equals("X")){
+						xxmdm.setDataVector(d.wxd(xxf_ShowNo.getText().trim()),mcn);
+					}else{
+						xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()),mcn);
+					}
+				//	xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()), mcn);
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 			    	cktablecxh.setPreferredWidth(40);   
 			    	cktablecxh.setMinWidth(40);
@@ -383,7 +393,8 @@ public class YS {
 		thtyz.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				if(e.getKeyCode()=='\n'){
-					if(thtsl.isEnabled()){   // some product return    
+					if(thtsl.isEnabled()){   // some product return 
+						int r=xxtable.getSelectedRow();
 						if(thtyz.getText().trim().length()==0){
 							JOptionPane.showMessageDialog(null,"原因为空");
 						}else{
@@ -393,7 +404,6 @@ public class YS {
 							}else{
 								try{
 									int thsl=Integer.parseInt(sth);
-									int r=xxtable.getSelectedRow();
 									int yysl=Integer.parseInt(xxtable.getValueAt(r,6).toString().trim());
 									if(thsl<=yysl){
 										String yy=thtyz.getText().trim(); //退货原因
@@ -414,7 +424,9 @@ public class YS {
 											thje=dj*thsl*zk/10;
 										}
 										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2);
-										w.wkcin(xh,sp,thsl,kh+"退货");
+										if(sp.equals("人工费")==false){
+											w.wkcin(xh,sp,thsl,kh+"退货");
+										}
 										if(dh.substring(0,1).equals("X")){
 											xxmdm.setDataVector(d.wxd(dh),mcn);
 										}else{
@@ -545,7 +557,9 @@ public class YS {
 										thje=dj*thsl*zk/10;
 									}
 									d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2);
-									w.wkcin(xh,sp,thsl,kh+"退货");
+									if(sp.equals("人工费")==false){
+										w.wkcin(xh,sp,thsl,kh+"退货");
+									}
 									if(dh.substring(0,1).equals("X")){
 										xxmdm.setDataVector(d.wxd(dh),mcn);
 									}else{

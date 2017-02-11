@@ -185,6 +185,56 @@ public class YSdata {
 		return data;
 	}
 	//----------------------------------------------------------------获取原始销售单--------------------------------
+	public String[][] ywxd(String dh){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from WXD where dh='"+dh+"'");
+			while(res.next()){
+				ls.add(res.getString("bh").trim());
+				ls.add(res.getString("xh").trim());
+				ls.add(res.getString("sp").trim());
+				ls.add(res.getString("dw").trim());
+				if(res.getString("zk")==null){
+					ls.add("");
+				}else{
+					ls.add(res.getString("zk").trim());	
+				}
+				ls.add(String.format("%.2f",res.getDouble("dj")));
+				ls.add(res.getString("sl").trim());
+				ls.add(String.format("%.2f",res.getDouble("je")));
+				ls.add("0.00");
+				ls.add(res.getString("bz").trim());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=10;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
+	//----------------------------------------------------------------获取原始销售单--------------------------------
 	public String[][] yxsd(String dh){
 		List<String> ls=new ArrayList<String>();
 		try {
