@@ -23,6 +23,7 @@ public class Login extends JFrame{
      public Login(){
        Dao d=new Dao();
        Connection con=d.getcon();
+       setResizable(false);
   	   setLayout(null);
 	   setBounds(100,100,300,200);
 	   Container c=getContentPane();
