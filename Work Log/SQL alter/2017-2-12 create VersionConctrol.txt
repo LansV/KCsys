@@ -1,1 +1,1 @@
-create table VersionControl (CVersion char(255))
+create table VersionControl (CVersion varchar(255))

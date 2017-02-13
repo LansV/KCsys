@@ -1,7 +1,9 @@
 package order;
 import java.awt.Container;
 import java.awt.GraphicsEnvironment;
+import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -9,11 +11,11 @@ import java.awt.event.KeyEvent;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.URL;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -80,6 +82,9 @@ public class Login extends JFrame{
 	    		}catch(SocketException e){
 	    			PcMac="";
 	    		}
+	    	   URL url = this.getClass().getResource("/order/Image/TLogo.png");
+	    	   Image img = Toolkit.getDefaultToolkit().getImage(url);
+	    	   this.setIconImage(img);
     		   setResizable(false);
     	  	   setLayout(null);
     		   setBounds(100,100,300,200);
@@ -88,22 +93,22 @@ public class Login extends JFrame{
     		   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     		   Container c=getContentPane();
     		   setTitle("用户登录");
-    		   JLabel JL_user=new JLabel("用户：");
-    		   JL_user.setBounds(40,20,40,20);
+    		   JLabel JL_user=new JLabel("账号：");
+    		   JL_user.setBounds(50,20,40,20);
     		   JLabel JL_pass=new JLabel("密码：");
-    		   JL_pass.setBounds(40,55,40,20);
+    		   JL_pass.setBounds(50,65,40,20);
     		   JTextField JT_user=new JTextField();
-    		   JT_user.setBounds(85,20,120,20);
+    		   JT_user.setBounds(95,20,140,24);
     		   JPasswordField JT_pass=new JPasswordField();
-    		   JT_pass.setBounds(85,55,120,20);
+    		   JT_pass.setBounds(95,65,140,24);
     		   JButton JB_login=new JButton("登陆");
-    		   JB_login.setBounds(40,120,60,25);
+    		   JB_login.setBounds(50,120,60,25);
     		   JB_login.addActionListener(new ActionListener(){
     			@Override
     			public void actionPerformed(ActionEvent e) {
     				// TODO Auto-generated method stub
     				String user=JT_user.getText().trim();
-    				String pass=new String(JT_pass.getPassword()).trim();
+    				String pass=new String(JT_pass.getPassword());
     				try{
     					if(user.length()==0 || pass.length()==0){
     						if(user.length()==0&&pass.length()==0){
@@ -126,8 +131,11 @@ public class Login extends JFrame{
     						if(res.next()){
     							String xuser=res.getString("username").trim();
     							String xpass=res.getString("pass").trim();
+    							@SuppressWarnings("unused")
+								int  id=res.getInt("id");
     							if(user.equals(xuser)&&pass.equals(xpass)){
     								dispose();
+    								new MainFrame();
     							}else{
     								JOptionPane.showMessageDialog(null, "用户名或密码错误！");
     								JT_pass.setText("");
@@ -160,7 +168,7 @@ public class Login extends JFrame{
     				System.exit(0);
     			}
     		   });
-    		   JB_exit.setBounds(200,120,60,25);
+    		   JB_exit.setBounds(180,120,60,25);
     		   c.add(JB_exit);
     		   c.add(JB_login);
     		   c.add(JT_pass);
@@ -169,7 +177,7 @@ public class Login extends JFrame{
     		   c.add(JL_user);
     		   setVisible(true);
     	 }else{
-    		JOptionPane.showMessageDialog(null,"\t版本过低！\n请联系天澜公司\n获取最新版本后重试"); 
+    		JOptionPane.showMessageDialog(null,"\t当前 [ "+Version+ " ] 版本过低！\n请联系天澜公司\n获取最新版本后重试"); 
     		System.exit(0);
     	 }
      }
