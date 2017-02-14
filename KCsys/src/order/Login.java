@@ -31,6 +31,8 @@ public class Login extends JFrame{
 	int qx;
 	static String Version="V1.170212";
 	String UserName;
+	String PcName=null;
+	String PcMac=null;
 	boolean EqualsVersion=false;
      public Login(){
     	 Dao d=new Dao();
@@ -48,8 +50,7 @@ public class Login extends JFrame{
     	 }
     	 if(Version.equals(EqualStr)==true){
     		 InetAddress ia = null;
-    		 String PcName=null;
-    		 String PcMac=null;
+    		
 	    		try {
 					ia = InetAddress.getLocalHost();
 					String n=ia.toString();
@@ -131,11 +132,11 @@ public class Login extends JFrame{
     						if(res.next()){
     							String xuser=res.getString("username").trim();
     							String xpass=res.getString("pass").trim();
-    							@SuppressWarnings("unused")
 								int  id=res.getInt("id");
     							if(user.equals(xuser)&&pass.equals(xpass)){
     								dispose();
-    								new MainFrame();
+    								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
+    								new MainFrame(id,xuser);
     							}else{
     								JOptionPane.showMessageDialog(null, "用户名或密码错误！");
     								JT_pass.setText("");

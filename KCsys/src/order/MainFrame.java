@@ -13,9 +13,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class MainFrame {
-	public MainFrame(){
+	public MainFrame(int id,String user){
 		//----------------------------------创建主面板---------------------------------------------
 		JFrame MainFrame=new JFrame();
+		MainFrame.setAlwaysOnTop(true);
 		MainFrame.setResizable(false);
 		MainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Image img = null;
@@ -81,6 +82,6 @@ public class MainFrame {
 		MainFrame.setVisible(true);
 	}
 	public static void main(String[] args){
-		new MainFrame();
+		new MainFrame(1,"test");
 	}
 }

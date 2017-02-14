@@ -170,6 +170,7 @@ public class XSF{
 		row[8]="";
 		//--------------------------------商品数量------------------------------------------------------
 		JFrame spsl=new JFrame("填写数量");
+		spsl.setAlwaysOnTop(true);
 		spsl.setResizable(false);
 		Container spslc=spsl.getContentPane();
 		spslc.setLayout(null);
@@ -183,9 +184,10 @@ public class XSF{
 		spslc.add(sptx);
 		spslc.add(splb);
 		//------------------------------------商品选择面板---------------------------------------------------
-		JFrame sp=new JFrame("商品");
-		sp.setResizable(false);
-		Container spc=sp.getContentPane();
+		JFrame spFrame=new JFrame("商品");
+		spFrame.setAlwaysOnTop(true);
+		spFrame.setResizable(false);
+		Container spc=spFrame.getContentPane();
 		spc.setLayout(null);
 		JTextField spjt=new JTextField();
 		spjt.setBounds(20,10,120,25);
@@ -204,14 +206,15 @@ public class XSF{
 						}
 					}
 					if(sp==false){
-						JOptionPane.showMessageDialog(null,"已添加商品");
+						JOptionPane.showMessageDialog(spFrame,"已添加商品");
 					}else{
 						String s=sptable.getValueAt(spr,4).toString();
 						int i=Integer.parseInt(s);
 						if(i==0){
-							JOptionPane.showMessageDialog(null,"库存为零");
+							JOptionPane.showMessageDialog(spFrame,"库存为零");
 						}else{
 							sptx.setText("");
+							spFrame.setEnabled(false);
 							spsl.setVisible(true);
 							splb.setText(sptable.getValueAt(spr,1).toString().trim());
 						}
@@ -276,8 +279,8 @@ public class XSF{
 		spj.add(spjs);
 		spc.add(spj);
 		spc.add(spjt);
-		sp.setBounds(760,10,500,650);
-		sp.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		spFrame.setBounds(760,10,500,650);
+		spFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//------------------------------------主表模型监听-------------------------------------------------
 		mdm.addTableModelListener(new TableModelListener(){
 			@Override
@@ -357,10 +360,10 @@ public class XSF{
 							String skc=sptable.getValueAt(spr,4).toString().trim();
 							int kcsl=Integer.parseInt(skc);
 								if(pdnum>kcsl){
-									JOptionPane.showMessageDialog(null, "超出库存");
+									JOptionPane.showMessageDialog(spsl, "超出库存");
 								}else{
 									if(pdnum==0){
-										JOptionPane.showMessageDialog(null, "不能为0");
+										JOptionPane.showMessageDialog(spsl, "不能为0");
 									}else{
 										if(b==true){
 											mdm.addRow(row);
@@ -372,13 +375,14 @@ public class XSF{
 											mtable.setValueAt(sptable.getValueAt(spr,3),mr,5);
 											kccount.add(kcsl);
 											mtable.setValueAt(s,mr,6);
+											spFrame.setEnabled(true);
 											spsl.dispose();
 											spcount.add(sptable.getValueAt(spr,1).toString().trim());
 										}
 									}
 							}
 						}catch(Exception e1){
-							JOptionPane.showMessageDialog(null,"请填写数字");
+							JOptionPane.showMessageDialog(spsl,"请填写数字");
 							sptx.setText("");
 						}
 					}
@@ -386,9 +390,23 @@ public class XSF{
 			}
 		});
 		spsl.setBounds(700,150,250,150);
-		spsl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		spsl.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				spFrame.setEnabled(true);
+				spsl.dispose();
+			}
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				spFrame.setEnabled(true);
+				spsl.dispose();
+			}
+		});
 		//------------------------------------选择客户面板-------------------------------------------------
 		JFrame khf=new JFrame("选择客户");
+		khf.setAlwaysOnTop(true);
 		khf.setResizable(false);
 		Container khfc=khf.getContentPane();
 		khfc.setLayout(null);
@@ -440,7 +458,8 @@ public class XSF{
 		cxjp.add(cxjsp);
 		khfc.add(cxjp);
 		//-----------------------------------------主面板----------------------------------------------------
-		JFrame mf=new JFrame("销售");
+		JFrame mf=new JFrame("订单提交");
+		mf.setAlwaysOnTop(true);
 		mf.setResizable(false);
 		Container mfc=mf.getContentPane();
 		JComboBox<String> jc=new JComboBox<String>();
@@ -489,17 +508,17 @@ public class XSF{
 		JLabel ml=new JLabel();
 		ml.setBounds(20,560,80,25);
 		jtp.setBounds(0,0,750,90);
-		JButton mbutton=new JButton("添加");
+		JButton mbutton=new JButton("商品");
 		mbutton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				sp.setVisible(true);
+				spFrame.setVisible(true);
 			}
 		});
 		mbutton.setBounds(670,560,60,25);
 		showhj.setBounds(600,560,60,25);
-		JButton mxsb=new JButton("出单");
+		JButton mxsb=new JButton("提交");
 		mxsb.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -611,7 +630,7 @@ public class XSF{
 		mf.addWindowListener(new WindowAdapter(){
 			public void windowClosed(WindowEvent e) {
 				// TODO Auto-generated method stub
-				sp.dispose();
+				spFrame.dispose();
 			}
 		});
 		//--------------------------------------客户选择监听-------------------------------------------------
