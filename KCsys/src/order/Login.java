@@ -8,10 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -37,6 +38,31 @@ public class Login extends JFrame{
      public Login(){
     	 Dao d=new Dao();
          Connection con=d.getcon();
+         Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		 
+         //-----------------------------------------------
+         JFrame changePassW=new JFrame("请输入密码");
+         changePassW.setResizable(false);
+         changePassW.setAlwaysOnTop(true);
+         changePassW.setBounds(p.x - 230 / 2, p.y - 160 / 2, 230, 160);
+         Container changePassW_Content=changePassW.getContentPane();
+         changePassW_Content.setLayout(null);
+         JLabel changePassW_L1=new JLabel("输入新密码:");
+         changePassW_L1.setBounds(5,15,120,24);
+         changePassW_Content.add(changePassW_L1);
+         JTextField changePassW_T1=new JPasswordField();
+         changePassW_T1.setBounds(80,15,130,24);
+         changePassW_Content.add(changePassW_T1);
+         JLabel changePassW_L2=new JLabel("确认新密码:");
+         changePassW_L2.setBounds(5,55,120,24);
+         changePassW_Content.add(changePassW_L2);
+         JTextField changePassW_T2=new JPasswordField();
+         changePassW_T2.setBounds(80,55,130,24);
+         changePassW_Content.add(changePassW_T2);
+         JButton changePassW_B=new JButton("更改");
+         changePassW_B.setBounds(85,95,60,25);
+         changePassW_Content.add(changePassW_B);
+         //------------------------------------------------------------------------------
          String EqualStr = null;
     	 try{
     		Statement sql = con.createStatement();
@@ -56,7 +82,7 @@ public class Login extends JFrame{
 					String n=ia.toString();
 					String[] s=n.split("/");
 					PcName=s[0];
-					System.out.println(PcName);
+					//System.out.println(PcName);
 				} catch (UnknownHostException e2) {
 					// TODO Auto-generated catch block
 					PcName="";
@@ -79,17 +105,19 @@ public class Login extends JFrame{
 	    				}
 	    			}
 	    			PcMac=sb.toString().toUpperCase();
-	    			System.out.println(PcMac);
+	    			//System.out.println(PcMac);
 	    		}catch(SocketException e){
 	    			PcMac="";
 	    		}
-	    	   URL url = this.getClass().getResource("/order/Image/TLogo.png");
-	    	   Image img = Toolkit.getDefaultToolkit().getImage(url);
-	    	   this.setIconImage(img);
+	    		try{
+	    			Image img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	    			this.setIconImage(img);
+	    		}catch(Exception e){
+	    			
+	    		}
     		   setResizable(false);
     	  	   setLayout(null);
     		   setBounds(100,100,300,200);
-    		   Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
     		   setBounds(p.x - 300 / 2, p.y - 200 / 2, 300, 200);
     		   setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     		   Container c=getContentPane();
@@ -134,9 +162,13 @@ public class Login extends JFrame{
     							String xpass=res.getString("pass").trim();
 								int  id=res.getInt("id");
     							if(user.equals(xuser)&&pass.equals(xpass)){
-    								dispose();
-    								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
-    								new MainFrame(id,xuser);
+    								if(xpass.equals("123456")){
+    									JOptionPane.showMessageDialog(changePassW,"\t初始密码\n请修改密码");
+    								}else{
+    									dispose();
+        								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
+        								new MainFrame(id,xuser);
+    								}
     							}else{
     								JOptionPane.showMessageDialog(null, "用户名或密码错误！");
     								JT_pass.setText("");
@@ -161,15 +193,78 @@ public class Login extends JFrame{
     					   JB_login.doClick();
     			   }
     		   });
-    		   JButton JB_exit=new JButton("退出");
+    		   JButton JB_exit=new JButton("更改密码");
     		   JB_exit.addActionListener(new ActionListener(){
     			@Override
     			public void actionPerformed(ActionEvent e) {
     				// TODO Auto-generated method stub
-    				System.exit(0);
+    				String user=JT_user.getText().trim();
+    				String pass=new String(JT_pass.getPassword());
+    				try{
+    					if(user.length()==0 || pass.length()==0){
+    						if(user.length()==0&&pass.length()==0){
+    							JOptionPane.showMessageDialog(null, "先输入账号密码后更改密码！");
+    							JT_user.requestFocus();
+    						}else{
+    							if(user.length()==0){
+    								JOptionPane.showMessageDialog(null, "用户名不能为空");
+    								JT_user.requestFocus();
+    							}else{
+    								if(pass.length()==0){
+    									JOptionPane.showMessageDialog(null, "密码不能为空");
+    									JT_pass.requestFocus();
+    								}
+    							}
+    						}
+    					}else{
+    						Statement sql = con.createStatement();
+    						ResultSet res = sql.executeQuery("select*from UserB where username='"+user+"'");
+    						if(res.next()){
+    							String xuser=res.getString("username").trim();
+    							String xpass=res.getString("pass").trim();
+								//int  id=res.getInt("id");
+    							if(user.equals(xuser)&&pass.equals(xpass)){
+    								changePassW.setVisible(true);
+    							}else{
+    								JOptionPane.showMessageDialog(null, "用户名或密码错误！");
+    								JT_pass.setText("");
+    								JT_pass.requestFocus();
+    							}		
+    						}else{
+    							JOptionPane.showMessageDialog(null, "用户不存在！");
+    							JT_user.setText("");
+    							JT_pass.setText("");
+    							JT_user.requestFocus();
+    						}	
+    					};
+    				}catch(Exception e1){
+    					JOptionPane.showMessageDialog(null, "数据库链接故障！请与管理员联系");
+    				}
     			}
     		   });
-    		   JB_exit.setBounds(180,120,60,25);
+    		   JB_exit.setBounds(180,120,90,25);
+    		   changePassW_B.addActionListener(new ActionListener(){
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					if(changePassW_T1.getText().equals(changePassW_T2.getText())){
+						try{
+							Statement sql = con.createStatement();
+							sql.execute("update UserB set pass='"+changePassW_T2.getText()+"' where "
+									+ "username='"+JT_user.getText().trim()+"'");
+						}catch(Exception e1){
+							JOptionPane.showMessageDialog(changePassW,"修改密码错误");
+						}
+					}else{
+						JOptionPane.showMessageDialog(changePassW,"请确认两次输入密码一致");
+					}
+				}
+    		   });
+    		   changePassW.addWindowListener(new WindowAdapter(){
+    			   public void windowClosing(WindowEvent arg0){
+    				   changePassW.dispose();
+    			   }
+    		   });
     		   c.add(JB_exit);
     		   c.add(JB_login);
     		   c.add(JT_pass);

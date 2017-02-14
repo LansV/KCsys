@@ -1,0 +1,6 @@
+create table temporder
+(
+dh varchar(10),khmc varchar(100),bh int,xh varchar(10),sp varchar(255),
+dw varchar(10),zk float,dj money,sl int,je money,bz varchar(255),bdate date,
+bstatus int,belong int
+)

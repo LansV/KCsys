@@ -11,10 +11,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import test.Printclass;
-
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -29,18 +26,19 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-public class XSF{
+public class CreateOrder{
 	String mc="";                      //全局客户名称
 	String lxr="";						//全局联系人	
 	String lxtel="";					//全局联系电话
 	String addr="";						//全局地址
 	Double hj;                           //合计
 	JLabel showhj=new JLabel();           //显示合计
-	public XSF(){
-		getData gd=new getData();        //调用数据类
-		wData w=new wData();
+	public CreateOrder(int userid){
+		//getData gd=new getData();        //调用数据类
+		//wData w=new wData();
+		CreateOrderData d=new CreateOrderData();
 		List<String> spcount=new ArrayList<String>();   //商品名称
-		List<Integer> kccount=new ArrayList<Integer>(); //库存数量
+		//List<Integer> kccount=new ArrayList<Integer>(); //库存数量
 		//-------------------------------------显示表格---------------------------------------------------
 		JPanel mp=new JPanel();
 		JScrollPane msp=new JScrollPane();
@@ -64,10 +62,10 @@ public class XSF{
 	                try {
 	                	String st=(String) aValue;
 						int num =Integer.parseInt(st);
-						if(num>kccount.get(rowIndex)){
+						/*if(num>kccount.get(rowIndex)){
 							JOptionPane.showMessageDialog(null,"超出库存");
 							return;
-						}
+						}*/
 						if(num==0){
 							JOptionPane.showMessageDialog(null,"不能为0");
 							return;
@@ -103,6 +101,9 @@ public class XSF{
 				if(colunm>3&&colunm<7){
 					return true;
 				}
+				if(colunm==8){
+					return true;
+				}
 				return false;
 			}
 		};
@@ -112,6 +113,7 @@ public class XSF{
 	    mtable.setDefaultRenderer(Object.class, tcr);
 		mdm.setColumnIdentifiers(mcn);
 		mtable.setModel(mdm);
+		mtable.setRowHeight(22);
     	TableColumn cktablecxh=mtable.getColumnModel().getColumn(0);   //设置列宽    
     	cktablecxh.setPreferredWidth(40);   
     	cktablecxh.setMinWidth(40);
@@ -128,6 +130,10 @@ public class XSF{
     	cktablecdw.setPreferredWidth(40);   
     	cktablecdw.setMinWidth(40);
     	cktablecdw.setMaxWidth(40);
+    	TableColumn cktablecbz=mtable.getColumnModel().getColumn(8);   //设置列宽    
+    	cktablecbz.setPreferredWidth(350);   
+    	cktablecbz.setMinWidth(350);
+    	cktablecbz.setMaxWidth(350);
     	//============================================删除行============================
 		deleteItem.addActionListener(new ActionListener(){
 			@Override
@@ -136,7 +142,7 @@ public class XSF{
 				int r=mtable.getSelectedRow();
 				mdm.removeRow(r);
 				spcount.remove(r);
-				kccount.remove(r);
+				//kccount.remove(r);
 				int rowcount=mtable.getRowCount();
 			    for(int i=0;i<rowcount;i++){
 					mtable.setValueAt(i+1,i,0);
@@ -154,10 +160,10 @@ public class XSF{
 		});
 		//=============================================================================
 		msp.setViewportView(mtable);
-		msp.setBounds(0,0,700,450);
+		msp.setBounds(0,0,960,450);
 		mp.setLayout(null);
 		mp.add(msp);
-		mp.setBounds(18,100,750,450);
+		mp.setBounds(18,100,1000,450);
 		Object[] row=new Object[mcn.length];
 		row[0]="";
 		row[1]="";
@@ -208,22 +214,16 @@ public class XSF{
 					if(sp==false){
 						JOptionPane.showMessageDialog(spFrame,"已添加商品");
 					}else{
-						String s=sptable.getValueAt(spr,4).toString();
-						int i=Integer.parseInt(s);
-						if(i==0){
-							JOptionPane.showMessageDialog(spFrame,"库存为零");
-						}else{
 							sptx.setText("");
 							spFrame.setEnabled(false);
 							spsl.setVisible(true);
 							splb.setText(sptable.getValueAt(spr,1).toString().trim());
-						}
 					}
 				}
 			}
 		});
 		sptable.getTableHeader().setReorderingAllowed(false);
-		String[][] sparr=gd.spcxdj(spjt.getText().trim());
+		String[][] sparr=d.spcxdj(spjt.getText().trim());
 		DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 			/**
 			 * 
@@ -253,7 +253,7 @@ public class XSF{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode()=='\n'){
-					String[][] sparr=gd.spcxdj(spjt.getText().trim());
+					String[][] sparr=d.spcxdj(spjt.getText().trim());
 					DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 						/**
 						 * 
@@ -279,7 +279,7 @@ public class XSF{
 		spj.add(spjs);
 		spc.add(spj);
 		spc.add(spjt);
-		spFrame.setBounds(760,10,500,650);
+		spFrame.setBounds(900,100,500,650);
 		spFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//------------------------------------主表模型监听-------------------------------------------------
 		mdm.addTableModelListener(new TableModelListener(){
@@ -356,31 +356,22 @@ public class XSF{
 						}
 						try{
 							String s=sptx.getText().trim();
+							@SuppressWarnings("unused")
 							int pdnum=Integer.parseInt(s);
-							String skc=sptable.getValueAt(spr,4).toString().trim();
-							int kcsl=Integer.parseInt(skc);
-								if(pdnum>kcsl){
-									JOptionPane.showMessageDialog(spsl, "超出库存");
-								}else{
-									if(pdnum==0){
-										JOptionPane.showMessageDialog(spsl, "不能为0");
-									}else{
-										if(b==true){
-											mdm.addRow(row);
-											mtable.setValueAt(mr+1,mr,0);
-											mtable.setValueAt(sptable.getValueAt(spr,0),mr,1);
-											mtable.setValueAt(sptable.getValueAt(spr,1),mr,2);
-											mtable.setValueAt(sptable.getValueAt(spr,2),mr,3);
-											mtable.setValueAt(spzk.getText().trim(),mr,4);
-											mtable.setValueAt(sptable.getValueAt(spr,3),mr,5);
-											kccount.add(kcsl);
-											mtable.setValueAt(s,mr,6);
-											spFrame.setEnabled(true);
-											spsl.dispose();
-											spcount.add(sptable.getValueAt(spr,1).toString().trim());
-										}
-									}
-							}
+								if(b==true){
+									mdm.addRow(row);
+									mtable.setValueAt(mr+1,mr,0);
+									mtable.setValueAt(sptable.getValueAt(spr,0),mr,1);
+									mtable.setValueAt(sptable.getValueAt(spr,1),mr,2);
+									mtable.setValueAt(sptable.getValueAt(spr,2),mr,3);
+									mtable.setValueAt(spzk.getText().trim(),mr,4);
+									mtable.setValueAt(sptable.getValueAt(spr,3),mr,5);
+									//kccount.add(kcsl);
+									mtable.setValueAt(s,mr,6);
+									spFrame.setEnabled(true);
+									spsl.dispose();
+									spcount.add(sptable.getValueAt(spr,1).toString().trim());
+								}
 						}catch(Exception e1){
 							JOptionPane.showMessageDialog(spsl,"请填写数字");
 							sptx.setText("");
@@ -411,12 +402,10 @@ public class XSF{
 		Container khfc=khf.getContentPane();
 		khfc.setLayout(null);
 		khf.setBounds(700,10,320,650);
-		khf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		JTextField cxjt=new JTextField();
 		cxjt.setBounds(10,10,120,25);
 		khfc.add(cxjt);
-		String ss="";
-		String[][] arr=gd.khx(ss);          //数据类里取二维数组
+		String[][] arr=d.khx(userid,"","");          //数据类里取二维数组
 		String[] cxcn={"名称","联系人","电话","地址"};
 		JScrollPane cxjsp=new JScrollPane();
 		JTable jtab=new JTable();
@@ -435,7 +424,7 @@ public class XSF{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyChar()=='\n'){
-					String[][] arr2=gd.khx(cxjt.getText().trim());
+					String[][] arr2=d.khx(userid,cxjt.getText().trim(),cxjt.getText().trim());
 					DefaultTableModel dm2=new DefaultTableModel(arr2,cxcn){
 
 						/**
@@ -462,17 +451,18 @@ public class XSF{
 		mf.setAlwaysOnTop(true);
 		mf.setResizable(false);
 		Container mfc=mf.getContentPane();
-		JComboBox<String> jc=new JComboBox<String>();
+		/*//JComboBox<String> jc=new JComboBox<String>();
 		jc.addItem("快递代收");
 		jc.addItem("现金");
 		jc.addItem("银行");
 		jc.addItem("其他");
-		jc.setBounds(600,60,80,25);
+		jc.setBounds(600,60,80,25);*/
 		JButton kh_b=new JButton("选择客户");
 		kh_b.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				mf.setEnabled(false);
 				khf.setVisible(true);
 			}
 		});
@@ -480,7 +470,7 @@ public class XSF{
 		JPanel jtp=new JPanel();
 		jtp.setLayout(null);
 		jtp.add(kh_b);
-		jtp.add(jc);
+		//jtp.add(jc);
 		JLabel mcl=new JLabel("客户:");
 		mcl.setBounds(10,20,40,25);
 		JTextField mct=new JTextField();
@@ -523,10 +513,12 @@ public class XSF{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
 				int cr=mtable.getRowCount();
 				if(cr==0){
 					JOptionPane.showMessageDialog(null, "无数据");
 				}else{
+					
 					if(mtable.isEditing()==true){
 						mtable.getCellEditor().stopCellEditing();
 					}
@@ -535,6 +527,7 @@ public class XSF{
 					if(mc.length()==0){
 						JOptionPane.showMessageDialog(null,"客户未填写");
 					}else if(dh.length()!=0&&mc.length()!=0){
+						
 						int slhj=0;
 						List<Object> listkh=new ArrayList<Object>();
 						List<Object> listsp=new ArrayList<Object>();
@@ -547,11 +540,12 @@ public class XSF{
 						listkh.add(lxr);
 						listkh.add(lxtel);
 						listkh.add(addr);
-						listkh.add(jc.getSelectedItem());
+						listkh.add("");
 						if(mct.isEditable()==true){
-							w.wkh(mc,lxr,lxtel,addr);
+							d.addCustomer(mc,lxr,lxtel,addr,userid);
 						}
 							for(int i=0;i<cr;i++){
+								
 								String xhs=mtable.getValueAt(i,0).toString().trim();
 								int bh=Integer.parseInt(xhs);
 								String xh=mtable.getValueAt(i,1).toString().trim();
@@ -574,9 +568,9 @@ public class XSF{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex());
-								w.wkcout(xh,sp,sl,"1,"+dh);
-								String[][] sparr=gd.spcxdj(spjt.getText().trim());
+								
+								d.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,userid);
+								String[][] sparr=d.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 									private static final long serialVersionUID = 1L;
 									public boolean isCellEditable(int row,int colunm){
@@ -594,18 +588,18 @@ public class XSF{
 						    	sptablecl.setMinWidth(180);
 						    	sptablecl.setMaxWidth(180);
 							}
-							w.wys(dh,mc,hj);
+							//w.wys(dh,mc,hj);
 							listhj.add(changenum(hj));
 							listhj.add(slhj);
 							listhj.add(String.format("%.2f",hj));
 							mdm.setRowCount(0);
 							spcount.clear();        //clear count 
-							kccount.clear();        //clear count
-							Printclass.setkhls(listkh);
+							//.kccount.clear();        //clear count
+							/*Printclass.setkhls(listkh);
 							Printclass.setsp(listsp);
-							Printclass.sethj(listhj);
-							ml.setText(gd.xsdh());
-							new Printclass();
+							Printclass.sethj(listhj);*/
+							ml.setText(d.xsdh());
+							//new Printclass();
 /*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
 							if(khselect==0){
 								khf.setVisible(true);
@@ -625,7 +619,7 @@ public class XSF{
 		mfc.add(mp);
 		mfc.add(mbutton);
 		mfc.add(showhj);
-		mf.setBounds(20,50,750,630);
+		mf.setBounds(400,100,1000,630);
 		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		mf.addWindowListener(new WindowAdapter(){
 			public void windowClosed(WindowEvent e) {
@@ -652,17 +646,26 @@ public class XSF{
 					addrt.setText(addr);
 					addrt.setEditable(false);
 					khf.dispose();
-					String s=gd.xsdh();
+					String s=d.xsdh();
 					//System.out.println(s);
 					ml.setText(s);
+					mf.setEnabled(true);
 					mf.setVisible(true);
 				}
+			}
+		});
+		khf.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				mf.setEnabled(true);
+				khf.dispose();
 			}
 		});
 		//-------------------------------------------------------------------------------------------
 		int r=JOptionPane.showConfirmDialog(null,"客户是否为新客户","选择",JOptionPane.YES_NO_OPTION);//返回选择值
 		if(r==0){
-			String s=gd.xsdh();
+			String s=d.xsdh();
 			//System.out.println(s);
 			ml.setText(s);
 			mf.setVisible(true);
@@ -672,9 +675,6 @@ public class XSF{
 		//-----------------------------------------------------------------------------------------
 	}
 	
-	public static void main(String[] args){
-		new XSF();
-	}
 	//-------------------------------------------------------------------------------------
 	public String changenum(Double numb){
 		String num[] = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };

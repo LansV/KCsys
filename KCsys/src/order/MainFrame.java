@@ -41,6 +41,13 @@ public class MainFrame {
 		}
 		MainFrame_CustomerB.setContentAreaFilled(false);
 		MainFrame_CustomerB.setBounds(7,15,80,80);
+		MainFrame_CustomerB.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				new CustomerInfo(id);
+			}
+		});
 		MainFrame_Contant.add(MainFrame_CustomerB);
 		//-----------------------------------------´ò¿ª¶©µ¥------------------------------------------
 		JButton MainFrame_AddOrderB=new JButton();
@@ -56,7 +63,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				new XSF();
+				new CreateOrder(id);
 			}
 		});
 		MainFrame_Contant.add(MainFrame_AddOrderB);
@@ -74,7 +81,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				new QuerySaleAndRepair(id);
 			}
 		});
 		MainFrame_Contant.add(MainFrame_QueryOrderB);
