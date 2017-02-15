@@ -188,8 +188,8 @@ public class CreateOrderData {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from CustomerInfo where Belong = "+id+" and Contact like '%"+Contact+"%' "
-					+ "or CName like '%"+name+"%'  order by id");
+			res = sql.executeQuery("select*from CustomerInfo where Belong = "+id+" and (Contact like '%"+Contact+"%' "
+					+ "or CName like '%"+name+"%')  order by id");
 			while(res.next()){
 				ls.add(res.getString("CName").trim());
 				ls.add(res.getString("Contact").trim());

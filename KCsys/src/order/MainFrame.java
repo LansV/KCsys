@@ -88,7 +88,4 @@ public class MainFrame {
 		//----------------------------------------------------------------------------------------
 		MainFrame.setVisible(true);
 	}
-	public static void main(String[] args){
-		new MainFrame(1,"test");
-	}
 }

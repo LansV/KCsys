@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -62,6 +63,15 @@ public class Login extends JFrame{
          JButton changePassW_B=new JButton("更改");
          changePassW_B.setBounds(85,95,60,25);
          changePassW_Content.add(changePassW_B);
+         changePassW_T2.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getKeyCode()=='\n'){
+					changePassW_B.doClick();
+				}
+			}
+         });
          //------------------------------------------------------------------------------
          String EqualStr = null;
     	 try{
@@ -164,6 +174,7 @@ public class Login extends JFrame{
     							if(user.equals(xuser)&&pass.equals(xpass)){
     								if(xpass.equals("123456")){
     									JOptionPane.showMessageDialog(changePassW,"\t初始密码\n请修改密码");
+    									changePassW.setVisible(true);
     								}else{
     									dispose();
         								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
@@ -248,15 +259,24 @@ public class Login extends JFrame{
 				public void actionPerformed(ActionEvent e) {
 					// TODO Auto-generated method stub
 					if(changePassW_T1.getText().equals(changePassW_T2.getText())){
-						try{
-							Statement sql = con.createStatement();
-							sql.execute("update UserB set pass='"+changePassW_T2.getText()+"' where "
-									+ "username='"+JT_user.getText().trim()+"'");
-						}catch(Exception e1){
-							JOptionPane.showMessageDialog(changePassW,"修改密码错误");
+						if(changePassW_T2.getText().equals(new String(JT_pass.getPassword()))){
+							JOptionPane.showMessageDialog(changePassW,"新密码与旧密码不能相同！");
+						}else{
+							try{
+								Statement sql = con.createStatement();
+								sql.execute("update UserB set pass='"+changePassW_T2.getText()+"' where "
+										+ "username='"+JT_user.getText().trim()+"'");
+								JOptionPane.showMessageDialog(changePassW,"修改成功");
+								changePassW_T1.setText("");
+								changePassW_T2.setText("");
+								JT_pass.setText("");
+								changePassW.dispose();
+							}catch(Exception e1){
+								JOptionPane.showMessageDialog(changePassW,"修改密码错误");
+							}
 						}
 					}else{
-						JOptionPane.showMessageDialog(changePassW,"请确认两次输入密码一致");
+						JOptionPane.showMessageDialog(changePassW,"请确保两次输入一致");
 					}
 				}
     		   });

@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 public class CustomerInfo {
 	public CustomerInfo(int userid){
+		System.out.println(userid);
 		CustomerInfoData d=new CustomerInfoData();
 		//---------------------------------客户资料主面板-----------------------------
 		JFrame CI_MainFrame=new JFrame("客户资料");
