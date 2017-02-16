@@ -46,6 +46,7 @@ public class CustomerInfo {
 		//--------------------------------------主表单面板------------------------------
 		JScrollPane CI_MainTableJS=new JScrollPane();
 		JTable CI_MainTable=new JTable();
+		CI_MainTable.getTableHeader().setReorderingAllowed(false);
 		String[] CI_MainTable_Cn={"key","名称","联系人","联系电话"};
 		DefaultTableModel CI_MainTable_Model=new DefaultTableModel(d.getCustomerInfo(userid,"","" ),CI_MainTable_Cn){
 			/**

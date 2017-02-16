@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 public class MF {
-	public MF(){
+	public MF(int userid,String user){
 		JFrame mf=new JFrame("Ö÷²Ëµ¥");
 		mf.setResizable(false);
 		mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -154,8 +154,5 @@ public class MF {
 		qSAR.setBounds(90,170,60,30);
 		mfc.add(qSAR);
 		mf.setVisible(true);
-	}
-	public static void main(String[] args){
-		new MF();
 	}
 }
