@@ -36,7 +36,7 @@ public class XSF{
 	String addr="";						//全局地址
 	Double hj;                           //合计
 	JLabel showhj=new JLabel();           //显示合计
-	public XSF(){
+	public XSF(String user){
 		getData gd=new getData();        //调用数据类
 		wData w=new wData();
 		List<String> spcount=new ArrayList<String>();   //商品名称
@@ -555,8 +555,8 @@ public class XSF{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex());
-								w.wkcout(xh,sp,sl,"1,"+dh);
+								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user);
+								w.wkcout(xh,sp,sl,"1,"+dh,user);
 								String[][] sparr=gd.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 									private static final long serialVersionUID = 1L;
@@ -654,7 +654,7 @@ public class XSF{
 	}
 	
 	public static void main(String[] args){
-		new XSF();
+		new XSF("test");
 	}
 	//-------------------------------------------------------------------------------------
 	public String changenum(Double numb){

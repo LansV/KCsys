@@ -433,7 +433,7 @@ public class KCxdata {
 		}
 	}
 	//--------------------------------------------------------更新入库-----------------------------------
-	public void wkcin(String sbh,String sckcp,int sn,String ly){
+	public void wkcin(String sbh,String sckcp,int sn,String ly,String user){
 		Date date2=new Date();
 		int kcsl = 0;
 		int jg = 0;
@@ -454,7 +454,7 @@ public class KCxdata {
 			sql = con.createStatement();
 			sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";"
 					    + "UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
-						+ "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','admin','"+ckd+"','"+time+"','NULL')");
+						+ "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','"+user+"','"+ckd+"','"+time+"','NULL')");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"写入库存错误");
 		}finally{
@@ -471,7 +471,7 @@ public class KCxdata {
 		}
 	}
 	//--------------------------------------------------------更新出库-----------------------------------
-	public void wkcout(String sbh,String sckcp,int sn,String qx){
+	public void wkcout(String sbh,String sckcp,int sn,String qx,String user){
 		int kcsl = 0;
 		int jg = 0;
 		Date date2=new Date();
@@ -494,10 +494,10 @@ public class KCxdata {
 			if(qx.length()>1){
 				String[] st=qx.split(",");
 				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
-						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','admin','"+ckd+"','"+time+"','"+st[1]+"')");
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','"+user+"','"+ckd+"','"+time+"','"+st[1]+"')");
 			}else{
 				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
-						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','admin','"+ckd+"','"+time+"','NULL')");
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','NULL')");
 			}
 			
 		}catch(Exception e){

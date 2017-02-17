@@ -536,7 +536,7 @@ public class WXF{
 								if(sp.equals("人工费")==true){
 									
 								}else{
-									w.wkcout(xh,sp,sl,"2,"+dh);   //库存减少
+									//w.wkcout(xh,sp,sl,"2,"+dh);   //库存减少
 								}
 								//w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz); // 写入维修表
 								String[][] sparr=gd.spcxdj(spjt.getText().trim());

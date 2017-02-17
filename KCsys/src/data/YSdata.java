@@ -444,7 +444,8 @@ public class YSdata {
 		}
 	}
 	//------------------------------------------------------部分退货----------------------------------------
-	public void gth(String dh,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy,int type ){
+	public void gth(String dh,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy,int type,
+			String user){
 		Date date2=new Date();
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		String time=timeFormat.format(date2);
@@ -453,7 +454,7 @@ public class YSdata {
 		try{
 			sql = con.createStatement();
 			sql.execute("insert into THD values ('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","
-					+ ""+dj+","+sl+","+thje+",'"+yy+"','"+ckd+"','"+time+"',"+type+");"
+					+ ""+dj+","+sl+","+thje+",'"+yy+"','"+ckd+"','"+time+"',"+type+",'"+user+"');"
 					+ "update XSD set skstatus="+type+" where dh='"+dh+"' and bh="+bh+"");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"添加退货数据错误");

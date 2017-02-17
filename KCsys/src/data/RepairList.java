@@ -34,7 +34,7 @@ public class RepairList{
 	String addr="";						//全局地址
 	Double hj;                           //合计
 	JLabel showhj=new JLabel();           //显示合计
-	public RepairList(){
+	public RepairList(String user){
 		RepairListData gd=new RepairListData();        //调用数据类
 		wData w=new wData();
 		List<String> spcount=new ArrayList<String>();   //商品名称
@@ -557,9 +557,9 @@ public class RepairList{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex());
+								w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user);
 								if(sp.equals("人工费")==false){
-									w.wkcout(xh,sp,sl,"2,"+dh);
+									w.wkcout(xh,sp,sl,"2,"+dh,user);
 								}
 							}
 							String[][] sparr=gd.spcxdj(spjt.getText().trim());
@@ -718,7 +718,7 @@ public class RepairList{
 	}
 	
 	public static void main(String[] args){
-		new RepairList();
+		new RepairList("test");
 	}
 	//-------------------------------------------------------------------------------------
 	public String changenum(Double numb){

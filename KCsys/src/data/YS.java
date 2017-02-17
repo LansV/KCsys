@@ -33,7 +33,7 @@ public class YS {
 	int tabler;
 	int wzx;
 	int wzy;
-	public YS(){
+	public YS(String user){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
 	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","收款","备注"};
@@ -393,7 +393,8 @@ public class YS {
 		thtyz.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				if(e.getKeyCode()=='\n'){
-					if(thtsl.isEnabled()){   // some product return 
+					if(thtsl.isEnabled()){
+						// one product return 
 						int r=xxtable.getSelectedRow();
 						if(thtyz.getText().trim().length()==0){
 							JOptionPane.showMessageDialog(null,"原因为空");
@@ -423,9 +424,9 @@ public class YS {
 											zk=Double.parseDouble(szk);
 											thje=dj*thsl*zk/10;
 										}
-										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2);
+										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2,user);
 										if(sp.equals("人工费")==false){
-											w.wkcin(xh,sp,thsl,kh+"退货");
+											w.wkcin(xh,sp,thsl,kh+"退货",user,dh);
 										}
 										if(dh.substring(0,1).equals("X")){
 											xxmdm.setDataVector(d.wxd(dh),mcn);
@@ -504,8 +505,8 @@ public class YS {
 										zk=Double.parseDouble(szk);
 										thje=dj*sl*zk/10;
 									}
-									d.gth(dh,kh,i+1,xh,sp,dw,zk,dj,sl,thje,yy,3);
-									w.wkcin(xh,sp,sl,kh+"退货");
+									d.gth(dh,kh,i+1,xh,sp,dw,zk,dj,sl,thje,yy,3,user);
+									w.wkcin(xh,sp,sl,kh+"退货",user,dh);
 								}else{
 									d.alterSkstatus(dh,i+1,3);
 								}
@@ -556,9 +557,9 @@ public class YS {
 										zk=Double.parseDouble(szk);
 										thje=dj*thsl*zk/10;
 									}
-									d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2);
+									d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2,user);
 									if(sp.equals("人工费")==false){
-										w.wkcin(xh,sp,thsl,kh+"退货");
+										w.wkcin(xh,sp,thsl,kh+"退货",user,dh);
 									}
 									if(dh.substring(0,1).equals("X")){
 										xxmdm.setDataVector(d.wxd(dh),mcn);
@@ -1019,7 +1020,7 @@ public class YS {
 		f.setVisible(true);
 	}
 	public static void main(String[] args){
-		new YS();
+		new YS("test");
 	}
 	public String changenum(Double numb){
 		String num[] = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };

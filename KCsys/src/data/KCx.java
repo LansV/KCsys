@@ -152,7 +152,7 @@ public class KCx {
 		maintable.setRowHeight(24);
 		return maintable;
 	}
-	public KCx(){
+	public KCx(String user){
 		//---------------------------------------------入库数量------------------------------------------------------
 		JFrame slf=new JFrame("入库数量");
 		slf.setResizable(false);
@@ -646,7 +646,7 @@ public class KCx {
 						if(sl>dbs){
 							JOptionPane.showMessageDialog(null,"库存不足");
 						}else{
-							wx.wkcout(sbh,xgl.getText(),sl,"4");
+							wx.wkcout(sbh,xgl.getText(),sl,"4",user);
 							xgslt.setText("");
 							if(cxzl.getSelectedIndex()==0){
 								mtt=mt(wx.KCdata(cxt.getText(),"",""));
@@ -692,7 +692,7 @@ public class KCx {
 						if(sl<=0){
 							JOptionPane.showMessageDialog(null,"不能小于等于零");
 						}else{
-							wx.wkcin(sbh,sll.getText(),sl,"采购进货");
+							wx.wkcin(sbh,sll.getText(),sl,"采购进货",user);
 							wx.addyf(gys,jhj,sl,sll.getText(),sbh);
 							slt.setText("");
 							if(cxzl.getSelectedIndex()==0){
@@ -747,7 +747,7 @@ public class KCx {
 		});
 	}
 	public static void main(String[] args){
-		new KCx();
+		new KCx("test");
 	}
 }
 class colorc extends DefaultTableCellRenderer {

@@ -39,8 +39,7 @@ public class Login extends JFrame{
     	 Dao d=new Dao();
          Connection con=d.getcon();
          setAlwaysOnTop(true);
-         Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-		 
+         Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();	 
          //-----------------------------------------------
          JFrame changePassW=new JFrame("«Î ‰»Î√‹¬Î");
          changePassW.setResizable(false);

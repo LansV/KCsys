@@ -37,7 +37,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new KCx();
+				new KCx(user);
 			}
 		});
 		kc.setBounds(160,10,60,30);
@@ -47,7 +47,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new XSF();
+				new XSF(user);
 			}
 		});
 		xs.setBounds(20,50,60,30);
@@ -57,7 +57,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new YS();
+				new YS(user);
 			}
 		});
 		ys.setBounds(90,50,60,30);
@@ -87,7 +87,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new ZZ();
+				new ZZ(user);
 			}
 		});
 		zz.setBounds(90,90,60,30);
@@ -107,7 +107,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new WXF();
+				new RepairList(user);
 			}
 		});
 		wx.setBounds(160,130,60,30);
@@ -148,7 +148,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new QuerySaleAndRepair();
+				new QuerySaleAndRepair(user);
 			}
 		});
 		qSAR.setBounds(90,170,60,30);
