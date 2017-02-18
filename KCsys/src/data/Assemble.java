@@ -10,11 +10,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -49,6 +52,7 @@ public class Assemble {
 		Assemble_MFrame_Content.add(Assemble_MFrame_AddB);
 		//------------------------------------------MFrame_Table--------------------------------------
 		JTable Assemble_MFrame_Table=new JTable();
+		Assemble_MFrame_Table.getTableHeader().setReorderingAllowed(false);
 		String[] Assemble_MFrame_TableColumn={"识别号","品名"};
 		DefaultTableModel Assemble_MFrame_TableModel=new DefaultTableModel(d.zm(Assemble_MFrame_JT.getText().trim()),Assemble_MFrame_TableColumn){
 			private static final long serialVersionUID = 1L;
@@ -63,6 +67,18 @@ public class Assemble {
 		Assemble_MFrame_JS.setViewportView(Assemble_MFrame_Table);
 		Assemble_MFrame_JS.setBounds(10,40,375,600);
 		Assemble_MFrame_Content.add(Assemble_MFrame_JS);
+		Assemble_MFrame_Table.addMouseListener(new MouseAdapter(){
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if(e.getButton()==1){
+					if(e.getClickCount()==2){
+						
+					}
+				}
+			}
+		});
+		//-------------------------------------------------------------
 		Assemble_MFrame_JT.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				if(e.getKeyCode()=='\n'){
@@ -105,6 +121,10 @@ public class Assemble {
 		assembleNameFrame_Content.add(assembleNameFrame_PriceT);
 		assembleNameFrame_Content.add(assembleNameFrame_PriceL);
 		assembleNameFrame.setResizable(false);
+		//----------------------------右键菜单------------------------------------
+		JPopupMenu rightMenu=new JPopupMenu();
+		JMenuItem deleteItem=new JMenuItem("删除");
+		rightMenu.add(deleteItem);
 		//-----------------------------组装面板-----------------------------------------
 		JFrame AssembleFrame=new JFrame("组装表");
 		AssembleFrame.setAlwaysOnTop(true);
@@ -138,15 +158,6 @@ public class Assemble {
 			      super.setValueAt(aValue,rowIndex,columnIndex);
 			}
 		};
-		AssembleFrame_Table.addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				if(e.getButton()==1){
-					if(e.getClickCount()==2){
-						AssembleFrame_Table.clearSelection();
-					}
-				}
-			}
-		});
 		AssembleFrame_Table.getTableHeader().setReorderingAllowed(false);
 		String[] AssembleFrame_Contentn={"序号","商品型号","商品名称","单位","单价","数量","金额"};
 		DefaultTableModel AssembleFrame_TableModel=new DefaultTableModel(){
@@ -161,6 +172,35 @@ public class Assemble {
 				return false;
 			}
 		};
+		AssembleFrame_Table.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==3){
+					int r=AssembleFrame_Table.rowAtPoint(e.getPoint());
+					if(AssembleFrame_Table.getRowSelectionAllowed()==true){
+						AssembleFrame_Table.setRowSelectionInterval(r,r);
+						rightMenu.show(AssembleFrame_Table, e.getX(), e.getY());
+					}
+				}
+			}
+		});
+		deleteItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int selectRow=AssembleFrame_Table.getSelectedRow();
+				AssembleFrame_TableModel.removeRow(selectRow);
+				spcount.remove(selectRow);
+				int rowcount=AssembleFrame_Table.getRowCount();
+			    for(int i=0;i<rowcount;i++){
+			    	AssembleFrame_Table.setValueAt(i+1,i,0);
+				}
+			    Double zj=0.0;
+				for(int i=0;i<rowcount;i++){
+					zj=Double.parseDouble(AssembleFrame_Table.getValueAt(i,6).toString())+zj;
+				}
+				assembleFrame_TotalL.setText(String.format("%.2f",zj));
+			}
+		});
 		//------------------------------------主表模型监听-------------------------------------------------
 		AssembleFrame_TableModel.addTableModelListener(new TableModelListener(){
 			@Override
@@ -241,6 +281,7 @@ public class Assemble {
 		row[6]="";
 		AssembleFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
+				AssembleFrame_TableModel.setRowCount(0);
 				Assemble_MFrame.setEnabled(true);
 				AssembleFrame.dispose();
 			}
@@ -282,6 +323,7 @@ public class Assemble {
 								assembleNameFrame_NameT.setText("");
 								assembleNameFrame.dispose();
 								AssembleFrame_TableModel.setRowCount(0);
+								Assemble_MFrame_TableModel.setDataVector(d.zm(Assemble_MFrame_JT.getText().trim()),Assemble_MFrame_TableColumn);
 							}catch(Exception e1){
 								JOptionPane.showMessageDialog(assembleNameFrame,"请输入数字！");
 							}
