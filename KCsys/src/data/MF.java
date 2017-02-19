@@ -87,7 +87,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new ZZ(user);
+				new Assemble(user);
 			}
 		});
 		zz.setBounds(90,90,60,30);
@@ -153,6 +153,16 @@ public class MF {
 		});
 		qSAR.setBounds(90,170,60,30);
 		mfc.add(qSAR);
+//		JButton assemble=new JButton("×é×°");
+//		assemble.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Auto-generated method stub
+//				new Assemble(user);
+//			}
+//		});
+//		assemble.setBounds(160,170,60,30);
+//		mfc.add(assemble);
 		mf.setVisible(true);
 	}
 }

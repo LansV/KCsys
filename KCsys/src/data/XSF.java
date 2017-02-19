@@ -652,7 +652,6 @@ public class XSF{
 		}
 		//-----------------------------------------------------------------------------------------
 	}
-	
 	public static void main(String[] args){
 		new XSF("test");
 	}

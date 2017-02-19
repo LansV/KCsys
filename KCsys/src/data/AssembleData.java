@@ -18,6 +18,115 @@ public class AssembleData {
    	Dao d=new Dao();
 	Connection con = d.getcon();
 	SimpleDateFormat timef= new SimpleDateFormat("HH:mm:ss");
+	//--------------------------------------------------------更新入库-----------------------------------
+	public void wkcin(String sbh,String sckcp,int sn,String ly,String user,String dh){
+		Date date2=new Date();
+		int kcsl = 0;
+		int jg = 0;
+		String ckd=String.format("%tF", date2);
+		String time=timef.format(date2);
+		//获取修改之前的库存数量
+		try{
+			sql = con.createStatement();
+			res=sql.executeQuery("select*from KC where KC_sbh = "+sbh+"");
+			while(res.next()){
+				kcsl=res.getInt("KC_sl");
+			}
+			jg=kcsl+sn;
+		}catch(Exception e1){
+			JOptionPane.showMessageDialog(null,"得到库存数量失败");
+		}
+		try{
+			sql = con.createStatement();
+			sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";"
+					  + "UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
+					  + "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','"+user+"','"+ckd+"','"+time+"','"+dh+"')");
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"写入库存错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
+		     	 }
+		}
+	}
+	//--------------------------------------------------------更新出库-----------------------------------
+	public void wkcout(String sbh,String sckcp,int sn,String qx,String user){
+		int kcsl = 0;
+		int jg = 0;
+		Date date2=new Date();
+		String ckd=String.format("%tF", date2);
+		String time=timef.format(date2);
+		try{
+			sql = con.createStatement();
+			res=sql.executeQuery("select*from KC where KC_sbh = '"+sbh+"'");
+			while(res.next()){
+				kcsl=res.getInt("KC_sl");
+			}
+			jg=kcsl-sn;
+		//System.out.println(kcsl);
+		// 出 0               进 1
+		}catch(Exception e1){
+			JOptionPane.showMessageDialog(null,"得到库存数量失败");
+		}
+		try{
+			sql = con.createStatement();
+			if(qx.length()>1){
+				String[] st=qx.split(",");
+				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','"+user+"','"+ckd+"','"+time+"','"+st[1]+"')");
+			}else{
+				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','NULL')");
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"出库错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
+		     	 }
+		}
+	}
+	//-------------------------------------------------删除组装-----------------------------------------
+	public boolean wDeleteAssemble(String sbh,String user){
+		JFrame f=new JFrame();
+		f.setAlwaysOnTop(true);
+		boolean b=true;
+		try{
+			// cstatus 0 exist 1 delete
+			sql = con.createStatement();
+			sql.execute("update assembleB set cstatus = 1 where sbh='"+sbh+"';"
+					+ "update assembleB set operator = '"+user+"' where sbh='"+sbh+"'");
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(f,"删除组装数据错误");
+			return b=false;
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
+		     	 }
+		}
+		return b;
+	}
 	//---------------------------------------------写入库存------------------------------------------------
 	public boolean wkc(String xh,String sp,Double jhj,Double dj,String sbh,String user){
 		Date date2=new Date();
@@ -63,8 +172,9 @@ public class AssembleData {
 		f.setAlwaysOnTop(true);
 		boolean b=true;
 		try{
+			// cstatus 0 exist 1 delete
 			sql = con.createStatement();
-			sql.execute("insert into assembleB values('"+sbh+"','"+zm+"',"+bh+",'"+psbh+"','"+sp+"','"+dw+"',"+dj+","+sl+","+je+",'"+user+"')");
+			sql.execute("insert into assembleB values('"+sbh+"','"+zm+"',"+bh+",'"+psbh+"','"+sp+"','"+dw+"',"+dj+","+sl+","+je+",'"+user+"',0)");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(f,"添加组装数据错误");
 			return b=false;
@@ -189,13 +299,145 @@ public class AssembleData {
 	   	count=0;
 		return data;
 	}
+	//------------------------------------------------------------获取打印-----------------------------------
+	public String[][] zPrint(String QueryString){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select*from assembleB where sbh='"+QueryString+"' and cstatus = 0 order by psbh");
+			int i=1;
+			while(res.next()){
+				ls.add(""+i);
+				ls.add(res.getString("psbh").trim());
+				ls.add(res.getString("pname").trim());
+				ls.add(res.getString("dw").trim());
+				ls.add(res.getString("sl").trim());
+				ls.add("");
+				i++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"获取组名出错");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=6;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
+	//------------------------------------------------------------获取详情-----------------------------------
+	public String[][] zdetail(String QueryString){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select*from assembleB where sbh='"+QueryString+"' and cstatus = 0 order by psbh");
+			int i=1;
+			while(res.next()){
+				ls.add(""+i);
+				ls.add(res.getString("psbh").trim());
+				ls.add(res.getString("pname").trim());
+				ls.add(res.getString("dw").trim());
+				ls.add(String.format("%.2f",res.getDouble("dj")));
+				ls.add(res.getString("sl").trim());
+				ls.add(String.format("%.2f",res.getDouble("je")));
+				i++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"获取组名出错");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=7;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
+	//------------------------------------------------------------判断库存是否足够-----------------------------------
+	public String[][] pdKC(String sbh,int sl){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select pname,ccount from"
+					+ "("
+					+ "select psbh,pname,dw,assembleB.sl,KC.KC_sl,KC.KC_sl-assembleB.sl*"+sl+" as ccount from assembleB,KC where assembleB.sbh='"+sbh+"' and assembleB.psbh=KC.KC_sbh"
+					+ ")"
+					+ "temp where ccount < 0");
+			while(res.next()){
+				ls.add(res.getString("pname").trim());
+				int i=-res.getInt("ccount");
+				ls.add(Integer.toString(i));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"获取组名出错");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=2;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
 	//------------------------------------------------------------获取组名-----------------------------------
 	public String[][] zm(String QueryString){
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select max(sbh) as sbh,zname from assembleB where zname like '%"+QueryString+"%' or"
-					+ " sbh like '%"+QueryString+"%' group by zname order by sbh");
+			res = sql.executeQuery("select max(sbh) as sbh,zname from assembleB where cstatus = 0 and (zname like '%"+QueryString+"%' or"
+					+ " sbh like '%"+QueryString+"%') group by zname order by sbh");
 			while(res.next()){
 				ls.add(res.getString("sbh").trim());
 				ls.add(res.getString("zname").trim());
