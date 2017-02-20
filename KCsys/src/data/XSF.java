@@ -10,13 +10,17 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
+
 import test.Printclass;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -30,19 +34,32 @@ public class XSF{
 	String lxr="";						//全局联系人	
 	String lxtel="";					//全局联系电话
 	String addr="";						//全局地址
-	Double hj;
-	JLabel showhj=new JLabel();
-	public XSF(){
+	Double hj;                           //合计
+	JLabel showhj=new JLabel();           //显示合计
+	public XSF(String user){
 		getData gd=new getData();        //调用数据类
 		wData w=new wData();
-		List<String> spcount=new ArrayList<String>();
-		List<Integer> kccount=new ArrayList<Integer>();
+		List<String> spcount=new ArrayList<String>();   //商品名称
+		List<Integer> kccount=new ArrayList<Integer>(); //库存数量
 		//-------------------------------------显示表格---------------------------------------------------
 		JPanel mp=new JPanel();
 		JScrollPane msp=new JScrollPane();
+		JPopupMenu rightmenu=new JPopupMenu();
+		JMenuItem deleteItem=new JMenuItem("删除");
+		rightmenu.add(deleteItem);
 		JTable mtable=new JTable(){
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
+				if(columnIndex==5){
+					try{
+						String st=aValue.toString();
+						@SuppressWarnings("unused")
+						Double price=Double.parseDouble(st);
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						return;
+					}
+				}
 				if(columnIndex==6){
 	                try {
 	                	String st=(String) aValue;
@@ -63,6 +80,19 @@ public class XSF{
 			      super.setValueAt(aValue,rowIndex,columnIndex);
 			}
 		};
+		//=======================================add table menu listener==================== 
+		mtable.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==3){
+					int r=mtable.rowAtPoint(e.getPoint());
+					if(mtable.getRowSelectionAllowed()==true){
+						mtable.setRowSelectionInterval(r,r);
+						rightmenu.show(mtable,e.getX(),e.getY());
+					}
+				}
+			}
+		});
+		//=================================tablemodel========================================
 		String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注"};
 		DefaultTableModel mdm=new DefaultTableModel(){
 			/**
@@ -70,7 +100,7 @@ public class XSF{
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm==4||colunm==6){
+				if(colunm>3&&colunm<7){
 					return true;
 				}
 				return false;
@@ -98,6 +128,31 @@ public class XSF{
     	cktablecdw.setPreferredWidth(40);   
     	cktablecdw.setMinWidth(40);
     	cktablecdw.setMaxWidth(40);
+    	//============================================删除行============================
+		deleteItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0){
+				// TODO Auto-generated method stub
+				int r=mtable.getSelectedRow();
+				mdm.removeRow(r);
+				spcount.remove(r);
+				kccount.remove(r);
+				int rowcount=mtable.getRowCount();
+			    for(int i=0;i<rowcount;i++){
+					mtable.setValueAt(i+1,i,0);
+				}
+			    Double chj=0.0;
+				for(int i=0;i<mtable.getRowCount();i++){
+					String s=mtable.getValueAt(i,7).toString().trim();
+					Double d=Double.parseDouble(s);
+					chj=chj+d;
+				}
+				hj=chj;
+				showhj.setText(String.format("%.2f",hj));
+				//System.out.println(rowcount);
+			}
+		});
+		//=============================================================================
 		msp.setViewportView(mtable);
 		msp.setBounds(0,0,700,450);
 		mp.setLayout(null);
@@ -226,11 +281,11 @@ public class XSF{
 		//------------------------------------主表模型监听-------------------------------------------------
 		mdm.addTableModelListener(new TableModelListener(){
 			@Override
-			public void tableChanged(TableModelEvent e) {
+			public void tableChanged(TableModelEvent e){
 				// TODO Auto-generated method stub
 				int r=e.getFirstRow();
 				int c=e.getColumn();
-				if(c==6||c==4){
+				if(3<c&&c<7){
 					String c4=mtable.getValueAt(r,4).toString().trim();
 					String c6=mtable.getValueAt(r,6).toString().trim();
 					if(c6.length()==0){
@@ -500,8 +555,8 @@ public class XSF{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wkcout(xh,sp,sl,"1,"+dh);
-								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz);
+								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user);
+								w.wkcout(xh,sp,sl,"1,"+dh,user);
 								String[][] sparr=gd.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 									private static final long serialVersionUID = 1L;
@@ -597,9 +652,8 @@ public class XSF{
 		}
 		//-----------------------------------------------------------------------------------------
 	}
-	
 	public static void main(String[] args){
-		new XSF();
+		new XSF("test");
 	}
 	//-------------------------------------------------------------------------------------
 	public String changenum(Double numb){

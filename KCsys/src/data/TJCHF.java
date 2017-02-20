@@ -18,7 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 public class TJCHF {
-	TJCHFdate d=new TJCHFdate();
+	TJCHFdata d=new TJCHFdata();
 	public JTable mt(String qx,String qdate,String edate,String sp){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //´´½¨äÖÈ¾Æ÷
 	    tcr.setHorizontalAlignment(JLabel.CENTER);      

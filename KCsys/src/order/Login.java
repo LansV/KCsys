@@ -1,4 +1,4 @@
-package data;
+package order;
 import java.awt.Container;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,7 +31,7 @@ public class Login extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	int qx;
-	final static String Version="V1.170212";
+	static String Version="V1.170212";
 	String UserName;
 	String PcName=null;
 	String PcMac=null;
@@ -38,8 +39,8 @@ public class Login extends JFrame{
      public Login(){
     	 Dao d=new Dao();
          Connection con=d.getcon();
-         setAlwaysOnTop(true);
-         Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();	 
+         Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		 
          //-----------------------------------------------
          JFrame changePassW=new JFrame("请输入密码");
          changePassW.setResizable(false);
@@ -80,11 +81,12 @@ public class Login extends JFrame{
 				EqualStr=res.getString("CVersion").trim();
 			}
     	 }catch(Exception e){
-    		 JOptionPane.showMessageDialog(this,"获取版本错误！\n请联系天澜公司获取技术支持");
+    		 JOptionPane.showMessageDialog(null,"获取版本错误！\n请联系天澜公司获取技术支持");
     		 System.exit(0);
     	 }
     	 if(Version.equals(EqualStr)==true){
     		 InetAddress ia = null;
+    		
 	    		try {
 					ia = InetAddress.getLocalHost();
 					String n=ia.toString();
@@ -149,15 +151,15 @@ public class Login extends JFrame{
     				try{
     					if(user.length()==0 || pass.length()==0){
     						if(user.length()==0&&pass.length()==0){
-    							JOptionPane.showMessageDialog(c, "用户名与密码不能为空");
+    							JOptionPane.showMessageDialog(null, "用户名与密码不能为空");
     							JT_user.requestFocus();
     						}else{
     							if(user.length()==0){
-    								JOptionPane.showMessageDialog(c, "用户名不能为空");
+    								JOptionPane.showMessageDialog(null, "用户名不能为空");
     								JT_user.requestFocus();
     							}else{
     								if(pass.length()==0){
-    									JOptionPane.showMessageDialog(c, "密码不能为空");
+    									JOptionPane.showMessageDialog(null, "密码不能为空");
     									JT_pass.requestFocus();
     								}
     							}
@@ -171,27 +173,27 @@ public class Login extends JFrame{
 								int  id=res.getInt("id");
     							if(user.equals(xuser)&&pass.equals(xpass)){
     								if(xpass.equals("123456")){
-    									JOptionPane.showMessageDialog(c,"\t初始密码\n请修改密码");
+    									JOptionPane.showMessageDialog(changePassW,"\t初始密码\n请修改密码");
     									changePassW.setVisible(true);
     								}else{
     									dispose();
         								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
-        								new MF(id,xuser);
+        								new MainFrame(id,xuser);
     								}
     							}else{
-    								JOptionPane.showMessageDialog(c, "用户名或密码错误！");
+    								JOptionPane.showMessageDialog(null, "用户名或密码错误！");
     								JT_pass.setText("");
     								JT_pass.requestFocus();
     							}		
     						}else{
-    							JOptionPane.showMessageDialog(c, "用户名或密码错误！");
+    							JOptionPane.showMessageDialog(null, "用户不存在！");
     							JT_user.setText("");
     							JT_pass.setText("");
     							JT_user.requestFocus();
     						}	
     					};
     				}catch(Exception e1){
-    					JOptionPane.showMessageDialog(c, "数据库链接故障！请与管理员联系");
+    					JOptionPane.showMessageDialog(null, "数据库链接故障！请与管理员联系");
     				}
     			}
     			   
@@ -212,15 +214,15 @@ public class Login extends JFrame{
     				try{
     					if(user.length()==0 || pass.length()==0){
     						if(user.length()==0&&pass.length()==0){
-    							JOptionPane.showMessageDialog(c, "先输入账号密码后更改密码！");
+    							JOptionPane.showMessageDialog(null, "先输入账号密码后更改密码！");
     							JT_user.requestFocus();
     						}else{
     							if(user.length()==0){
-    								JOptionPane.showMessageDialog(c, "用户名不能为空");
+    								JOptionPane.showMessageDialog(null, "用户名不能为空");
     								JT_user.requestFocus();
     							}else{
     								if(pass.length()==0){
-    									JOptionPane.showMessageDialog(c, "密码不能为空");
+    									JOptionPane.showMessageDialog(null, "密码不能为空");
     									JT_pass.requestFocus();
     								}
     							}
@@ -235,19 +237,19 @@ public class Login extends JFrame{
     							if(user.equals(xuser)&&pass.equals(xpass)){
     								changePassW.setVisible(true);
     							}else{
-    								JOptionPane.showMessageDialog(c, "用户名或密码错误！");
+    								JOptionPane.showMessageDialog(null, "用户名或密码错误！");
     								JT_pass.setText("");
     								JT_pass.requestFocus();
     							}		
     						}else{
-    							JOptionPane.showMessageDialog(c, "用户名或密码错误！");
+    							JOptionPane.showMessageDialog(null, "用户不存在！");
     							JT_user.setText("");
     							JT_pass.setText("");
     							JT_user.requestFocus();
     						}	
     					};
     				}catch(Exception e1){
-    					JOptionPane.showMessageDialog(c, "数据库链接故障！请与管理员联系");
+    					JOptionPane.showMessageDialog(null, "数据库链接故障！请与管理员联系");
     				}
     			}
     		   });

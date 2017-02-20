@@ -24,7 +24,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 public class ZZ {
-	public ZZ(){
+	public ZZ(String user){
 		wData w=new wData();
 		getData gd=new getData();
 		List<String> spcount=new ArrayList<String>();
@@ -431,7 +431,7 @@ public class ZZ {
 										String sje=mtable.getValueAt(i,6).toString().trim();
 										Double je=Double.parseDouble(sje);
 										w.wzz(zmn.trim(),i+1,sbh,sp,dw,dj,sl,je);
-										w.wkcout(sbh,sp,sl,"3,"+zmn.trim());
+										w.wkcout(sbh,sp,sl,"3,"+zmn.trim(),user);
 										if(i==mtable.getRowCount()-1){
 											mframe.setEnabled(true);
 											zm.dispose();
@@ -483,9 +483,9 @@ public class ZZ {
 						}
 						if(cot==0){
 							for(int i=0;i<arr.length;i++){
-								w.wkcout(arr[i][3],arr[i][0],Integer.parseInt(arr[i][1])*sl,"3,"+zmn);
+								w.wkcout(arr[i][3],arr[i][0],Integer.parseInt(arr[i][1])*sl,"3,"+zmn,user);
 							}
-							w.wkcin(xh,zmn,sl,zmn);
+							w.wkcin(xh,zmn,sl,zmn,user,"组装");
 							String[][] ar=gd.spcxjhj(spjt.getText().trim());
 							spdm.setDataVector(ar,spcn);
 							TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
@@ -571,6 +571,6 @@ public class ZZ {
 		});
 	}
 	public static void main(String[] args){
-		new ZZ();
+		new ZZ("test");
 	}
 }

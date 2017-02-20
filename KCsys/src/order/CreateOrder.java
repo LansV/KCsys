@@ -1,4 +1,4 @@
-package data;
+package order;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,13 +10,14 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import test.PrintWx;
+
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -25,36 +26,51 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-public class WXF{
+public class CreateOrder{
 	String mc="";                      //全局客户名称
 	String lxr="";						//全局联系人	
 	String lxtel="";					//全局联系电话
 	String addr="";						//全局地址
-	Double hj;
-	public WXF(){
-		getData gd=new getData();        //调用数据类
-		wData w=new wData();
-		List<String> spcount=new ArrayList<String>();
-		List<Integer> kccount=new ArrayList<Integer>();
+	Double hj;                           //合计
+	JLabel showhj=new JLabel();           //显示合计
+	public CreateOrder(int userid){
+		//getData gd=new getData();        //调用数据类
+		//wData w=new wData();
+		CreateOrderData d=new CreateOrderData();
+		List<String> spcount=new ArrayList<String>();   //商品名称
+		//List<Integer> kccount=new ArrayList<Integer>(); //库存数量
 		//-------------------------------------显示表格---------------------------------------------------
 		JPanel mp=new JPanel();
 		JScrollPane msp=new JScrollPane();
+		JPopupMenu rightmenu=new JPopupMenu();
+		JMenuItem deleteItem=new JMenuItem("删除");
+		rightmenu.add(deleteItem);
 		JTable mtable=new JTable(){
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
+				if(columnIndex==5){
+					try{
+						String st=aValue.toString();
+						@SuppressWarnings("unused")
+						Double price=Double.parseDouble(st);
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						return;
+					}
+				}
 				if(columnIndex==6){
 	                try {
 	                	String st=(String) aValue;
 						int num =Integer.parseInt(st);
-						if(num>kccount.get(rowIndex)){
+						/*if(num>kccount.get(rowIndex)){
 							JOptionPane.showMessageDialog(null,"超出库存");
 							return;
-						}
+						}*/
 						if(num==0){
 							JOptionPane.showMessageDialog(null,"不能为0");
 							return;
 						}
-	                } catch (Exception ex) {
+	                }catch(Exception ex){
 	                    JOptionPane.showMessageDialog(null, "只能输入数字!");
 	                    return;
 	                }
@@ -62,6 +78,19 @@ public class WXF{
 			      super.setValueAt(aValue,rowIndex,columnIndex);
 			}
 		};
+		//=======================================add table menu listener==================== 
+		mtable.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==3){
+					int r=mtable.rowAtPoint(e.getPoint());
+					if(mtable.getRowSelectionAllowed()==true){
+						mtable.setRowSelectionInterval(r,r);
+						rightmenu.show(mtable,e.getX(),e.getY());
+					}
+				}
+			}
+		});
+		//=================================tablemodel========================================
 		String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","备注"};
 		DefaultTableModel mdm=new DefaultTableModel(){
 			/**
@@ -69,7 +98,10 @@ public class WXF{
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm==4||colunm==6){
+				if(colunm>3&&colunm<7){
+					return true;
+				}
+				if(colunm==8){
 					return true;
 				}
 				return false;
@@ -81,6 +113,7 @@ public class WXF{
 	    mtable.setDefaultRenderer(Object.class, tcr);
 		mdm.setColumnIdentifiers(mcn);
 		mtable.setModel(mdm);
+		mtable.setRowHeight(22);
     	TableColumn cktablecxh=mtable.getColumnModel().getColumn(0);   //设置列宽    
     	cktablecxh.setPreferredWidth(40);   
     	cktablecxh.setMinWidth(40);
@@ -97,11 +130,40 @@ public class WXF{
     	cktablecdw.setPreferredWidth(40);   
     	cktablecdw.setMinWidth(40);
     	cktablecdw.setMaxWidth(40);
+    	TableColumn cktablecbz=mtable.getColumnModel().getColumn(8);   //设置列宽    
+    	cktablecbz.setPreferredWidth(350);   
+    	cktablecbz.setMinWidth(350);
+    	cktablecbz.setMaxWidth(350);
+    	//============================================删除行============================
+		deleteItem.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0){
+				// TODO Auto-generated method stub
+				int r=mtable.getSelectedRow();
+				mdm.removeRow(r);
+				spcount.remove(r);
+				//kccount.remove(r);
+				int rowcount=mtable.getRowCount();
+			    for(int i=0;i<rowcount;i++){
+					mtable.setValueAt(i+1,i,0);
+				}
+			    Double chj=0.0;
+				for(int i=0;i<mtable.getRowCount();i++){
+					String s=mtable.getValueAt(i,7).toString().trim();
+					Double d=Double.parseDouble(s);
+					chj=chj+d;
+				}
+				hj=chj;
+				showhj.setText(String.format("%.2f",hj));
+				//System.out.println(rowcount);
+			}
+		});
+		//=============================================================================
 		msp.setViewportView(mtable);
-		msp.setBounds(0,0,700,450);
+		msp.setBounds(0,0,960,450);
 		mp.setLayout(null);
 		mp.add(msp);
-		mp.setBounds(18,100,750,450);
+		mp.setBounds(18,100,1000,450);
 		Object[] row=new Object[mcn.length];
 		row[0]="";
 		row[1]="";
@@ -114,6 +176,8 @@ public class WXF{
 		row[8]="";
 		//--------------------------------商品数量------------------------------------------------------
 		JFrame spsl=new JFrame("填写数量");
+		spsl.setAlwaysOnTop(true);
+		spsl.setResizable(false);
 		Container spslc=spsl.getContentPane();
 		spslc.setLayout(null);
 		JLabel splb=new JLabel();
@@ -126,9 +190,10 @@ public class WXF{
 		spslc.add(sptx);
 		spslc.add(splb);
 		//------------------------------------商品选择面板---------------------------------------------------
-		JFrame sp=new JFrame("商品");
-		sp.setResizable(false);
-		Container spc=sp.getContentPane();
+		JFrame spFrame=new JFrame("商品");
+		spFrame.setAlwaysOnTop(true);
+		spFrame.setResizable(false);
+		Container spc=spFrame.getContentPane();
 		spc.setLayout(null);
 		JTextField spjt=new JTextField();
 		spjt.setBounds(20,10,120,25);
@@ -147,23 +212,18 @@ public class WXF{
 						}
 					}
 					if(sp==false){
-						JOptionPane.showMessageDialog(null,"已添加商品");
+						JOptionPane.showMessageDialog(spFrame,"已添加商品");
 					}else{
-						String s=sptable.getValueAt(spr,4).toString();
-						int i=Integer.parseInt(s);
-						if(i==0){
-							JOptionPane.showMessageDialog(null,"库存为零");
-						}else{
 							sptx.setText("");
+							spFrame.setEnabled(false);
 							spsl.setVisible(true);
 							splb.setText(sptable.getValueAt(spr,1).toString().trim());
-						}
 					}
 				}
 			}
 		});
 		sptable.getTableHeader().setReorderingAllowed(false);
-		String[][] sparr=gd.spcxdj(spjt.getText().trim());
+		String[][] sparr=d.spcxdj(spjt.getText().trim());
 		DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 			/**
 			 * 
@@ -193,7 +253,7 @@ public class WXF{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode()=='\n'){
-					String[][] sparr=gd.spcxdj(spjt.getText().trim());
+					String[][] sparr=d.spcxdj(spjt.getText().trim());
 					DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 						/**
 						 * 
@@ -219,16 +279,16 @@ public class WXF{
 		spj.add(spjs);
 		spc.add(spj);
 		spc.add(spjt);
-		sp.setBounds(760,10,500,650);
-		sp.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		spFrame.setBounds(900,100,500,650);
+		spFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		//------------------------------------主表模型监听-------------------------------------------------
 		mdm.addTableModelListener(new TableModelListener(){
 			@Override
-			public void tableChanged(TableModelEvent e) {
+			public void tableChanged(TableModelEvent e){
 				// TODO Auto-generated method stub
 				int r=e.getFirstRow();
 				int c=e.getColumn();
-				if(c==6||c==4){
+				if(3<c&&c<7){
 					String c4=mtable.getValueAt(r,4).toString().trim();
 					String c6=mtable.getValueAt(r,6).toString().trim();
 					if(c6.length()==0){
@@ -238,6 +298,7 @@ public class WXF{
 						int sl=Integer.parseInt(s);
 							if(c4.length()==0){
 								String d=mtable.getValueAt(r,5).toString().trim();
+//								System.out.println(d+" "+s);
 								Double dj = null;
 								dj=Double.parseDouble(d);
 								String zj=String.format("%.2f",dj*sl);
@@ -252,6 +313,7 @@ public class WXF{
 									JOptionPane.showMessageDialog(null,"输入非法");
 								}
 								Double zk=Double.parseDouble(z)/10;
+//								System.out.println(d+" "+s+" "+zk);
 								String zj=String.format("%.2f",dj*sl*zk);
 								mtable.setValueAt(zj,r,7);
 						}
@@ -265,6 +327,7 @@ public class WXF{
 						chj=chj+d;
 					}
 					hj=chj;
+					showhj.setText(String.format("%.2f",hj));
 				}
 			}
 		});
@@ -293,32 +356,24 @@ public class WXF{
 						}
 						try{
 							String s=sptx.getText().trim();
+							@SuppressWarnings("unused")
 							int pdnum=Integer.parseInt(s);
-							String skc=sptable.getValueAt(spr,4).toString().trim();
-							int kcsl=Integer.parseInt(skc);
-								if(pdnum>kcsl){
-									JOptionPane.showMessageDialog(null, "超出库存");
-								}else{
-									if(pdnum==0){
-										JOptionPane.showMessageDialog(null, "不能为0");
-									}else{
-										if(b==true){
-											mdm.addRow(row);
-											mtable.setValueAt(mr+1,mr,0);
-											mtable.setValueAt(sptable.getValueAt(spr,0),mr,1);
-											mtable.setValueAt(sptable.getValueAt(spr,1),mr,2);
-											mtable.setValueAt(sptable.getValueAt(spr,2),mr,3);
-											mtable.setValueAt(spzk.getText().trim(),mr,4);
-											mtable.setValueAt(sptable.getValueAt(spr,3),mr,5);
-											kccount.add(kcsl);
-											mtable.setValueAt(s,mr,6);
-											spsl.dispose();
-											spcount.add(sptable.getValueAt(spr,1).toString().trim());
-										}
-									}
-							}
+								if(b==true){
+									mdm.addRow(row);
+									mtable.setValueAt(mr+1,mr,0);
+									mtable.setValueAt(sptable.getValueAt(spr,0),mr,1);
+									mtable.setValueAt(sptable.getValueAt(spr,1),mr,2);
+									mtable.setValueAt(sptable.getValueAt(spr,2),mr,3);
+									mtable.setValueAt(spzk.getText().trim(),mr,4);
+									mtable.setValueAt(sptable.getValueAt(spr,3),mr,5);
+									//kccount.add(kcsl);
+									mtable.setValueAt(s,mr,6);
+									spFrame.setEnabled(true);
+									spsl.dispose();
+									spcount.add(sptable.getValueAt(spr,1).toString().trim());
+								}
 						}catch(Exception e1){
-							JOptionPane.showMessageDialog(null,"请填写数字");
+							JOptionPane.showMessageDialog(spsl,"请填写数字");
 							sptx.setText("");
 						}
 					}
@@ -326,19 +381,31 @@ public class WXF{
 			}
 		});
 		spsl.setBounds(700,150,250,150);
-		spsl.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		spsl.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				spFrame.setEnabled(true);
+				spsl.dispose();
+			}
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				spFrame.setEnabled(true);
+				spsl.dispose();
+			}
+		});
 		//------------------------------------选择客户面板-------------------------------------------------
 		JFrame khf=new JFrame("选择客户");
+		khf.setAlwaysOnTop(true);
 		khf.setResizable(false);
 		Container khfc=khf.getContentPane();
 		khfc.setLayout(null);
 		khf.setBounds(700,10,320,650);
-		khf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		JTextField cxjt=new JTextField();
 		cxjt.setBounds(10,10,120,25);
 		khfc.add(cxjt);
-		String ss="";
-		String[][] arr=gd.khx(ss);          //数据类里取二维数组
+		String[][] arr=d.khx(userid,"","");          //数据类里取二维数组
 		String[] cxcn={"名称","联系人","电话","地址"};
 		JScrollPane cxjsp=new JScrollPane();
 		JTable jtab=new JTable();
@@ -357,8 +424,9 @@ public class WXF{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyChar()=='\n'){
-					String[][] arr2=gd.khx(cxjt.getText().trim());
+					String[][] arr2=d.khx(userid,cxjt.getText().trim(),cxjt.getText().trim());
 					DefaultTableModel dm2=new DefaultTableModel(arr2,cxcn){
+
 						/**
 						 * 
 						 */
@@ -379,20 +447,22 @@ public class WXF{
 		cxjp.add(cxjsp);
 		khfc.add(cxjp);
 		//-----------------------------------------主面板----------------------------------------------------
-		JFrame mf=new JFrame("维修");
+		JFrame mf=new JFrame("订单提交");
+		mf.setAlwaysOnTop(true);
 		mf.setResizable(false);
 		Container mfc=mf.getContentPane();
-		JComboBox<String> jc=new JComboBox<String>();
+		/*//JComboBox<String> jc=new JComboBox<String>();
 		jc.addItem("快递代收");
 		jc.addItem("现金");
 		jc.addItem("银行");
 		jc.addItem("其他");
-		jc.setBounds(600,60,80,25);
+		jc.setBounds(600,60,80,25);*/
 		JButton kh_b=new JButton("选择客户");
 		kh_b.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				mf.setEnabled(false);
 				khf.setVisible(true);
 			}
 		});
@@ -400,7 +470,7 @@ public class WXF{
 		JPanel jtp=new JPanel();
 		jtp.setLayout(null);
 		jtp.add(kh_b);
-		jtp.add(jc);
+		//jtp.add(jc);
 		JLabel mcl=new JLabel("客户:");
 		mcl.setBounds(10,20,40,25);
 		JTextField mct=new JTextField();
@@ -428,72 +498,36 @@ public class WXF{
 		JLabel ml=new JLabel();
 		ml.setBounds(20,560,80,25);
 		jtp.setBounds(0,0,750,90);
-		JButton mbutton=new JButton("添加");
+		JButton mbutton=new JButton("商品");
 		mbutton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				sp.setVisible(true);
+				spFrame.setVisible(true);
 			}
 		});
-		mbutton.setBounds(650,560,60,25);
-		//----------------------------------------------------------------------
-		JFrame rL_LabourFrame=new JFrame("人工费");
-		rL_LabourFrame.setResizable(false);
-		rL_LabourFrame.setBounds(700,150,250,120);
-		Container rL_LabourFrame_Content=rL_LabourFrame.getContentPane();
-		rL_LabourFrame_Content.setLayout(null);
-		JTextField rL_LabourFrame_TextF=new JTextField();
-		rL_LabourFrame_TextF.addKeyListener(new KeyAdapter(){
-			@Override
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-				int mr=mtable.getRowCount();
-				if(e.getKeyChar()=='\n'){
-					mdm.addRow(row);
-					mtable.setValueAt(mr+1,mr,0);
-					mtable.setValueAt("",mr,1);
-					mtable.setValueAt("人工费",mr,2);
-					mtable.setValueAt("件",mr,3);
-					mtable.setValueAt("",mr,4);
-					mtable.setValueAt(rL_LabourFrame_TextF.getText().trim(),mr,5);
-					kccount.add(1);
-					mtable.setValueAt("1",mr,6);
-					mf.setEnabled(true);
-					rL_LabourFrame.dispose();
-					spcount.add("人工费");
-				}
-			}
-		});
-		rL_LabourFrame_TextF.setBounds(10,27,120,25);
-		rL_LabourFrame_Content.add(rL_LabourFrame_TextF);
-		JButton tjrg=new JButton("人工");
-		tjrg.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				mf.setEnabled(false);
-				rL_LabourFrame.setVisible(true);
-			}
-		});
-		tjrg.setBounds(500,560,60,25);
-		//---------------------------------------------------------------------------------------------
-		JButton mxsb=new JButton("出单");
+		mbutton.setBounds(670,560,60,25);
+		showhj.setBounds(600,560,60,25);
+		JButton mxsb=new JButton("提交");
 		mxsb.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				
 				int cr=mtable.getRowCount();
 				if(cr==0){
 					JOptionPane.showMessageDialog(null, "无数据");
 				}else{
+					
 					if(mtable.isEditing()==true){
 						mtable.getCellEditor().stopCellEditing();
 					}
 					String dh=ml.getText().trim();
+					mc=mct.getText();
 					if(mc.length()==0){
 						JOptionPane.showMessageDialog(null,"客户未填写");
 					}else if(dh.length()!=0&&mc.length()!=0){
+						
 						int slhj=0;
 						List<Object> listkh=new ArrayList<Object>();
 						List<Object> listsp=new ArrayList<Object>();
@@ -506,11 +540,12 @@ public class WXF{
 						listkh.add(lxr);
 						listkh.add(lxtel);
 						listkh.add(addr);
-						listkh.add(jc.getSelectedItem());
+						listkh.add("");
 						if(mct.isEditable()==true){
-							w.wkh(mc,lxr,lxtel,addr);
+							d.addCustomer(mc,lxr,lxtel,addr,userid);
 						}
 							for(int i=0;i<cr;i++){
+								
 								String xhs=mtable.getValueAt(i,0).toString().trim();
 								int bh=Integer.parseInt(xhs);
 								String xh=mtable.getValueAt(i,1).toString().trim();
@@ -533,13 +568,9 @@ public class WXF{
 								String bz=mtable.getValueAt(i,8).toString().trim();
 								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								if(sp.equals("人工费")==true){
-									
-								}else{
-									//w.wkcout(xh,sp,sl,"2,"+dh);   //库存减少
-								}
-								//w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz); // 写入维修表
-								String[][] sparr=gd.spcxdj(spjt.getText().trim());
+								
+								d.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,userid);
+								String[][] sparr=d.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 									private static final long serialVersionUID = 1L;
 									public boolean isCellEditable(int row,int colunm){
@@ -557,18 +588,18 @@ public class WXF{
 						    	sptablecl.setMinWidth(180);
 						    	sptablecl.setMaxWidth(180);
 							}
-							w.wys(dh,mc,hj);
+							//w.wys(dh,mc,hj);
 							listhj.add(changenum(hj));
 							listhj.add(slhj);
 							listhj.add(String.format("%.2f",hj));
 							mdm.setRowCount(0);
 							spcount.clear();        //clear count 
-							kccount.clear();        //clear count
-							PrintWx.setkhls(listkh);
-							PrintWx.setsp(listsp);
-							PrintWx.sethj(listhj);
-							ml.setText(gd.wxdh());
-							new PrintWx();
+							//.kccount.clear();        //clear count
+							/*Printclass.setkhls(listkh);
+							Printclass.setsp(listsp);
+							Printclass.sethj(listhj);*/
+							ml.setText(d.xsdh());
+							//new Printclass();
 /*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
 							if(khselect==0){
 								khf.setVisible(true);
@@ -583,25 +614,17 @@ public class WXF{
 		mxsb.setBounds(300,560,60,25);
 		mfc.setLayout(null);
 		mfc.add(jtp);
-		mfc.add(tjrg);
 		mfc.add(mxsb);
 		mfc.add(ml);
 		mfc.add(mp);
 		mfc.add(mbutton);
-		mf.setBounds(20,50,750,630);
+		mfc.add(showhj);
+		mf.setBounds(400,100,1000,630);
 		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		mf.addWindowListener(new WindowAdapter(){
 			public void windowClosed(WindowEvent e) {
 				// TODO Auto-generated method stub
-				sp.dispose();
-			}
-		});
-		//------------------------------------------------------------------
-		rL_LabourFrame.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent e) {
-				// TODO Auto-generated method stub
-				mf.setEnabled(true);
-				rL_LabourFrame.dispose();
+				spFrame.dispose();
 			}
 		});
 		//--------------------------------------客户选择监听-------------------------------------------------
@@ -623,16 +646,27 @@ public class WXF{
 					addrt.setText(addr);
 					addrt.setEditable(false);
 					khf.dispose();
-					String s=gd.wxdh();
+					String s=d.xsdh();
+					//System.out.println(s);
 					ml.setText(s);
+					mf.setEnabled(true);
 					mf.setVisible(true);
 				}
+			}
+		});
+		khf.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				mf.setEnabled(true);
+				khf.dispose();
 			}
 		});
 		//-------------------------------------------------------------------------------------------
 		int r=JOptionPane.showConfirmDialog(null,"客户是否为新客户","选择",JOptionPane.YES_NO_OPTION);//返回选择值
 		if(r==0){
-			String s=gd.wxdh();
+			String s=d.xsdh();
+			//System.out.println(s);
 			ml.setText(s);
 			mf.setVisible(true);
 		}else{
@@ -641,9 +675,6 @@ public class WXF{
 		//-----------------------------------------------------------------------------------------
 	}
 	
-	public static void main(String[] args){
-		new WXF();
-	}
 	//-------------------------------------------------------------------------------------
 	public String changenum(Double numb){
 		String num[] = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };

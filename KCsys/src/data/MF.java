@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 public class MF {
-	public MF(){
+	public MF(int userid,String user){
 		JFrame mf=new JFrame("主菜单");
 		mf.setResizable(false);
 		mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,7 +37,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new KCx();
+				new KCx(user);
 			}
 		});
 		kc.setBounds(160,10,60,30);
@@ -47,7 +47,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new XSF();
+				new XSF(user);
 			}
 		});
 		xs.setBounds(20,50,60,30);
@@ -57,7 +57,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new YS();
+				new YS(user);
 			}
 		});
 		ys.setBounds(90,50,60,30);
@@ -87,7 +87,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new ZZ();
+				new Assemble(user);
 			}
 		});
 		zz.setBounds(90,90,60,30);
@@ -107,7 +107,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new WXF();
+				new RepairList(user);
 			}
 		});
 		wx.setBounds(160,130,60,30);
@@ -143,9 +143,26 @@ public class MF {
 		});
 		tjchf.setBounds(20,170,60,30);
 		mfc.add(tjchf);
+		JButton qSAR=new JButton("查询");
+		qSAR.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new QuerySaleAndRepair(user);
+			}
+		});
+		qSAR.setBounds(90,170,60,30);
+		mfc.add(qSAR);
+//		JButton assemble=new JButton("组装");
+//		assemble.addActionListener(new ActionListener(){
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				// TODO Auto-generated method stub
+//				new Assemble(user);
+//			}
+//		});
+//		assemble.setBounds(160,170,60,30);
+//		mfc.add(assemble);
 		mf.setVisible(true);
-	}
-	public static void main(String[] args){
-		new MF();
 	}
 }

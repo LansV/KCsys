@@ -1,4 +1,4 @@
-package data;
+package order;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -557,7 +557,7 @@ public class wData {
 		}
 	}
 	//--------------------------------------------------------更新入库-----------------------------------
-	public void wkcin(String sbh,String sckcp,int sn,String ly,String user,String dh){
+	public void wkcin(String sbh,String sckcp,int sn,String ly){
 		Date date2=new Date();
 		int kcsl = 0;
 		int jg = 0;
@@ -578,7 +578,7 @@ public class wData {
 			sql = con.createStatement();
 			sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";"
 					  + "UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
-					  + "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','"+user+"','"+ckd+"','"+time+"','"+dh+"')");
+					  + "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','admin','"+ckd+"','"+time+"','NULL')");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"写入库存错误");
 		}finally{
@@ -595,7 +595,7 @@ public class wData {
 		}
 	}
 	//--------------------------------------------------------更新出库-----------------------------------
-	public void wkcout(String sbh,String sckcp,int sn,String qx,String user){
+	public void wkcout(String sbh,String sckcp,int sn,String qx){
 		int kcsl = 0;
 		int jg = 0;
 		Date date2=new Date();
@@ -618,10 +618,10 @@ public class wData {
 			if(qx.length()>1){
 				String[] st=qx.split(",");
 				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
-						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','"+user+"','"+ckd+"','"+time+"','"+st[1]+"')");
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','admin','"+ckd+"','"+time+"','"+st[1]+"')");
 			}else{
 				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
-						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','NULL')");
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','admin','"+ckd+"','"+time+"','NULL')");
 			}
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"出库错误");
@@ -674,14 +674,14 @@ public class wData {
 	}
 	//-------------------------------------------------写入维修---------------------------------------------
 	public void wx(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz,int skfs,String user) {
+			Double dj, int sl, Double je, String bz,int skfs) {
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
 			sql.execute("insert into WXD values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
-					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"')");
+					+ ","+skfs+",0,'"+ckd+"',1)");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"错误");
 		}finally{
@@ -699,7 +699,7 @@ public class wData {
 	}
 	//-------------------------------------------------写入销售单---------------------------------------------
 	public Boolean wxs(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz,int skfs,String user) {
+			Double dj, int sl, Double je, String bz,int skfs) {
 		Boolean b=true;
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
@@ -707,7 +707,7 @@ public class wData {
 			sql = con.createStatement();
 			sql.execute("insert into XSD values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
-					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"')");
+					+ ","+skfs+",0,'"+ckd+"',1)");
 		}catch(Exception e){
 			b=false;
 			JOptionPane.showMessageDialog(null,"添加销售单错误");

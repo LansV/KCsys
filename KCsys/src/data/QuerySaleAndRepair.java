@@ -8,7 +8,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -25,15 +27,14 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import test.Printclass;
-
-public class YS {
-	YSdata d=new YSdata();
+public class QuerySaleAndRepair {
+	QuerySaleAndRepairData d=new QuerySaleAndRepairData();
 	wData w=new wData();
 	Double hj;
 	int tabler;
 	int wzx;
 	int wzy;
-	public YS(String user){
+	public QuerySaleAndRepair(String user){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
 	    String[] mcn={"序号","商品型号","商品名称","单位","折扣","单价","数量","金额","收款","备注"};
@@ -172,11 +173,11 @@ public class YS {
 		JButton xxf_OldSaleReceipt_b=new JButton("查看原单");
 		xxf_OldSaleReceipt_b.setVisible(false);
 		xxf_OldSaleReceipt_b.setBounds(380,60,90,25);
-		xxf_OldSaleReceipt_b.addActionListener(new ActionListener() {
+		xxf_OldSaleReceipt_b.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")) {
+				if(xxf_OldSaleReceipt_b.getText().equals("查看原单")){
 					sk.setEnabled(false);
 					th.setEnabled(false);
 					if(xxf_ShowNo.getText().trim().substring(0,1).equals("X")){
@@ -184,29 +185,28 @@ public class YS {
 					}else{
 						xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()),mcn);
 					}
-					//xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
-			    	cktablecxh.setPreferredWidth(40);
+			    	cktablecxh.setPreferredWidth(40);   
 			    	cktablecxh.setMinWidth(40);
 			    	cktablecxh.setMaxWidth(40);
 			    	TableColumn cktableczl=xxtable.getColumnModel().getColumn(1);   //设置列宽    
-			    	cktableczl.setPreferredWidth(70);
+			    	cktableczl.setPreferredWidth(70);   
 			    	cktableczl.setMinWidth(70);
 			    	cktableczl.setMaxWidth(70);
 			    	TableColumn cktableccp=xxtable.getColumnModel().getColumn(2);   //设置列宽    
-			    	cktableccp.setPreferredWidth(180);  
+			    	cktableccp.setPreferredWidth(180);   
 			    	cktableccp.setMinWidth(180);
 			    	cktableccp.setMaxWidth(180);
 			    	TableColumn cktablecdw=xxtable.getColumnModel().getColumn(3);   //设置列宽    
-			    	cktablecdw.setPreferredWidth(40); 
+			    	cktablecdw.setPreferredWidth(40);   
 			    	cktablecdw.setMinWidth(40);
 			    	cktablecdw.setMaxWidth(40);
 			    	TableColumn cktablezk=xxtable.getColumnModel().getColumn(4);   //设置列宽    
-			    	cktablezk.setPreferredWidth(40);
+			    	cktablezk.setPreferredWidth(40);   
 			    	cktablezk.setMinWidth(40);
 			    	cktablezk.setMaxWidth(40);
 			    	TableColumn cktablesl=xxtable.getColumnModel().getColumn(6);   //设置列宽    
-			    	cktablesl.setPreferredWidth(40);
+			    	cktablesl.setPreferredWidth(40);   
 			    	cktablesl.setMinWidth(40);
 			    	cktablesl.setMaxWidth(40);
 			    	int row=xxtable.getRowCount();
@@ -225,7 +225,6 @@ public class YS {
 					}else{
 						xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()),mcn);
 					}
-				//	xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()), mcn);
 					TableColumn cktablecxh=xxtable.getColumnModel().getColumn(0);   //设置列宽    
 			    	cktablecxh.setPreferredWidth(40);   
 			    	cktablecxh.setMinWidth(40);
@@ -371,31 +370,117 @@ public class YS {
 			}
 		});
 		//-------------------------------------overview panel-------------------------------------------
-		JFrame ff=new JFrame("总览");
-		ff.setResizable(false);
-		ff.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		Container ffc=ff.getContentPane();
-		ffc.setLayout(null);
-		ff.setBounds(350,180,650,350);
-		JTable table=new JTable();
-		table.getTableHeader().setReorderingAllowed(false);
-	    table.setDefaultRenderer(Object.class, tcr);
-		String[] xcn={"单号","名称","总计","已收","应收","最后更新"};
-		DefaultTableModel xdm=new DefaultTableModel(){
+		JFrame qSAR_MainFrame=new JFrame("单据查询");
+		qSAR_MainFrame.setResizable(false);
+		qSAR_MainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		Container qSAR_MainFrame_Content=qSAR_MainFrame.getContentPane();
+		qSAR_MainFrame_Content.setLayout(null);
+		qSAR_MainFrame.setBounds(350,180,650,500);
+		JButton qSAR_MainFrame_QueryB=new JButton("查询");
+		qSAR_MainFrame_QueryB.setBounds(570,10,60,22);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_QueryB);
+		JTextField qSAR_MainFrame_QueryNo=new JTextField();
+		qSAR_MainFrame_QueryNo.setBounds(200,10,70,22);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_QueryNo);
+		JTextField qSAR_MainFrame_QueryName=new JTextField();
+		qSAR_MainFrame_QueryName.setBounds(10,10,180,22);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_QueryName);
+		JTextField qSAR_MainFrame_QueryDate1=new JTextField();	
+		qSAR_MainFrame_QueryDate1.setBounds(280,10,80,22);
+		JTextField qSAR_MainFrame_QueryDate2=new JTextField();
+		qSAR_MainFrame_QueryDate2.setBounds(373,10,80,22);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_QueryDate2);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_QueryDate1);
+		JLabel qSAR_MainFrame_QueryLabel=new JLabel("—");
+		qSAR_MainFrame_QueryLabel.setBounds(360,10,30,22);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_QueryLabel);
+		JTable qSAR_MainTable=new JTable();
+		qSAR_MainTable.getTableHeader().setReorderingAllowed(false);
+	    qSAR_MainTable.setDefaultRenderer(Object.class, tcr);
+		String[] qSAR_MainTable_ColumnName={"单号","名称","总计","已收","应收","最后更新"};
+		DefaultTableModel xdm=new DefaultTableModel(d.xys("","","",""),qSAR_MainTable_ColumnName){
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int column){
 				return false;  //返回不可编辑
 			}
 		};
-		table.setModel(xdm);
-		table.setRowHeight(20);
+		qSAR_MainTable.setModel(xdm);
+		TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
+    	cktablecxh.setPreferredWidth(180);   
+    	cktablecxh.setMinWidth(180);
+    	cktablecxh.setMaxWidth(180);
+		qSAR_MainTable.setRowHeight(20);
+		//===========================================单据查询=========================================
+		qSAR_MainFrame_QueryB.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String QueryName=qSAR_MainFrame_QueryName.getText().trim();
+				String QueryNo=qSAR_MainFrame_QueryNo.getText().trim();
+				String QueryDate1=qSAR_MainFrame_QueryDate1.getText().trim();
+				String QueryDate2=qSAR_MainFrame_QueryDate2.getText().trim();
+				if(QueryDate1.length()==0){
+					QueryDate1="2000-1-1";
+				}
+				if(QueryDate2.length()==0){
+					Date cDate=new Date();
+					QueryDate2=String.format("%tF",cDate);
+				}
+				try{
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");  
+					Date cDate = sdf.parse(QueryDate1); 
+					Date xDate = sdf.parse(QueryDate2);
+					xdm.setDataVector(d.xys(QueryName,QueryNo,String.format("%tF",cDate),String.format("%tF",xDate)),qSAR_MainTable_ColumnName);
+					TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
+			    	cktablecxh.setPreferredWidth(180);   
+			    	cktablecxh.setMinWidth(180);
+			    	cktablecxh.setMaxWidth(180);
+				}catch(Exception e1){
+					JOptionPane.showMessageDialog(null,"日期格式错误");
+				}
+			}
+		});
+		qSAR_MainFrame_QueryName.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
+		qSAR_MainFrame_QueryNo.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
+		qSAR_MainFrame_QueryDate1.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
+		qSAR_MainFrame_QueryDate2.addKeyListener(new KeyAdapter(){
+			@Override
+			public void keyPressed(KeyEvent arg0) {
+				// TODO Auto-generated method stub
+				if(arg0.getKeyChar()=='\n'){
+					qSAR_MainFrame_QueryB.doClick();
+				}
+			}
+		});
 		//-------------------------------------退货原因输入监听------------------------------------------
 		thtyz.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
 				if(e.getKeyCode()=='\n'){
-					if(thtsl.isEnabled()){
-						// one product return 
-						int r=xxtable.getSelectedRow();
+					if(thtsl.isEnabled()){   // some product return    
 						if(thtyz.getText().trim().length()==0){
 							JOptionPane.showMessageDialog(null,"原因为空");
 						}else{
@@ -405,6 +490,7 @@ public class YS {
 							}else{
 								try{
 									int thsl=Integer.parseInt(sth);
+									int r=xxtable.getSelectedRow();
 									int yysl=Integer.parseInt(xxtable.getValueAt(r,6).toString().trim());
 									if(thsl<=yysl){
 										String yy=thtyz.getText().trim(); //退货原因
@@ -425,9 +511,7 @@ public class YS {
 											thje=dj*thsl*zk/10;
 										}
 										d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2,user);
-										if(sp.equals("人工费")==false){
-											w.wkcin(xh,sp,thsl,kh+"退货",user,dh);
-										}
+										w.wkcin(xh,sp,thsl,kh+"退货",user,dh);
 										if(dh.substring(0,1).equals("X")){
 											xxmdm.setDataVector(d.wxd(dh),mcn);
 										}else{
@@ -482,10 +566,10 @@ public class YS {
 						if(thtyz.getText().trim().length()==0){
 							JOptionPane.showMessageDialog(null,"原因为空");
 						}else{
-							int r=table.getSelectedRow();
+							int r=qSAR_MainTable.getSelectedRow();
 							String yy=thtyz.getText().trim();
-							String dh=table.getValueAt(r,0).toString().trim();
-							String kh=table.getValueAt(r,1).toString().trim();
+							String dh=qSAR_MainTable.getValueAt(r,0).toString().trim();
+							String kh=qSAR_MainTable.getValueAt(r,1).toString().trim();
 							int xrc=xxtable.getRowCount();
 							for(int i=0;i<xrc;i++){
 								String xh=xxtable.getValueAt(i,1).toString().trim();
@@ -511,12 +595,12 @@ public class YS {
 									d.alterSkstatus(dh,i+1,3);
 								}
 							}
-							xdm.setDataVector(d.xys(kh),xcn);
-							TableColumn cktablecxh=table.getColumnModel().getColumn(1);   //设置列宽    
+							xdm.setDataVector(d.xys(kh,"","",""),qSAR_MainTable_ColumnName);
+							TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
 					    	cktablecxh.setPreferredWidth(180);   
 					    	cktablecxh.setMinWidth(180);
 					    	cktablecxh.setMaxWidth(180);
-							ff.setEnabled(true);
+							qSAR_MainFrame.setEnabled(true);
 							thtyz.setText("");
 							thf.dispose();
 						}
@@ -540,8 +624,8 @@ public class YS {
 								int r=xxtable.getSelectedRow();
 								int yysl=Integer.parseInt(xxtable.getValueAt(r,6).toString().trim());
 								if(thsl<=yysl){
-									String yy=thtyz.getText().trim();    //退货原因
-									String dh=xxf_ShowNo.getText().trim();   //获取单号
+									String yy=thtyz.getText().trim(); //退货原因
+									String dh=xxf_ShowNo.getText().trim(); //获取单号
 									String kh=mct.getText().trim();   //获取客户名称
 									int bh=Integer.parseInt(xxtable.getValueAt(r,0).toString().trim());
 									String xh=xxtable.getValueAt(r,1).toString().trim();   //get product model
@@ -558,9 +642,7 @@ public class YS {
 										thje=dj*thsl*zk/10;
 									}
 									d.gth(dh,kh,bh,xh,sp,dw,zk,dj,thsl,thje,yy,2,user);
-									if(sp.equals("人工费")==false){
-										w.wkcin(xh,sp,thsl,kh+"退货",user,dh);
-									}
+									w.wkcin(xh,sp,thsl,kh+"退货",user,dh);
 									if(dh.substring(0,1).equals("X")){
 										xxmdm.setDataVector(d.wxd(dh),mcn);
 									}else{
@@ -620,7 +702,7 @@ public class YS {
 				if(xxf.isVisible()){
 					xxf.setEnabled(true);
 				}else{
-					ff.setEnabled(true);
+					qSAR_MainFrame.setEnabled(true);
 				}
 				thtsl.setEnabled(false);
 				thtsl.setText("");
@@ -637,22 +719,22 @@ public class YS {
 		pm.add(hz);
 		pm.add(qth);
 		//------------------------------------------表格监听---------------------------------
-		table.addMouseListener(new MouseAdapter(){
+		qSAR_MainTable.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub	
 				if(e.getButton()==3){
-					int r=table.rowAtPoint(e.getPoint());
-					if(table.getRowSelectionAllowed()==true){
-						table.setRowSelectionInterval(r,r);
-						pm.show(table,e.getX(),e.getY());
+					int r=qSAR_MainTable.rowAtPoint(e.getPoint());
+					if(qSAR_MainTable.getRowSelectionAllowed()==true){
+						qSAR_MainTable.setRowSelectionInterval(r,r);
+						pm.show(qSAR_MainTable,e.getX(),e.getY());
 						wzx=e.getX();
 						wzy=e.getY();
 					}
 				}
 				if(e.getButton()==1&&e.getClickCount()==2){
-					ff.setEnabled(false);
-					int r=table.getSelectedRow();
-					String st=table.getValueAt(r,0).toString().trim();
+					qSAR_MainFrame.setEnabled(false);
+					int r=qSAR_MainTable.getSelectedRow();
+					String st=qSAR_MainTable.getValueAt(r,0).toString().trim();
 					if(st.substring(0,1).equals("X")){
 						xxmdm.setDataVector(d.wxd(st),mcn);
 					}else{
@@ -667,15 +749,15 @@ public class YS {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				int r=table.getSelectedRow();
-				String st=table.getValueAt(r,0).toString().trim();
+				int r=qSAR_MainTable.getSelectedRow();
+				String st=qSAR_MainTable.getValueAt(r,0).toString().trim();
 				if(st.substring(0,1).equals("X")){
 					xxmdm.setDataVector(d.wxd(st),mcn);
 				}else{
 						xxmdm.setDataVector(d.xsd(st),mcn);
 				}
 				thf.setVisible(true);
-				ff.setEnabled(false);
+				qSAR_MainFrame.setEnabled(false);
 			}	
 		});
 		//-----------------------------------Listener of show detailed panel-------------------------------------------
@@ -683,11 +765,11 @@ public class YS {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				int r=table.getSelectedRow();
-				String st=table.getValueAt(r,0).toString().trim();
-				String sn=table.getValueAt(r,1).toString().trim();
+				int r=qSAR_MainTable.getSelectedRow();
+				String st=qSAR_MainTable.getValueAt(r,0).toString().trim();
+				String sn=qSAR_MainTable.getValueAt(r,1).toString().trim();
 				xxf_ShowNo.setText(st);
-				ff.setEnabled(false);
+				qSAR_MainFrame.setEnabled(false);
 				List<String> ls=d.getcustomerinfo(sn);
 				mct.setText(ls.get(0));lxrt.setText(ls.get(1));lxrtelt.setText(ls.get(2));addrt.setText(ls.get(3));
 				jc.setSelectedIndex(d.getproceedsmethod(st));
@@ -737,17 +819,17 @@ public class YS {
 		hzt.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e) {
 				if(e.getKeyCode()=='\n'){
-					int r=table.getSelectedRow();
-					String dh=table.getValueAt(r,0).toString().trim();
-					String kh=table.getValueAt(r,1).toString().trim();
-					String st=table.getValueAt(r,4).toString().trim();
+					int r=qSAR_MainTable.getSelectedRow();
+					String dh=qSAR_MainTable.getValueAt(r,0).toString().trim();
+					String kh=qSAR_MainTable.getValueAt(r,1).toString().trim();
+					String st=qSAR_MainTable.getValueAt(r,4).toString().trim();
 					Double je=Double.parseDouble(st);
 					String bz=hzt.getText().trim();
 					d.whz(dh,kh,je,bz);
-					String[][] xarr=d.xys(kh);
-					xdm.setDataVector(xarr, xcn);
+					String[][] xarr=d.xys(kh,"","","");
+					xdm.setDataVector(xarr, qSAR_MainTable_ColumnName);
 					hzt.setText("");
-					ff.setEnabled(true);
+					qSAR_MainFrame.setEnabled(true);
 					hzf.dispose();
 				}
 			}
@@ -757,79 +839,29 @@ public class YS {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				ff.setEnabled(false);
+				qSAR_MainFrame.setEnabled(false);
 				hzf.setVisible(true);
 			}
 		});
 		//-----------------------------------------------------------------------------------------------
-		JScrollPane xjsp=new JScrollPane();
-		xjsp.setViewportView(table);
-		xjsp.setBounds(10,5,625,310);
-		ffc.add(xjsp);
+		JScrollPane qSAR_MainFrame_Js=new JScrollPane();
+		qSAR_MainFrame_Js.setViewportView(qSAR_MainTable);
+		qSAR_MainFrame_Js.setBounds(10,40,625,420);
+		qSAR_MainFrame_Content.add(qSAR_MainFrame_Js);
 		//---------------------------------------------------应收总面板-------------------------------------------
-		JFrame f=new JFrame("应收");
-		f.setResizable(false);
-		Container fc=f.getContentPane();
-		fc.setLayout(null);
-		f.setBounds(1000,50,380,670);
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		JLabel fhj=new JLabel("");
-		fhj.setBounds(210,605,200,20);
-		String[][] arr=d.ys();
-		String[] cxcn={"客户名称","应收","最后日期"};
-		JScrollPane jsp=new JScrollPane();
-		JTable jtab=new JTable();
-		jtab.getTableHeader().setReorderingAllowed(false);
-		DefaultTableModel dm=new DefaultTableModel(arr,cxcn){
-			private static final long serialVersionUID = 1L;
-			public boolean isCellEditable(int row,int column){
-				return false;  //返回不可编辑
-			}
-		};
-		jtab.setModel(dm);
-		jtab.setRowHeight(20);
-		TableColumn cj=jtab.getColumnModel().getColumn(0);   //设置列宽    
-    	cj.setPreferredWidth(180);   
-    	cj.setMinWidth(180);
-    	cj.setMaxWidth(180);
-		jtab.setDefaultRenderer(Object.class, tcr);
-		Double fthj=0.0;
-		int fjtabr=jtab.getRowCount();
-		for(int fx=0;fx<fjtabr;fx++){
-			Double t=Double.parseDouble(jtab.getValueAt(fx,1).toString());
-			fthj=t+fthj;
-		}
-		fhj.setText("合计: "+String.format("%.2f",fthj));
-		jtab.addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				// TODO Auto-generated method stub
-				if(e.getClickCount()==2&&e.getButton()==1){
-					f.setEnabled(false);
-					int r=jtab.getSelectedRow();
-					String s=jtab.getValueAt(r,0).toString().trim();
-					String[][] xarr=d.xys(s);
-					xdm.setDataVector(xarr, xcn);
-					TableColumn cktablecxh=table.getColumnModel().getColumn(1);   //设置列宽    
-			    	cktablecxh.setPreferredWidth(180);   
-			    	cktablecxh.setMinWidth(180);
-			    	cktablecxh.setMaxWidth(180);
-					ff.setVisible(true);
-				}
-			}
-		});
 		//-----------------------------------------detail panel close listener------------------------------------------
 		xxf.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				int i=jtab.getSelectedRow();
-				xdm.setDataVector(d.xys(jtab.getValueAt(i,0).toString()),xcn);
-				TableColumn cktablecxh=table.getColumnModel().getColumn(1);   //设置列宽    
+				//int i=jtab.getSelectedRow();
+				//xdm.setDataVector(d.xys(jtab.getValueAt(i,0).toString()),xcn);
+				TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
 		    	cktablecxh.setPreferredWidth(180);   
 		    	cktablecxh.setMinWidth(180);
 		    	cktablecxh.setMaxWidth(180);
 		    	xxf_OldSaleReceipt_b.setText("查看原单");
 		    	xxf_OldSaleReceipt_b.setVisible(false);
-				ff.setEnabled(true);
+				qSAR_MainFrame.setEnabled(true);
 				xxf.dispose();
 			}
 		});
@@ -903,7 +935,7 @@ public class YS {
 							xf.dispose();
 						}
 					}else{
-						int sr=table.getSelectedRow();
+						int sr=qSAR_MainTable.getSelectedRow();
 						String s=xt.getText().trim();
 						if(s.length()==0){
 							JOptionPane.showMessageDialog(null,"金额为空值");
@@ -911,8 +943,8 @@ public class YS {
 							try{
 								Double sk=Double.parseDouble(s);
 								if(sk>0){
-									Double ys=Double.parseDouble(table.getValueAt(sr,4).toString());
-									String dh=table.getValueAt(sr,0).toString();
+									Double ys=Double.parseDouble(qSAR_MainTable.getValueAt(sr,4).toString());
+									String dh=qSAR_MainTable.getValueAt(sr,0).toString();
 									if(sk>ys){       //proceeds more than receivables
 										int j=xxtable.getRowCount();
 										for(int i=0;i<j;i++){
@@ -950,14 +982,14 @@ public class YS {
 							}catch(Exception e1){
 								JOptionPane.showMessageDialog(null,"非法输入");
 							}
-							String kh=table.getValueAt(sr,1).toString().trim();
-							String[][] xarr=d.xys(kh);
-							xdm.setDataVector(xarr, xcn);
-							TableColumn cktablecxh=table.getColumnModel().getColumn(1);   //设置列宽    
+							String kh=qSAR_MainTable.getValueAt(sr,1).toString().trim();
+							String[][] xarr=d.xys(kh,"","","");
+							xdm.setDataVector(xarr, qSAR_MainTable_ColumnName);
+							TableColumn cktablecxh=qSAR_MainTable.getColumnModel().getColumn(1);   //设置列宽    
 					    	cktablecxh.setPreferredWidth(180);   
 					    	cktablecxh.setMinWidth(180);
 					    	cktablecxh.setMaxWidth(180);
-							ff.setEnabled(true);
+							qSAR_MainFrame.setEnabled(true);
 							xt.setText("");
 							xf.dispose();
 						}
@@ -966,31 +998,17 @@ public class YS {
 			}
 		});
 		//--------------------------------------------------------------------------------------------------------
-		ff.addWindowListener(new WindowAdapter(){
+		qSAR_MainFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				String[][] arr2=d.ys();
-				dm.setDataVector(arr2,cxcn);
-				TableColumn cj=jtab.getColumnModel().getColumn(0);   //设置列宽    
-		    	cj.setPreferredWidth(180);   
-		    	cj.setMinWidth(180);
-		    	cj.setMaxWidth(180);
-		    	Double fthj=0.0;
-				int fjtabr=jtab.getRowCount();
-				for(int fx=0;fx<fjtabr;fx++){
-					Double t=Double.parseDouble(jtab.getValueAt(fx,1).toString());
-					fthj=t+fthj;
-				}
-				fhj.setText("合计: "+String.format("%.2f",fthj));
-				f.setEnabled(true);
-				ff.dispose();
+				qSAR_MainFrame.dispose();
 			}
 		});
 		//---------------------------------------------------------------------------------------------------------
 		hzf.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				ff.setEnabled(true);
+				qSAR_MainFrame.setEnabled(true);
 				hzf.dispose();
 			}
 		});
@@ -1002,25 +1020,17 @@ public class YS {
 					xxf.setEnabled(true);
 					xf.dispose();
 				}else{
-					ff.setEnabled(true);
+					qSAR_MainFrame.setEnabled(true);
 					xf.dispose();
 				}
 				
 			}
 		});
 		//-------------------------------------------------------------------------------------------------------
-		jsp.setViewportView(jtab);
-		jsp.setBounds(0,0,355,600);
-		JPanel jp=new JPanel();
-		jp.setBounds(8,10,380,640);
-		jp.setLayout(null);
-		jp.add(jsp);
-		jp.add(fhj);
-		fc.add(jp);
-		f.setVisible(true);
+		qSAR_MainFrame.setVisible(true);
 	}
 	public static void main(String[] args){
-		new YS("test");
+		new QuerySaleAndRepair("");
 	}
 	public String changenum(Double numb){
 		String num[] = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class TJJHFdate {
+public class TJJHFdata {
 	Statement sql=null;
    	ResultSet res=null;
    	Dao d=new Dao();

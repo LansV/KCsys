@@ -1,0 +1,4 @@
+alter table WXD add skfs int 
+alter table WXD add skje money 
+alter table WXD add skdate date
+alter table WXD add skstatus int

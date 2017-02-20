@@ -21,7 +21,7 @@ public class TJJHF {
 	public JTable mt(String gys,String qdate,String edate,String sp){
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);                      //全局居中
-		TJJHFdate d=new TJJHFdate();
+		TJJHFdata d=new TJJHFdata();
 		JTable mt=new JTable();
 		String[] xcn={"供应商编号","供应商","单号","编号","名称","数量","单位","单价","总计","日期"};
 		String[][] arr=d.getdate(gys,qdate,edate,sp);

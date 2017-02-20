@@ -1,0 +1,26 @@
+select*from
+(
+select khmc,SUM(je) as zj,MAX(lastdate) as fdate from
+(
+select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from XSD group by khmc 
+union 
+select khmc,-SUM(tje) as je, max(tdate) as lastdate from THD group by khmc 
+) temp group by khmc
+) temp where zj >0
+
+----------------------------------------------------------------------------------
+
+select dh,SUM(zj) as zj,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from
+(select dh,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD group by dh
+union
+select dh,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD group by dh) 
+temp group by dh
+
+-----------------------------------------------------------------------------------------
+
+select  max(bh) as bh,xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,max(dj) as dj,sum(sl) as sl,sum(je) as je,SUM(skje) as skje,MAX(bz) as bz from
+(
+select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from XSD where dh='K1701002'
+union
+select max(bh),xh,max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz from THD where dh='K1701002' group by xh
+) temp group by xh order by bh
