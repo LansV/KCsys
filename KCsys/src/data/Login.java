@@ -30,7 +30,7 @@ public class Login extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	int qx;
-	static String Version="V1.170212";
+	final static String Version="V1.170212";
 	String UserName;
 	String PcName=null;
 	String PcMac=null;
