@@ -13,13 +13,13 @@ public class Dao {
 		  try{
 	 		   Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 	 	   }catch(ClassNotFoundException e){
-	 		   JOptionPane.showMessageDialog(null,"数据库驱动加载失败，请联系管理员！");
+	 		   JOptionPane.showMessageDialog(null,"未找到到驱动文件");
 	 		   System.exit(0);
 	 	   }
 	 	   try{
 	 		   con=DriverManager.getConnection("jdbc:sqlserver://127.0.0.1:1433;DatabaseName=CKsys3","sa","llfaicly1314@^");
 	 	   }catch(SQLException e){
-	 		   JOptionPane.showMessageDialog(null, "连接数据库失败,请检查数据库路径,核对Sa账户!");
+	 		   JOptionPane.showMessageDialog(null, "请检查数据库路径及数据名称");
 	 		   System.exit(0);
 	 	   }
 	 	   return con;
