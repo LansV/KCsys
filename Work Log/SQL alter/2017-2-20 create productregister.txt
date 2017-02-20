@@ -1,0 +1,16 @@
+create table CKsys3.dbo.productregister 
+(
+id int IDENTITY(1,1),
+sp_no varchar(50),
+sp_name varchar(255),
+pump_no varchar(100),
+motor_no varchar(100),
+tl_no varchar(100),
+assembler varchar(255),
+qc varchar(255),
+assemble_date date,
+operator varchar(255),
+registers_tatus int,
+registrant int,
+register_date date,
+ )
