@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import test.PrintNBC;
 public class NBC {
-	public NBC(){
+	public NBC(String user){
 		wData w=new wData();
 		getData gd=new getData();        //调用数据类
 		List<String> spcount=new ArrayList<String>();
@@ -333,7 +333,7 @@ public class NBC {
 						parr[i][2],parr[i][3],Integer.parseInt(parr[i][4]),parr[i][5]);
 						//w.wkcout(parr[i][1],parr[i][2],Integer.parseInt(parr[i][4]),"内部出库"+dhl.getText());
 					}
-					PrintNBC.setdata(dhl.getText(),parr);
+					PrintNBC.setdata(dhl.getText(),user,parr);
 					new PrintNBC();
 					mdm.setRowCount(0);
 					dhl.setText(gd.nbcdh());
@@ -375,8 +375,5 @@ public class NBC {
 			}
 		});
 		mf.setVisible(true);
-	}
-	public static void main(String[] args){
-		new NBC();
 	}
 }

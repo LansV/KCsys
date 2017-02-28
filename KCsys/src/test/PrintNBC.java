@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 public class PrintNBC {
 	//595×842
+	static String user;
 	static String dh;
 	static String lxr;
 	static String tel;
@@ -21,7 +22,8 @@ public class PrintNBC {
 	static List<Object> kh=new ArrayList<Object>();
 	static List<Object> sp=new ArrayList<Object>();
 	static List<Object> hj=new ArrayList<Object>();
-	public static void setdata(String dh,String[][] data){
+	public static void setdata(String dh,String user,String[][] data){
+		PrintNBC.user=user;
 		PrintNBC.dh=dh;
 		PrintNBC.data=data;
 	}
@@ -108,7 +110,7 @@ public class PrintNBC {
 											x=x+s;
 											g2.drawLine(x,90,x,y);//竖线
 										}
-										g2.drawString("开单人:admin                                                            收货人:",20,y+20);
+										g2.drawString("开单人:"+user+"                                                            收货人:",20,y+20);
 										return Printable.PAGE_EXISTS;
 									}
 								}
@@ -205,7 +207,7 @@ public class PrintNBC {
 				x=x+s;
 				g2.drawLine(x,90,x,y);//竖线
 			}
-			g2.drawString("开单人:admin                                                            收货人:",20,y+20);
+			g2.drawString("开单人:"+user+"                                                             收货人:",20,y+20);
 		}
 	}
 }

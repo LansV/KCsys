@@ -674,14 +674,14 @@ public class wData {
 	}
 	//-------------------------------------------------–¥»ÎŒ¨–ﬁ---------------------------------------------
 	public void wx(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz,int skfs,String user) {
+			Double dj, int sl, Double je, String bz,int skfs,String user,String pumpNo) {
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
 			sql.execute("insert into WXD values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
-					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"')");
+					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"','"+pumpNo+"')");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"¥ÌŒÛ");
 		}finally{

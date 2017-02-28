@@ -582,6 +582,8 @@ public class XSF{
 							mdm.setRowCount(0);
 							spcount.clear();        //clear count 
 							kccount.clear();        //clear count
+							Printclass.setTitel("天澜清洗设备销售单");
+							Printclass.setUser(user);
 							Printclass.setkhls(listkh);
 							Printclass.setsp(listsp);
 							Printclass.sethj(listhj);

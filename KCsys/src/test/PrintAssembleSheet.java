@@ -148,7 +148,7 @@ public class PrintAssembleSheet {
 		jf.setVisible(true);
 	}
 	public static void main(String[] args) {
-		new PrintNBC();
+		new PrintAssembleSheet();
 	}
 	class Draw extends JPanel{
 		/**

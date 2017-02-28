@@ -14,6 +14,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 public class Printclass {
 	//595×842
+	static String user;
+	static String title;
 	static String dh;
 	static String lxr;
 	static String tel;
@@ -38,6 +40,12 @@ public class Printclass {
 		}
 		Date d=new Date();
 		date=String.format("%tF",d);
+	}
+	public static void setTitel(String title){
+		Printclass.title=title;
+	}
+	public static void setUser(String user){
+		Printclass.user=user;
 	}
 	public static void setsp(List<Object> sp){
 		Printclass.sp=sp;
@@ -76,7 +84,7 @@ public class Printclass {
 									font=new Font("宋体",Font.PLAIN,20);
 									Graphics2D g2=(Graphics2D) graphics;
 									g2.setFont(font);
-									g2.drawString("天澜清洗设备销售单",170,35);
+									g2.drawString(title,170,35);
 									font2=new Font("宋体",Font.PLAIN,10);
 									g2.setFont(font2);
 									g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
@@ -209,7 +217,7 @@ public class Printclass {
 										}
 									}
 									//System.out.println(y);
-									g2.drawString("开单人:杨永莲                                经手人:                          收货人:",20,y+20);
+									g2.drawString("开单人:"+user+"                                经手人:                          收货人:",20,y+20);
 									g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 									return Printable.PAGE_EXISTS;
 								}
@@ -245,7 +253,7 @@ public class Printclass {
 										font=new Font("宋体",Font.PLAIN,20);
 										Graphics2D g2=(Graphics2D) graphics;
 										g2.setFont(font);
-										g2.drawString("天澜清洗设备销售单",170,35);
+										g2.drawString(title,170,35);
 										font2=new Font("宋体",Font.PLAIN,10);
 										g2.setFont(font2);
 										g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
@@ -430,7 +438,7 @@ public class Printclass {
 			font=new Font("宋体",Font.PLAIN,20);
 			Graphics2D g2=(Graphics2D) g;
 			g2.setFont(font);
-			g2.drawString("天澜清洗设备销售单",170,35);
+			g2.drawString(title,170,35);
 			font2=new Font("宋体",Font.PLAIN,10);
 			g2.setFont(font2);
 			g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
@@ -563,7 +571,7 @@ public class Printclass {
 				}
 			}
 			//System.out.println(y);
-			g2.drawString("开单人:杨永莲                                经手人:                          收货人:",20,y+20);
+			g2.drawString("开单人:"+user+"                                经手人:                          收货人:",20,y+20);
 			g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 		}
 	}

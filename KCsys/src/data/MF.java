@@ -97,7 +97,7 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new NBC();
+				new NBC(user);
 			}
 		});
 		nbc.setBounds(160,90,60,30);

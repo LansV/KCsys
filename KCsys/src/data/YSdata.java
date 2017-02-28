@@ -496,7 +496,30 @@ public class YSdata {
 		}
 	}
 	//---------------------------------------------------更新应收------------------------------------------------
-	public void updateys(String dh,int bh,Double je,int zt){
+	public void updateWxys(String dh,int bh,Double je,int zt){
+		Date date2=new Date();
+		String ckd=String.format("%tF", date2);
+		try{
+			sql = con.createStatement();
+				sql.execute("update WXD set skje="+je+" where dh='"+dh+"' and bh="+bh+";update XSD set skdate='"+ckd+"' where dh='"+dh+"' and bh="+bh+";"
+						+ "update WXD set skstatus="+zt+" where dh='"+dh+"' and bh="+bh+"");
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"更新收款数据错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
+		     	 }
+		}
+	}
+	//---------------------------------------------------更新应收------------------------------------------------
+	public void updatexsys(String dh,int bh,Double je,int zt){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{

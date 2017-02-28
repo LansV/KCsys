@@ -1,0 +1,1 @@
+alter table CKsys.dbo.WXD add pumpno varchar(255)
