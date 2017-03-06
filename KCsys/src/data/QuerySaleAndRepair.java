@@ -315,9 +315,9 @@ public class QuerySaleAndRepair {
 				listhj.add(slhj);
 				listhj.add(String.format("%.2f", hj));
 				if (xxf_ShowNo.getText().trim().substring(0, 1).equals("X")) {
-					Printclass.setTitel("天澜清洗设备维修单");
+					Printclass.setTitel("天澜清洗设备有限公司维修单");
 				} else {
-					Printclass.setTitel("天澜清洗设备销售单");
+					Printclass.setTitel("天澜清洗设备有限公司销售单");
 				}
 				Printclass.setUser(user);
 				Printclass.setkhls(listkh);

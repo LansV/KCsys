@@ -84,7 +84,7 @@ public class Printclass {
 									font=new Font("宋体",Font.PLAIN,20);
 									Graphics2D g2=(Graphics2D) graphics;
 									g2.setFont(font);
-									g2.drawString(title,170,35);
+									g2.drawString(title,150,35);
 									font2=new Font("宋体",Font.PLAIN,10);
 									g2.setFont(font2);
 									g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
@@ -253,7 +253,7 @@ public class Printclass {
 										font=new Font("宋体",Font.PLAIN,20);
 										Graphics2D g2=(Graphics2D) graphics;
 										g2.setFont(font);
-										g2.drawString(title,170,35);
+										g2.drawString(title,150,35);
 										font2=new Font("宋体",Font.PLAIN,10);
 										g2.setFont(font2);
 										g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);
@@ -438,7 +438,7 @@ public class Printclass {
 			font=new Font("宋体",Font.PLAIN,20);
 			Graphics2D g2=(Graphics2D) g;
 			g2.setFont(font);
-			g2.drawString(title,170,35);
+			g2.drawString(title,150,35);
 			font2=new Font("宋体",Font.PLAIN,10);
 			g2.setFont(font2);
 			g2.drawString("地址:江门市蓬江区潮连坦边方岳里1号   电话:0750-3327669  Fax:0750-3226508",100,50);

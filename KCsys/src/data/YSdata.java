@@ -81,7 +81,10 @@ public class YSdata {
 					+ "union "
 					+ "select dh,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from WXD where khmc = '"+s+"'group by dh "
 					+ "union "
-					+ "select dh,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc= '"+s+"' group by dh) "
+					+ "select dh,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc= '"+s+"' group by dh "
+					+ "union "
+					+ "select dh,-sum(je) as zj,0 as skje,max(date) as skdate from HZ where kh= '"+s+"' group by dh "
+					+ ") "
 					+ "temp group by dh");
 			while(res.next()){
 				if(res.getDouble("s")==0){
@@ -353,6 +356,8 @@ public class YSdata {
 					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from WXD group by khmc "
 					+ "union "
 					+ "select khmc,-SUM(tje) as je, max(tdate) as lastdate from THD group by khmc "
+					+ "union "
+					+ "select kh as khmc,-SUM(je) as je, max(date) as lastdate from HZ group by kh "
 					+ ") temp group by khmc"
 					+ ") temp where zj >0");
 			while(res.next()){
@@ -542,15 +547,16 @@ public class YSdata {
 		}
 	}
 	//---------------------------------------------写入坏账--------------------------------------------------
-	public void whz(String dh,String kh,Double je,String bz){
+	public void whz(String dh,String kh,Double je,String bz,String user,String b){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			sql.execute("update YSB set zt=2 where dh='"+dh+"';update YSB set date='"+ckd+"' where dh='"+dh+"';"
-					+ "insert into HZ values('"+dh+"','"+kh+"',"+je+",'"+ckd+"','"+bz+"')");
+			sql.execute("insert into HZ values('"+dh+"','"+kh+"',"+je+",'"+ckd+"','"+bz+"','"+user+"');"
+					+ "update "+b+" set skstatus = 0 where dh='"+dh+"';"
+					+ "update "+b+" set skdate = '"+ckd+"' where dh='"+dh+"'");
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"添加应收数据错误");
+			JOptionPane.showMessageDialog(null,"添加坏账数据错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){

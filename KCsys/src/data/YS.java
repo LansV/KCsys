@@ -315,9 +315,9 @@ public class YS {
 				listhj.add(slhj);
 				listhj.add(String.format("%.2f", hj));
 				if (xxf_ShowNo.getText().trim().substring(0, 1).equals("X")) {
-					Printclass.setTitel("天澜清洗设备维修单");
+					Printclass.setTitel("天澜清洗设备有限公司维修单");
 				} else {
-					Printclass.setTitel("天澜清洗设备销售单");
+					Printclass.setTitel("天澜清洗设备有限公司销售单");
 				}
 				Printclass.setkhls(listkh);
 				Printclass.setsp(listsp);
@@ -775,9 +775,19 @@ public class YS {
 					String st = table.getValueAt(r, 4).toString().trim();
 					Double je = Double.parseDouble(st);
 					String bz = hzt.getText().trim();
-					d.whz(dh, kh, je, bz);
+					String b = null;
+					if (dh.substring(0, 1).equals("X")) {
+						b="WXD";
+					} else {
+						b="XSD";
+					}
+					d.whz(dh, kh, je, bz,user,b);
 					String[][] xarr = d.xys(kh);
 					xdm.setDataVector(xarr, xcn);
+					TableColumn cktablecxh = table.getColumnModel().getColumn(1); // 设置列宽
+					cktablecxh.setPreferredWidth(180);
+					cktablecxh.setMinWidth(180);
+					cktablecxh.setMaxWidth(180);
 					hzt.setText("");
 					ff.setEnabled(true);
 					hzf.dispose();

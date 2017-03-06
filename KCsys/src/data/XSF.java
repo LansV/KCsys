@@ -582,12 +582,12 @@ public class XSF{
 							mdm.setRowCount(0);
 							spcount.clear();        //clear count 
 							kccount.clear();        //clear count
-							Printclass.setTitel("天澜清洗设备销售单");
+							ml.setText(gd.xsdh());
+							Printclass.setTitel("天澜清洗设备有限公司销售单");
 							Printclass.setUser(user);
 							Printclass.setkhls(listkh);
 							Printclass.setsp(listsp);
 							Printclass.sethj(listhj);
-							ml.setText(gd.xsdh());
 							new Printclass();
 /*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
 							if(khselect==0){

@@ -11,7 +11,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.List;
-import test.PrintWx;
+import test.Printclass;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -609,11 +609,12 @@ public class RepairList {
 						spcount.clear(); // clear count
 						kccount.clear(); // clear count
 						ml.setText(gd.wxdh());
-						PrintWx.setUser(user);
-						PrintWx.setkhls(listkh);
-						PrintWx.setsp(listsp);
-						PrintWx.sethj(listhj);
-						new PrintWx();
+						Printclass.setTitel("天澜清洗设备有限公司维修单");
+						Printclass.setUser(user);
+						Printclass.setkhls(listkh);
+						Printclass.setsp(listsp);
+						Printclass.sethj(listhj);
+						new Printclass();
 						/*
 						 * int
 						 * khselect=JOptionPane.showConfirmDialog(null,"是否继续开单",
