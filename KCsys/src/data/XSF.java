@@ -8,8 +8,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import test.Printclass;
 
@@ -37,8 +44,7 @@ public class XSF{
 	Double hj;                           //合计
 	JLabel showhj=new JLabel();           //显示合计
 	public XSF(String user){
-		getData gd=new getData();        //调用数据类
-		wData w=new wData();
+		xsfData gd=new xsfData();        //调用数据类
 		List<String> spcount=new ArrayList<String>();   //商品名称
 		List<Integer> kccount=new ArrayList<Integer>(); //库存数量
 		//-------------------------------------显示表格---------------------------------------------------
@@ -516,86 +522,115 @@ public class XSF{
 					if(mc.length()==0){
 						JOptionPane.showMessageDialog(null,"客户未填写");
 					}else if(dh.length()!=0&&mc.length()!=0){
-						int slhj=0;
-						List<Object> listkh=new ArrayList<Object>();
-						List<Object> listsp=new ArrayList<Object>();
-						List<Object> listhj=new ArrayList<Object>();
-						lxr=lxrt.getText().trim();
-						lxtel=lxrtelt.getText().trim();
-						addr=addrt.getText().trim();
-						listkh.add(dh);
-						listkh.add(mc);
-						listkh.add(lxr);
-						listkh.add(lxtel);
-						listkh.add(addr);
-						listkh.add(jc.getSelectedItem());
-						if(mct.isEditable()==true){
-							w.wkh(mc,lxr,lxtel,addr);
-						}
-							for(int i=0;i<cr;i++){
-								String xhs=mtable.getValueAt(i,0).toString().trim();
-								int bh=Integer.parseInt(xhs);
-								String xh=mtable.getValueAt(i,1).toString().trim();
-								String sp=mtable.getValueAt(i,2).toString().trim();
-								String dw=mtable.getValueAt(i,3).toString().trim();
-								String xhs4=mtable.getValueAt(i,4).toString().trim();
-								Double zk = null;
-								if(xhs4.length()==0){
-									
-								}else{
-									zk=Double.parseDouble(xhs4);
-								}
-								String xhs5=mtable.getValueAt(i,5).toString().trim();
-								Double dj=Double.parseDouble(xhs5);
-								String xhs6=mtable.getValueAt(i,6).toString().trim();
-								int sl=Integer.parseInt(xhs6);
-								slhj=slhj+sl;
-								String xhs7=mtable.getValueAt(i,7).toString().trim();
-								Double je=Double.parseDouble(xhs7);
-								String bz=mtable.getValueAt(i,8).toString().trim();
-								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
-								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								w.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user);
-								w.wkcout(xh,sp,sl,"1,"+dh,user);
-								String[][] sparr=gd.spcxdj(spjt.getText().trim());
-								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
-									private static final long serialVersionUID = 1L;
-									public boolean isCellEditable(int row,int colunm){
-										return false;
-									}
-								};
-								spdm.setColumnIdentifiers(spcn);
-								sptable.setModel(spdm);
-								TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
-						    	sptablecl1.setPreferredWidth(80);   
-						    	sptablecl1.setMinWidth(80);
-						    	sptablecl1.setMaxWidth(80);
-						    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
-						    	sptablecl.setPreferredWidth(180);   
-						    	sptablecl.setMinWidth(180);
-						    	sptablecl.setMaxWidth(180);
+						if(dh.equals(gd.xsdh())==true){
+				    	  String webUrl4 = "http://www.ntsc.ac.cn";//中国科学院国家授时中心
+				       	 try {
+				       		    Date date2=new Date();
+					            URL url = new URL(webUrl4);// 取得资源对象
+					            URLConnection uc = url.openConnection();// 生成连接对象
+					            uc.connect();// 发出连接
+					            long ld = uc.getDate();// 读取网站日期时间
+					            Date date = new Date(ld);// 转换为标准时间对象
+					            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+					            String s1=sdf.format(date2);
+					            String s=sdf.format(date);
+					            if(s.equals(s1)==true){
+					            	 //JOptionPane.showMessageDialog(null,"日期核对成功");
+					            }else{
+					            	JOptionPane.showMessageDialog(null,"系统日期与服务器日期不相符\n请同步系统日期后重试");
+						            System.exit(0);
+					            }
+					        } catch (MalformedURLException e1) {
+					            e1.printStackTrace();
+					        } catch (IOException e1) {
+					            JOptionPane.showMessageDialog(null,"请检查网络，确保网络畅通");
+					            System.exit(0);
+					        }
+							int slhj=0;
+							List<Object> listkh=new ArrayList<Object>();
+							List<Object> listsp=new ArrayList<Object>();
+							List<Object> listhj=new ArrayList<Object>();
+							lxr=lxrt.getText().trim();
+							lxtel=lxrtelt.getText().trim();
+							addr=addrt.getText().trim();
+							listkh.add(dh);
+							listkh.add(mc);
+							listkh.add(lxr);
+							listkh.add(lxtel);
+							listkh.add(addr);
+							listkh.add(jc.getSelectedItem());
+							if(mct.isEditable()==true){
+								gd.wkh(mc,lxr,lxtel,addr);
 							}
-							w.wys(dh,mc,hj);
-							listhj.add(changenum(hj));
-							listhj.add(slhj);
-							listhj.add(String.format("%.2f",hj));
-							mdm.setRowCount(0);
-							spcount.clear();        //clear count 
-							kccount.clear();        //clear count
+								for(int i=0;i<cr;i++){
+									String xhs=mtable.getValueAt(i,0).toString().trim();
+									int bh=Integer.parseInt(xhs);
+									String xh=mtable.getValueAt(i,1).toString().trim();
+									String sp=mtable.getValueAt(i,2).toString().trim();
+									String dw=mtable.getValueAt(i,3).toString().trim();
+									String xhs4=mtable.getValueAt(i,4).toString().trim();
+									Double zk = null;
+									if(xhs4.length()==0){
+										
+									}else{
+										zk=Double.parseDouble(xhs4);
+									}
+									String xhs5=mtable.getValueAt(i,5).toString().trim();
+									Double dj=Double.parseDouble(xhs5);
+									String xhs6=mtable.getValueAt(i,6).toString().trim();
+									int sl=Integer.parseInt(xhs6);
+									slhj=slhj+sl;
+									String xhs7=mtable.getValueAt(i,7).toString().trim();
+									Double je=Double.parseDouble(xhs7);
+									String bz=mtable.getValueAt(i,8).toString().trim();
+									listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
+									listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
+									gd.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user);
+									gd.wkcout(xh,sp,sl,"1,"+dh,user);
+									String[][] sparr=gd.spcxdj(spjt.getText().trim());
+									DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
+										private static final long serialVersionUID = 1L;
+										public boolean isCellEditable(int row,int colunm){
+											return false;
+										}
+									};
+									spdm.setColumnIdentifiers(spcn);
+									sptable.setModel(spdm);
+									TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
+							    	sptablecl1.setPreferredWidth(80);   
+							    	sptablecl1.setMinWidth(80);
+							    	sptablecl1.setMaxWidth(80);
+							    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
+							    	sptablecl.setPreferredWidth(180);   
+							    	sptablecl.setMinWidth(180);
+							    	sptablecl.setMaxWidth(180);
+								}
+//								w.wys(dh,mc,hj);
+								listhj.add(changenum(hj));
+								listhj.add(slhj);
+								listhj.add(String.format("%.2f",hj));
+								mdm.setRowCount(0);
+								spcount.clear();        //clear count 
+								kccount.clear();        //clear count
+								ml.setText(gd.xsdh());
+								Printclass.setTitel("天澜清洗设备有限公司销售单");
+								Printclass.setUser(user);
+								Printclass.setkhls(listkh);
+								Printclass.setsp(listsp);
+								Printclass.sethj(listhj);
+								new Printclass();
+	/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
+								if(khselect==0){
+									khf.setVisible(true);
+								}else{
+									mf.dispose();
+									sp.dispose();
+								}*/
+						}else{
+							JOptionPane.showMessageDialog(null,"单号重复，自动修正单号");
 							ml.setText(gd.xsdh());
-							Printclass.setTitel("天澜清洗设备有限公司销售单");
-							Printclass.setUser(user);
-							Printclass.setkhls(listkh);
-							Printclass.setsp(listsp);
-							Printclass.sethj(listhj);
-							new Printclass();
-/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
-							if(khselect==0){
-								khf.setVisible(true);
-							}else{
-								mf.dispose();
-								sp.dispose();
-							}*/
+							JOptionPane.showMessageDialog(null,"修正成功");
+							}
 						}
 					}
 				}

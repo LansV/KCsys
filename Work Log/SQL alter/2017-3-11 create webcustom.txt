@@ -1,0 +1,17 @@
+create table webcustom
+(
+id int,
+userid varchar(100),
+pass varchar(255),
+company varchar(255),
+hy varchar(255),
+contact varchar(255),
+zw varchar(50),
+country varchar(100),
+province varchar(255),
+city varchar(255),
+caddress varchar(255),
+registerdate date,
+registertime time,
+registerstatus int
+)

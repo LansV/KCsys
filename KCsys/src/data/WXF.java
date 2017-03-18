@@ -494,88 +494,93 @@ public class WXF{
 					if(mc.length()==0){
 						JOptionPane.showMessageDialog(null,"客户未填写");
 					}else if(dh.length()!=0&&mc.length()!=0){
-						int slhj=0;
-						List<Object> listkh=new ArrayList<Object>();
-						List<Object> listsp=new ArrayList<Object>();
-						List<Object> listhj=new ArrayList<Object>();
-						lxr=lxrt.getText().trim();
-						lxtel=lxrtelt.getText().trim();
-						addr=addrt.getText().trim();
-						listkh.add(dh);
-						listkh.add(mc);
-						listkh.add(lxr);
-						listkh.add(lxtel);
-						listkh.add(addr);
-						listkh.add(jc.getSelectedItem());
-						if(mct.isEditable()==true){
-							w.wkh(mc,lxr,lxtel,addr);
-						}
-							for(int i=0;i<cr;i++){
-								String xhs=mtable.getValueAt(i,0).toString().trim();
-								int bh=Integer.parseInt(xhs);
-								String xh=mtable.getValueAt(i,1).toString().trim();
-								String sp=mtable.getValueAt(i,2).toString().trim();
-								String dw=mtable.getValueAt(i,3).toString().trim();
-								String xhs4=mtable.getValueAt(i,4).toString().trim();
-								Double zk = null;
-								if(xhs4.length()==0){
-									
-								}else{
-									zk=Double.parseDouble(xhs4);
-								}
-								String xhs5=mtable.getValueAt(i,5).toString().trim();
-								Double dj=Double.parseDouble(xhs5);
-								String xhs6=mtable.getValueAt(i,6).toString().trim();
-								int sl=Integer.parseInt(xhs6);
-								slhj=slhj+sl;
-								String xhs7=mtable.getValueAt(i,7).toString().trim();
-								Double je=Double.parseDouble(xhs7);
-								String bz=mtable.getValueAt(i,8).toString().trim();
-								listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
-								listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-								if(sp.equals("人工费")==true){
-									
-								}else{
-									//w.wkcout(xh,sp,sl,"2,"+dh);   //库存减少
-								}
-								//w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz); // 写入维修表
-								String[][] sparr=gd.spcxdj(spjt.getText().trim());
-								DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
-									private static final long serialVersionUID = 1L;
-									public boolean isCellEditable(int row,int colunm){
-										return false;
-									}
-								};
-								spdm.setColumnIdentifiers(spcn);
-								sptable.setModel(spdm);
-								TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
-						    	sptablecl1.setPreferredWidth(80);   
-						    	sptablecl1.setMinWidth(80);
-						    	sptablecl1.setMaxWidth(80);
-						    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
-						    	sptablecl.setPreferredWidth(180);   
-						    	sptablecl.setMinWidth(180);
-						    	sptablecl.setMaxWidth(180);
+						if(dh.equals(gd.wxdh())){
+							int slhj=0;
+							List<Object> listkh=new ArrayList<Object>();
+							List<Object> listsp=new ArrayList<Object>();
+							List<Object> listhj=new ArrayList<Object>();
+							lxr=lxrt.getText().trim();
+							lxtel=lxrtelt.getText().trim();
+							addr=addrt.getText().trim();
+							listkh.add(dh);
+							listkh.add(mc);
+							listkh.add(lxr);
+							listkh.add(lxtel);
+							listkh.add(addr);
+							listkh.add(jc.getSelectedItem());
+							if(mct.isEditable()==true){
+								w.wkh(mc,lxr,lxtel,addr);
 							}
-							w.wys(dh,mc,hj);
-							listhj.add(changenum(hj));
-							listhj.add(slhj);
-							listhj.add(String.format("%.2f",hj));
-							mdm.setRowCount(0);
-							spcount.clear();        //clear count 
-							kccount.clear();        //clear count
-							PrintWx.setkhls(listkh);
-							PrintWx.setsp(listsp);
-							PrintWx.sethj(listhj);
-							ml.setText(gd.wxdh());
-							new PrintWx();
-/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
-							if(khselect==0){
-								khf.setVisible(true);
-							}else{
-								mf.dispose();
-								sp.dispose();
-							}*/
+								for(int i=0;i<cr;i++){
+									String xhs=mtable.getValueAt(i,0).toString().trim();
+									int bh=Integer.parseInt(xhs);
+									String xh=mtable.getValueAt(i,1).toString().trim();
+									String sp=mtable.getValueAt(i,2).toString().trim();
+									String dw=mtable.getValueAt(i,3).toString().trim();
+									String xhs4=mtable.getValueAt(i,4).toString().trim();
+									Double zk = null;
+									if(xhs4.length()==0){
+										
+									}else{
+										zk=Double.parseDouble(xhs4);
+									}
+									String xhs5=mtable.getValueAt(i,5).toString().trim();
+									Double dj=Double.parseDouble(xhs5);
+									String xhs6=mtable.getValueAt(i,6).toString().trim();
+									int sl=Integer.parseInt(xhs6);
+									slhj=slhj+sl;
+									String xhs7=mtable.getValueAt(i,7).toString().trim();
+									Double je=Double.parseDouble(xhs7);
+									String bz=mtable.getValueAt(i,8).toString().trim();
+									listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
+									listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
+									if(sp.equals("人工费")==true){
+										
+									}else{
+										//w.wkcout(xh,sp,sl,"2,"+dh);   //库存减少
+									}
+									//w.wx(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz); // 写入维修表
+									String[][] sparr=gd.spcxdj(spjt.getText().trim());
+									DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
+										private static final long serialVersionUID = 1L;
+										public boolean isCellEditable(int row,int colunm){
+											return false;
+										}
+									};
+									spdm.setColumnIdentifiers(spcn);
+									sptable.setModel(spdm);
+									TableColumn sptablecl1=sptable.getColumnModel().getColumn(0);   //设置列宽    
+							    	sptablecl1.setPreferredWidth(80);   
+							    	sptablecl1.setMinWidth(80);
+							    	sptablecl1.setMaxWidth(80);
+							    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
+							    	sptablecl.setPreferredWidth(180);   
+							    	sptablecl.setMinWidth(180);
+							    	sptablecl.setMaxWidth(180);
+								}
+								w.wys(dh,mc,hj);
+								listhj.add(changenum(hj));
+								listhj.add(slhj);
+								listhj.add(String.format("%.2f",hj));
+								mdm.setRowCount(0);
+								spcount.clear();        //clear count 
+								kccount.clear();        //clear count
+								PrintWx.setkhls(listkh);
+								PrintWx.setsp(listsp);
+								PrintWx.sethj(listhj);
+								ml.setText(gd.wxdh());
+								new PrintWx();
+	/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
+								if(khselect==0){
+									khf.setVisible(true);
+								}else{
+									mf.dispose();
+									sp.dispose();
+								}*/
+						}else{
+							
+						}
+
 						}
 					}
 				}
