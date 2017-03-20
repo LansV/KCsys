@@ -4,6 +4,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+
+import security.Lock;
 public class MF {
 	public MF(int userid,String user){
 		JFrame mf=new JFrame("Ö÷²Ëµ¥");
@@ -37,7 +39,9 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new KCx(user);
+				if(Lock.SingleLock(mf,"lock/KCx.txt")){
+					new KCx(user);
+				}
 			}
 		});
 		kc.setBounds(160,10,60,30);
@@ -47,7 +51,9 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new XSF(user);
+				if(Lock.SingleLock(mf,"lock/XSF.txt")){
+					new XSF(user);
+				}
 			}
 		});
 		xs.setBounds(20,50,60,30);
@@ -57,7 +63,10 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new YS(user);
+				if(Lock.SingleLock(mf, "lock/YS.txt")){
+					new YS(user);
+				}
+				
 			}
 		});
 		ys.setBounds(90,50,60,30);
@@ -87,7 +96,10 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new Assemble(user);
+				if(Lock.SingleLock(mf,"lock/Assemble.txt")){
+					new Assemble(user);
+				}
+				
 			}
 		});
 		zz.setBounds(90,90,60,30);
@@ -97,7 +109,10 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new NBC(user);
+				if(Lock.SingleLock(mf, "lock/NBC.txt")){
+					new NBC(user);
+				}
+				
 			}
 		});
 		nbc.setBounds(160,90,60,30);
@@ -107,7 +122,9 @@ public class MF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new RepairList(user);
+				if(Lock.SingleLock(mf, "lock/RepairList.txt")){
+					new RepairList(user);
+				}
 			}
 		});
 		wx.setBounds(160,130,60,30);

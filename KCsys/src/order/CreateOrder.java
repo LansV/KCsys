@@ -26,6 +26,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.Lock;
 public class CreateOrder{
 	String mc="";                      //全局客户名称
 	String lxr="";						//全局联系人	
@@ -516,7 +518,7 @@ public class CreateOrder{
 				
 				int cr=mtable.getRowCount();
 				if(cr==0){
-					JOptionPane.showMessageDialog(null, "无数据");
+					JOptionPane.showMessageDialog(mf, "无数据");
 				}else{
 					
 					if(mtable.isEditing()==true){
@@ -622,9 +624,12 @@ public class CreateOrder{
 		mf.setBounds(400,100,1000,630);
 		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		mf.addWindowListener(new WindowAdapter(){
-			public void windowClosed(WindowEvent e) {
+			@Override
+			public void windowClosing(WindowEvent arg0) {
 				// TODO Auto-generated method stub
-				spFrame.dispose();
+				if(Lock.SingleUnLock(mf, "order/lock/CreateOrder.txt")==true){
+					mf.dispose();
+				}
 			}
 		});
 		//--------------------------------------客户选择监听-------------------------------------------------
@@ -658,12 +663,19 @@ public class CreateOrder{
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				// TODO Auto-generated method stub
-				mf.setEnabled(true);
-				khf.dispose();
+				if(!mf.isVisible()){
+					if(Lock.SingleUnLock(khf, "order/lock/CreateOrder.txt")==true){
+						mf.setEnabled(true);
+						khf.dispose();
+					}
+				}else{
+					mf.setEnabled(true);
+					khf.dispose();
+				}
 			}
 		});
 		//-------------------------------------------------------------------------------------------
-		int r=JOptionPane.showConfirmDialog(null,"客户是否为新客户","选择",JOptionPane.YES_NO_OPTION);//返回选择值
+		int r=JOptionPane.showConfirmDialog(khf,"客户是否为新客户","选择",JOptionPane.YES_NO_OPTION);//返回选择值
 		if(r==0){
 			String s=d.xsdh();
 			//System.out.println(s);

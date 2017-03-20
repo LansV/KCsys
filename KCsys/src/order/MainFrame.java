@@ -12,6 +12,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import security.Lock;
+
 public class MainFrame {
 	public MainFrame(int id,String user){
 		//----------------------------------创建主面板---------------------------------------------
@@ -45,7 +47,9 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				new CustomerInfo(id);
+				if(Lock.SingleLock(MainFrame,"order/lock/CustomerInfo.txt")==true){
+					new CustomerInfo(id);
+				}
 			}
 		});
 		MainFrame_Contant.add(MainFrame_CustomerB);
@@ -63,7 +67,9 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
-				new CreateOrder(id);
+				if(Lock.SingleLock(MainFrame,"order/lock/CreateOrder.txt")==true){
+					new CreateOrder(id);
+				}
 			}
 		});
 		MainFrame_Contant.add(MainFrame_AddOrderB);
@@ -81,7 +87,9 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				new QuerySaleAndRepair(id);
+				if(Lock.SingleLock(MainFrame,"order/lock/QuerySaleAndRepair.txt")==true){
+					new QuerySaleAndRepair(id);
+				}
 			}
 		});
 		MainFrame_Contant.add(MainFrame_QueryOrderB);

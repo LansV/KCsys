@@ -5,6 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -13,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
+import security.CheckDate;
 import test.PrintRegister;
 
 public class ProductRegister {
@@ -23,6 +27,10 @@ public class ProductRegister {
 		new ProductRegister("test");
 	}
 	public JFrame MainFrame(String user){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		ProductRegisterData d=new ProductRegisterData();
 		JFrame PR_Frame=new JFrame("产品登记");
 		PR_Frame.setResizable(false);

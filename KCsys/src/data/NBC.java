@@ -21,6 +21,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.Lock;
 import test.PrintNBC;
 public class NBC {
 	public NBC(String user){
@@ -32,7 +34,7 @@ public class NBC {
 		JFrame mf=new JFrame("ÄÚ²¿³ö¿â");
 		mf.setResizable(false);
 		Container mc=mf.getContentPane();
-		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mf.setBounds(20,50,750,615);
 		JPanel mp=new JPanel();
 		mp.setLayout(null);
@@ -371,6 +373,9 @@ public class NBC {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
+				if(Lock.SingleUnLock(mf, "lock/NBC.txt")){
+					mf.dispose();
+				}
 				sp.dispose();
 			}
 		});

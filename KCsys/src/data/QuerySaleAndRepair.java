@@ -13,6 +13,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -27,6 +29,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.CheckDate;
 import test.Printclass;
 
 public class QuerySaleAndRepair {
@@ -38,6 +42,10 @@ public class QuerySaleAndRepair {
 	int wzy;
 
 	public QuerySaleAndRepair(String user) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "收款", "备注" };

@@ -10,7 +10,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,10 +27,16 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.CheckDate;
 public class GYSmanage {
 	getData gd=new getData();
 	wData w=new wData();
 	public GYSmanage(){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		//------------------------------------------添加面板----------------------------------------
 		JFrame tjf=new JFrame("添加供应商");
 		tjf.setBounds(500,50,380,580);

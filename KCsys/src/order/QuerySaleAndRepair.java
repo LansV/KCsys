@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,6 +26,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.Lock;
 import test.Printclass;
 public class QuerySaleAndRepair {
 	QuerySaleAndRepairData d=new QuerySaleAndRepairData();
@@ -375,7 +378,15 @@ public class QuerySaleAndRepair {
 		//-------------------------------------overview panel-------------------------------------------
 		JFrame qSAR_MainFrame=new JFrame("µ•æ›≤È—Ø");
 		qSAR_MainFrame.setResizable(false);
-		qSAR_MainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		qSAR_MainFrame.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				if(Lock.SingleUnLock(qSAR_MainFrame,"order/lock/QuerySaleAndRepair.txt")){
+					qSAR_MainFrame.dispose();
+				}
+			}
+		});
 		Container qSAR_MainFrame_Content=qSAR_MainFrame.getContentPane();
 		qSAR_MainFrame_Content.setLayout(null);
 		qSAR_MainFrame.setAlwaysOnTop(true);
@@ -993,7 +1004,9 @@ public class QuerySaleAndRepair {
 		qSAR_MainFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				qSAR_MainFrame.dispose();
+				if(Lock.SingleUnLock(qSAR_MainFrame,"order/lock/QuerySaleAndRepair.txt")){
+					qSAR_MainFrame.dispose();
+				}
 			}
 		});
 		//---------------------------------------------------------------------------------------------------------

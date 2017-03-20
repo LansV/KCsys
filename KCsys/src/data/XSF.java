@@ -36,6 +36,9 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.CheckDate;
+import security.Lock;
 public class XSF{
 	String mc="";                      //全局客户名称
 	String lxr="";						//全局联系人	
@@ -44,6 +47,10 @@ public class XSF{
 	Double hj;                           //合计
 	JLabel showhj=new JLabel();           //显示合计
 	public XSF(String user){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		xsfData gd=new xsfData();        //调用数据类
 		List<String> spcount=new ArrayList<String>();   //商品名称
 		List<Integer> kccount=new ArrayList<Integer>(); //库存数量
@@ -399,7 +406,7 @@ public class XSF{
 		Container khfc=khf.getContentPane();
 		khfc.setLayout(null);
 		khf.setBounds(700,10,320,650);
-		khf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		khf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		JTextField cxjt=new JTextField();
 		cxjt.setBounds(10,10,120,25);
 		khfc.add(cxjt);
@@ -644,11 +651,27 @@ public class XSF{
 		mfc.add(mbutton);
 		mfc.add(showhj);
 		mf.setBounds(20,50,750,630);
-		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mf.addWindowListener(new WindowAdapter(){
-			public void windowClosed(WindowEvent e) {
+			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
+				if(Lock.SingleUnLock(mf, "lock/XSF.txt")){
+					mf.dispose();
+				}
+				khf.dispose();
 				sp.dispose();
+			}
+		});
+		//-------------------------------------------------------------------------------------------------
+		khf.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				if(!mf.isVisible()){
+					if(Lock.SingleUnLock(mf, "lock/XSF.txt")){
+						khf.dispose();
+					}
+				}else{
+					khf.dispose();
+				}
 			}
 		});
 		//--------------------------------------客户选择监听-------------------------------------------------

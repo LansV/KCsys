@@ -24,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.Lock;
 public class CustomerInfo {
 	public CustomerInfo(int userid){
 		System.out.println(userid);
@@ -39,7 +41,15 @@ public class CustomerInfo {
 			JOptionPane.showMessageDialog(null,"获取系统图标错误");
 		}
 		CI_MainFrame.setBounds(400,100,450,700);
-		CI_MainFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		CI_MainFrame.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				if(Lock.SingleUnLock(CI_MainFrame,"order/lock/CustomerInfo.txt")){
+					CI_MainFrame.dispose();
+				}
+			}
+		});
 		Container CI_MainFrame_Content=CI_MainFrame.getContentPane();
 		CI_MainFrame_Content.setBackground(new Color(196,228,210));
 		CI_MainFrame_Content.setLayout(null);

@@ -37,6 +37,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
+import security.CheckDate;
+import security.Lock;
+
 public class RepairList {
 	String mc = ""; // 全局客户名称
 	String lxr = ""; // 全局联系人
@@ -44,8 +47,11 @@ public class RepairList {
 	String addr = ""; // 全局地址
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
-
 	public RepairList(String user) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		RepairListData gd = new RepairListData(); // 调用数据类
 		wData w = new wData();
 		List<String> spcount = new ArrayList<String>(); // 商品名称
@@ -407,7 +413,7 @@ public class RepairList {
 		Container khfc = khf.getContentPane();
 		khfc.setLayout(null);
 		khf.setBounds(700, 10, 320, 650);
-		khf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		khf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		JTextField cxjt = new JTextField();
 		cxjt.setBounds(10, 10, 120, 25);
 		khfc.add(cxjt);
@@ -732,11 +738,26 @@ public class RepairList {
 		mfc.add(mbutton);
 		mfc.add(showhj);
 		mf.setBounds(20, 50, 750, 630);
-		mf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		mf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mf.addWindowListener(new WindowAdapter() {
-			public void windowClosed(WindowEvent e) {
+			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
+				if(Lock.SingleUnLock(mf, "lock/RepairList.txt")){
+					mf.dispose();
+				}
+				khf.dispose();
 				sp.dispose();
+			}
+		});
+		//
+		khf.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				// TODO Auto-generated method stub
+				if(!mf.isVisible()){
+					if(Lock.SingleUnLock(mf, "lock/RepairList.txt")){
+						khf.dispose();
+					}
+				}
 			}
 		});
 		// --------------------------------------客户选择监听-------------------------------------------------

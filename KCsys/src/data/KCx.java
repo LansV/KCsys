@@ -12,6 +12,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -28,6 +29,8 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.Lock;
 public class KCx {
 	KCxdata wx=new KCxdata();
 	JTable mtt;
@@ -190,7 +193,6 @@ public class KCx {
 		Container mainfc=mainf.getContentPane();
 		mainf.setBounds(100,50,1250,750);
 		mainf.setResizable(false);
-		mainf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		JPanel mainp=new JPanel();
 		mainp.setLayout(null);
 		JTextField cxt=new JTextField();
@@ -213,11 +215,12 @@ public class KCx {
 		JPopupMenu pm=new JPopupMenu();
 		JMenuItem mit=new JMenuItem("入库");
 		JMenuItem xit=new JMenuItem("出库");
+		//JMenuItem orderitem=new JMenuItem("添加到订货单");
 		xit.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				mtt.setEnabled(false);
+				mainf.setEnabled(false);
 				int r=mtt.getSelectedRow();
 				xgxh.setText(mtt.getValueAt(r,2).toString());
 				xgl.setText(mtt.getValueAt(r,3).toString());
@@ -229,7 +232,7 @@ public class KCx {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				mtt.setEnabled(false);
+				mainf.setEnabled(false);
 				int r=mtt.getSelectedRow();
 				xhl.setText(mtt.getValueAt(r,2).toString());
 				sll.setText(mtt.getValueAt(r,3).toString());
@@ -239,6 +242,7 @@ public class KCx {
 		});
 		pm.add(mit);
 		pm.add(xit);
+		//pm.add(orderitem);
 		mtt.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e){
@@ -256,7 +260,7 @@ public class KCx {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				mtt.setEnabled(true);
+				mainf.setEnabled(true);
 				xgf.dispose();
 			}
 		});
@@ -264,7 +268,7 @@ public class KCx {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				mtt.setEnabled(true);
+				mainf.setEnabled(true);
 				slf.dispose();
 			}
 		});
@@ -629,7 +633,14 @@ public class KCx {
 		tj.setBounds(850,80,80,25);
 		tjc.add(tj);
 		tjf.setBounds(100,150,1000,160);
-		tjf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		tjf.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				mainf.setEnabled(true);
+				tjf.dispose();
+			}
+		});
 		//-----------------------------------------------------------------------------------------------
 		//-----------------------------------------减少数量监听-----------------------------
 		xgslt.addKeyListener(new KeyAdapter(){
@@ -653,7 +664,7 @@ public class KCx {
 								int zl=cxzl.getSelectedIndex();
 								mtt=mt(wx.KCdata(cxt.getText(),jczl[zl-1][0],""));
 							}
-					    	mtt.setEnabled(true);
+					    	
 							mtt.addMouseListener(new MouseAdapter(){
 								@Override
 								public void mousePressed(MouseEvent e){
@@ -668,6 +679,7 @@ public class KCx {
 								}
 							});
 					    	mainjsp.setViewportView(mtt);
+					    	mainf.setEnabled(true);
 							xgf.dispose();
 						}
 					}catch(Exception e1){
@@ -700,7 +712,7 @@ public class KCx {
 								int zl=cxzl.getSelectedIndex();
 								mtt=mt(wx.KCdata(cxt.getText(),jczl[zl-1][0],""));
 							}
-					    	mtt.setEnabled(true);
+							mainf.setEnabled(true);
 							mtt.addMouseListener(new MouseAdapter(){
 								@Override
 								public void mousePressed(MouseEvent e){
@@ -731,22 +743,23 @@ public class KCx {
 			@Override
 			public void actionPerformed(ActionEvent e){
 				// TODO Auto-generated method stub
+				mainf.setEnabled(false);
 				tjf.setVisible(true);
 			}
 		});
 		mainp.add(mainjsp);
 		mainfc.add(mainp);
 		mainf.setVisible(true);
+		mainf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		mainf.addWindowListener(new WindowAdapter(){
 			@Override
 			public void windowClosing(WindowEvent e){
 				// TODO Auto-generated method stub
-				tjf.dispose();
+				if(Lock.SingleUnLock(mainf, "lock/KCx.txt")==true){
+					mainf.dispose();
+				}
 			}
 		});
-	}
-	public static void main(String[] args){
-		new KCx("test");
 	}
 }
 class colorc extends DefaultTableCellRenderer {

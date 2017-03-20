@@ -8,8 +8,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -25,12 +29,19 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.CheckDate;
+import security.Lock;
 import test.PrintAssembleSheet;
 
 public class Assemble {
 	List<String> spcount=new ArrayList<String>();
 	AssembleData d=new AssembleData();
 	public Assemble(String user){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);
 	    String[] assembleFrame_ColumnN={"序号","商品型号","商品名称","单位","单价","数量","金额"};
@@ -95,7 +106,14 @@ public class Assemble {
 		Assemble_MFrame.setResizable(false);
 		//Assemble_MFrame.setAlwaysOnTop(true);
 		Assemble_MFrame.setBounds(30,100,400,705);
-		Assemble_MFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		Assemble_MFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		Assemble_MFrame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				if(Lock.SingleUnLock(Assemble_MFrame, "lock/Assemble.txt")){
+					Assemble_MFrame.dispose();
+				}
+			}
+		});
 		Container Assemble_MFrame_Content=Assemble_MFrame.getContentPane();
 		Assemble_MFrame_Content.setLayout(null);
 		JTextField Assemble_MFrame_JT=new JTextField();

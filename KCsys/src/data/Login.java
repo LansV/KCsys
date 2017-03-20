@@ -10,13 +10,9 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.net.InetAddress;
-import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -24,12 +20,15 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import security.CheckDate;
 
 public class Login extends JFrame{
 	/**
@@ -43,29 +42,9 @@ public class Login extends JFrame{
 	String PcMac=null;
 	boolean EqualsVersion=false;
      public Login(){
-    	  String webUrl4 = "http://www.ntsc.ac.cn";//中国科学院国家授时中心
-	       	 try {
-	       		    Date date2=new Date();
-		            URL url = new URL(webUrl4);// 取得资源对象
-		            URLConnection uc = url.openConnection();// 生成连接对象
-		            uc.connect();// 发出连接
-		            long ld = uc.getDate();// 读取网站日期时间
-		            Date date = new Date(ld);// 转换为标准时间对象
-		            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-		            String s1=sdf.format(date2);
-		            String s=sdf.format(date);
-		            if(s.equals(s1)==true){
-		            	 JOptionPane.showMessageDialog(null,"日期核对成功");
-		            }else{
-		            	JOptionPane.showMessageDialog(null,"系统日期与服务器日期不相符\n请同步系统日期后重试");
-			            System.exit(0);
-		            }
-		        } catch (MalformedURLException e) {
-		            e.printStackTrace();
-		        } catch (IOException e) {
-		            JOptionPane.showMessageDialog(null,"请检查网络，确保网络畅通");
-		            System.exit(0);
-		        }
+    	 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+    	 Date date2=new Date();
+    	 String s1=sdf.format(date2);
     	 Dao d=new Dao();
          Connection con=d.getcon();
          setAlwaysOnTop(true);
@@ -204,9 +183,11 @@ public class Login extends JFrame{
     									JOptionPane.showMessageDialog(c,"\t初始密码\n请修改密码");
     									changePassW.setVisible(true);
     								}else{
-    									dispose();
-        								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
-        								new MF(id,xuser);
+    									if(CheckDate.ReturnCheckDateResult(s1)==true){
+    										dispose();
+            								sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values("+id+",'"+PcName+"','"+PcMac+"')");
+            								new MF(id,xuser);
+    									}
     								}
     							}else{
     								JOptionPane.showMessageDialog(c, "用户名或密码错误！");

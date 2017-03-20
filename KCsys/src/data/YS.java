@@ -9,8 +9,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -25,6 +29,9 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
+import security.CheckDate;
+import security.Lock;
 import test.Printclass;
 
 public class YS {
@@ -36,6 +43,10 @@ public class YS {
 	int wzy;
 
 	public YS(String user) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+	   	Date date2=new Date();
+	   	String s1=sdf.format(date2);
+	   	CheckDate.ReturnCheckDateResult(s1);
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "收款", "备注" };
@@ -814,7 +825,14 @@ public class YS {
 		Container fc = f.getContentPane();
 		fc.setLayout(null);
 		f.setBounds(1000, 50, 380, 670);
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		f.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				if(Lock.SingleUnLock(f, "lock/YS.txt")){
+					f.dispose();
+				}
+			}
+		});
 		JLabel fhj = new JLabel("");
 		fhj.setBounds(210, 605, 200, 20);
 		String[][] arr = d.ys();
