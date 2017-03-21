@@ -6,131 +6,127 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class Lock {
-	public static boolean SingleLock(JFrame JOP,String filename){
+	static FileOutputStream out = null;
+	public static boolean SingleLock(JFrame JOP, String filename) {
 		File file = new File(filename);
-		OutputStream out = null ;
-		if(file.exists()==true){
-			InputStream in=null;
+		if (file.exists() == true) {
+			InputStream in = null;
 			try {
-				in = new FileInputStream(file) ;
+				in = new FileInputStream(file);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"get lockfile error");
+				JOptionPane.showMessageDialog(JOP, "get lockfile error");
 				return false;
 			}
-			byte b1[] = new byte[1024] ;
-			int i = 0 ;
+			byte b1[] = new byte[1024];
+			int i = 0;
 			try {
-				i=in.read(b1);
+				i = in.read(b1);
 				in.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"read lockfile error");
+				JOptionPane.showMessageDialog(JOP, "read lockfile error");
 				return false;
 			}
-			String s=new String(b1,0,i);
-			if(s.equals("lock")){
-				JOptionPane.showMessageDialog(JOP,"请勿重复打开界面");
-			}else{
+			String s = new String(b1, 0, i);
+			if (s.equals("lock")) {
+				JOptionPane.showMessageDialog(JOP, "请勿重复打开界面");
+			} else {
 				try {
-					out = new FileOutputStream(file) ;
+					out = new FileOutputStream(file);
 				} catch (FileNotFoundException e) {
 					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(JOP,"get lockfile error");
+					JOptionPane.showMessageDialog(JOP, "get lockfile error");
 					return false;
 				}
-				byte b[] = "lock".getBytes() ;
+				byte b[] = "lock".getBytes();
 				try {
-					out.write(b) ;
+					out.write(b);
 					out.close();
 					return true;
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					JOptionPane.showMessageDialog(JOP,"write lockfile error");
+					JOptionPane.showMessageDialog(JOP, "write lockfile error");
 					return false;
 				}
 			}
-		}else{
+		} else {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"create lockfile error");
+				JOptionPane.showMessageDialog(JOP, "create lockfile error");
 				return false;
 			}
 			try {
-				out = new FileOutputStream(file) ;
+				out = new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"get lockfile error");
+				JOptionPane.showMessageDialog(JOP, "get lockfile error");
 				return false;
 			}
-			byte b[] = "lock".getBytes() ;
-			 try {
-				out.write(b) ;
+			byte b[] = "lock".getBytes();
+			try {
+				out.write(b);
 				out.close();
 				return true;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"write lockfile error");
+				JOptionPane.showMessageDialog(JOP, "write lockfile error");
 				return false;
 			}
 		}
 		return false;
 	}
-	
-	
-	
-	public static boolean SingleUnLock(JFrame JOP,String filename){
+
+	public static boolean SingleUnLock(JFrame JOP, String filename) {
 		File file = new File(filename);
-		OutputStream out = null ;
-		if(file.exists()==true){
+		if (file.exists() == true) {
 			try {
-				out = new FileOutputStream(file) ;
+				out = new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"get lockfile error");
+				JOptionPane.showMessageDialog(JOP, "get lockfile error");
 				return false;
 			}
-			byte b[] = "unlock".getBytes() ;
-			 try {
-				out.write(b) ;
+			byte b[] = "unlock".getBytes();
+			try {
+				out.write(b);
 				out.close();
 				return true;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"write lockfile error");
+				JOptionPane.showMessageDialog(JOP, "write lockfile error");
 				return false;
 			}
-		}else{
+		} else {
 			try {
 				file.createNewFile();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"create lockfile error");
+				JOptionPane.showMessageDialog(JOP, "create lockfile error");
 				return false;
 			}
 			try {
-				out = new FileOutputStream(file) ;
+				out = new FileOutputStream(file);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"get lockfile error");
+				JOptionPane.showMessageDialog(JOP, "get lockfile error");
 				return false;
 			}
-			byte b[] = "unlock".getBytes() ;
-			 try {
-				out.write(b) ;
+			byte b[] = "unlock".getBytes();
+			try {
+				out.write(b);
 				out.close();
 				return true;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				JOptionPane.showMessageDialog(JOP,"write lockfile error");
+				JOptionPane.showMessageDialog(JOP, "write lockfile error");
 				return false;
 			}
 		}

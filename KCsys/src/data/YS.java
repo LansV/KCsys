@@ -834,8 +834,11 @@ public class YS {
 			}
 		});
 		JLabel fhj = new JLabel("");
+		JTextField querycustomer=new JTextField();
+		querycustomer.setBounds(8, 613, 180, 24);
+		fc.add(querycustomer);
 		fhj.setBounds(210, 605, 200, 20);
-		String[][] arr = d.ys();
+		String[][] arr = d.ys(querycustomer.getText().trim());
 		String[] cxcn = { "客户名称", "应收", "最后日期" };
 		JScrollPane jsp = new JScrollPane();
 		JTable jtab = new JTable();
@@ -861,6 +864,25 @@ public class YS {
 			fthj = t + fthj;
 		}
 		fhj.setText("合计: " + String.format("%.2f", fthj));
+		querycustomer.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e){
+				if(e.getKeyChar()=='\n'){
+					String[][] arr2 = d.ys(querycustomer.getText().trim());
+					dm.setDataVector(arr2, cxcn);
+					TableColumn cj = jtab.getColumnModel().getColumn(0); // 设置列宽
+					cj.setPreferredWidth(180);
+					cj.setMinWidth(180);
+					cj.setMaxWidth(180);
+					Double fthj = 0.0;
+					int fjtabr = jtab.getRowCount();
+					for (int fx = 0; fx < fjtabr; fx++) {
+						Double t = Double.parseDouble(jtab.getValueAt(fx, 1).toString());
+						fthj = t + fthj;
+					}
+					fhj.setText("合计: " + String.format("%.2f", fthj));
+				}
+			}
+		});
 		jtab.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
@@ -1063,7 +1085,7 @@ public class YS {
 		ff.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				String[][] arr2 = d.ys();
+				String[][] arr2 = d.ys(querycustomer.getText().trim());
 				dm.setDataVector(arr2, cxcn);
 				TableColumn cj = jtab.getColumnModel().getColumn(0); // 设置列宽
 				cj.setPreferredWidth(180);

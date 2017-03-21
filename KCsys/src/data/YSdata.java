@@ -345,25 +345,22 @@ public class YSdata {
 		return data;
 	}
 	//---------------------------------------------------获取总计应收--------------------------------
-	public String[][] ys(){
+	public String[][] ys(String customer){
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
 			res = sql.executeQuery("select*from"
 					+ "(select khmc,SUM(je) as zj,MAX(lastdate) as fdate from("
-					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from XSD group by khmc "
+					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from XSD where khmc like '%"+customer+"%' group by khmc "
 					+ "union "
-					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from WXD group by khmc "
+					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from WXD where khmc like '%"+customer+"%' group by khmc "
 					+ "union "
-					+ "select khmc,-SUM(tje) as je, max(tdate) as lastdate from THD group by khmc "
+					+ "select khmc,-SUM(tje) as je, max(tdate) as lastdate from THD where khmc like '%"+customer+"%' group by khmc "
 					+ "union "
-					+ "select kh as khmc,-SUM(je) as je, max(date) as lastdate from HZ group by kh "
+					+ "select kh as khmc,-SUM(je) as je, max(date) as lastdate from HZ where kh like '%"+customer+"%' group by kh "
 					+ ") temp group by khmc"
 					+ ") temp where zj >0");
 			while(res.next()){
-				if(res.getDouble("zj")==0){
-					
-				}else{
 					ls.add(res.getString("khmc").trim());
 					ls.add(String.format("%.2f",res.getDouble("zj")));
 					if(res.getString("fdate")==null){
@@ -371,7 +368,6 @@ public class YSdata {
 					}else{
 						ls.add(res.getString("fdate").trim());
 					}
-				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
