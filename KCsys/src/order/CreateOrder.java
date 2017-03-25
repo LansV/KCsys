@@ -29,6 +29,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import security.Lock;
+import security.ReturnDate;
 
 public class CreateOrder {
 	String mc = ""; // 全局客户名称
@@ -41,7 +42,6 @@ public class CreateOrder {
 	public static void main(String[] args) {
 		new CreateOrder(1);
 	}
-
 	public CreateOrder(int userid) {
 		CreateOrderData d = new CreateOrderData();
 		List<String> spcount = new ArrayList<String>(); // 商品名称
@@ -458,10 +458,26 @@ public class CreateOrder {
 		cxjp.setLayout(null);
 		cxjp.add(cxjsp);
 		khfc.add(cxjp);
+		
 		// -----------------------------------------主面板----------------------------------------------------
 		JFrame mf = new JFrame("订单提交");
 		mf.setAlwaysOnTop(true);
 		mf.setResizable(false);
+		//-------------------------------------------临时单据-------------------------------------------------
+				JFrame tempList=new JFrame("临时数据");
+				tempList.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+				tempList.setAlwaysOnTop(true);
+				tempList.setResizable(false);
+				tempList.setBounds(420,280,300,400);
+				Container tempListC=tempList.getContentPane();
+				tempListC.setLayout(null);
+				tempList.addWindowListener(new WindowAdapter(){
+					public void windowClosing(WindowEvent e){
+						mf.setEnabled(true);
+						tempList.dispose();
+					}
+				});
+		//--------------------------------------------------------------------------------------------------
 		Container mfc = mf.getContentPane();
 		JButton kh_b = new JButton("选择客户");
 		kh_b.addActionListener(new ActionListener() {
@@ -513,12 +529,20 @@ public class CreateOrder {
 			}
 		});
 		mbutton.setBounds(910, 560, 60, 25);
+		JButton templist = new JButton("临时单据");
+		templist.setBounds(120, 560, 100, 25);
+		templist.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				tempList.setVisible(true);
+				mf.setEnabled(false);
+			}
+			
+		});
+		mfc.add(templist);
 		JButton addtemp = new JButton("添加临单");
-		addtemp.setBounds(420, 560, 100, 25);
-		mfc.add(addtemp);
-		showhj.setBounds(600, 560, 60, 25);
-		JButton mxsb = new JButton("提交");
-		mxsb.addActionListener(new ActionListener() {
+		addtemp.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
@@ -553,39 +577,43 @@ public class CreateOrder {
 						if (mct.isEditable() == true) {
 							d.addCustomer(mc, lxr, lxtel, addr, userid);
 						}
-						for (int i = 0; i < cr; i++) {
+						String date=ReturnDate.netDate();
+						if(dh.equals(d.tempNo())){
+							for (int i = 0; i < cr; i++) {
 
-							String xhs = mtable.getValueAt(i, 0).toString().trim();
-							int bh = Integer.parseInt(xhs);
-							String xh = mtable.getValueAt(i, 1).toString().trim();
-							String sp = mtable.getValueAt(i, 2).toString().trim();
-							String dw = mtable.getValueAt(i, 3).toString().trim();
-							String xhs4 = mtable.getValueAt(i, 4).toString().trim();
-							Double zk = null;
-							if (xhs4.length() == 0) {
+								String xhs = mtable.getValueAt(i, 0).toString().trim();
+								int bh = Integer.parseInt(xhs);
+								String xh = mtable.getValueAt(i, 1).toString().trim();
+								String sp = mtable.getValueAt(i, 2).toString().trim();
+								String dw = mtable.getValueAt(i, 3).toString().trim();
+								String xhs4 = mtable.getValueAt(i, 4).toString().trim();
+								Double zk = null;
+								if (xhs4.length() == 0) {
 
-							} else {
-								zk = Double.parseDouble(xhs4);
+								} else {
+									zk = Double.parseDouble(xhs4);
+								}
+								String xhs5 = mtable.getValueAt(i, 5).toString().trim();
+								Double dj = Double.parseDouble(xhs5);
+								String xhs6 = mtable.getValueAt(i, 6).toString().trim();
+								int sl = Integer.parseInt(xhs6);
+								slhj = slhj + sl;
+								String xhs7 = mtable.getValueAt(i, 7).toString().trim();
+								Double je = Double.parseDouble(xhs7);
+								String bz = mtable.getValueAt(i, 8).toString().trim();
+								listsp.add(xhs);
+								listsp.add(xh);
+								listsp.add(sp);
+								listsp.add(dw);
+								listsp.add(xhs4);
+								listsp.add(xhs5);
+								listsp.add(xhs6);
+								listsp.add(xhs7);
+								listsp.add(bz);
+
+								d.wxs(dh, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid,"temporder",date);
+							
 							}
-							String xhs5 = mtable.getValueAt(i, 5).toString().trim();
-							Double dj = Double.parseDouble(xhs5);
-							String xhs6 = mtable.getValueAt(i, 6).toString().trim();
-							int sl = Integer.parseInt(xhs6);
-							slhj = slhj + sl;
-							String xhs7 = mtable.getValueAt(i, 7).toString().trim();
-							Double je = Double.parseDouble(xhs7);
-							String bz = mtable.getValueAt(i, 8).toString().trim();
-							listsp.add(xhs);
-							listsp.add(xh);
-							listsp.add(sp);
-							listsp.add(dw);
-							listsp.add(xhs4);
-							listsp.add(xhs5);
-							listsp.add(xhs6);
-							listsp.add(xhs7);
-							listsp.add(bz);
-
-							d.wxs(dh, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid);
 							String[][] sparr = d.spcxdj(spjt.getText().trim());
 							DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 								private static final long serialVersionUID = 1L;
@@ -604,18 +632,126 @@ public class CreateOrder {
 							sptablecl.setPreferredWidth(180);
 							sptablecl.setMinWidth(180);
 							sptablecl.setMaxWidth(180);
+						}else{
+							JOptionPane.showMessageDialog(mf, "单号修正，重新提交");
 						}
+						
 						listhj.add(changenum(hj));
 						listhj.add(slhj);
 						listhj.add(String.format("%.2f", hj));
 						mdm.setRowCount(0);
 						spcount.clear(); // clear count
-						ml.setText(d.xsdh());
+						ml.setText(d.tempNo());
 					}
 				}
 			}
 		});
-		mxsb.setBounds(300, 560, 60, 25);
+		addtemp.setBounds(420, 560, 100, 25);
+		mfc.add(addtemp);
+		showhj.setBounds(600, 560, 60, 25);
+		JButton mxsb = new JButton("提交");
+		mxsb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+
+				int cr = mtable.getRowCount();
+				if (cr == 0) {
+					JOptionPane.showMessageDialog(mf, "无数据");
+				} else {
+
+					if (mtable.isEditing() == true) {
+						mtable.getCellEditor().stopCellEditing();
+					}
+					String dh = d.getNo();
+					mc = mct.getText();
+					if (mc.length() == 0) {
+						JOptionPane.showMessageDialog(mf, "客户未填写");
+					} else if (dh.length() != 0 && mc.length() != 0) {
+						int r = JOptionPane.showConfirmDialog(mf, "是否提交确认订单\n注意事项\n*订单确认后不可修改\n*订单确认后发货\n*发货周期为  [ 15 ] 个工作日", "订单确认", JOptionPane.YES_NO_OPTION);// 返回选择值
+						if (r == 0) {
+							int slhj = 0;
+							List<Object> listkh = new ArrayList<Object>();
+							List<Object> listsp = new ArrayList<Object>();
+							List<Object> listhj = new ArrayList<Object>();
+							lxr = lxrt.getText().trim();
+							lxtel = lxrtelt.getText().trim();
+							addr = addrt.getText().trim();
+							listkh.add(dh);
+							listkh.add(mc);
+							listkh.add(lxr);
+							listkh.add(lxtel);
+							listkh.add(addr);
+							listkh.add("");
+							if (mct.isEditable() == true) {
+								d.addCustomer(mc, lxr, lxtel, addr, userid);
+							}
+							String date=ReturnDate.netDate();
+							for (int i = 0; i < cr; i++) {
+
+								String xhs = mtable.getValueAt(i, 0).toString().trim();
+								int bh = Integer.parseInt(xhs);
+								String xh = mtable.getValueAt(i, 1).toString().trim();
+								String sp = mtable.getValueAt(i, 2).toString().trim();
+								String dw = mtable.getValueAt(i, 3).toString().trim();
+								String xhs4 = mtable.getValueAt(i, 4).toString().trim();
+								Double zk = null;
+								if (xhs4.length() == 0) {
+
+								} else {
+									zk = Double.parseDouble(xhs4);
+								}
+								String xhs5 = mtable.getValueAt(i, 5).toString().trim();
+								Double dj = Double.parseDouble(xhs5);
+								String xhs6 = mtable.getValueAt(i, 6).toString().trim();
+								int sl = Integer.parseInt(xhs6);
+								slhj = slhj + sl;
+								String xhs7 = mtable.getValueAt(i, 7).toString().trim();
+								Double je = Double.parseDouble(xhs7);
+								String bz = mtable.getValueAt(i, 8).toString().trim();
+								listsp.add(xhs);
+								listsp.add(xh);
+								listsp.add(sp);
+								listsp.add(dw);
+								listsp.add(xhs4);
+								listsp.add(xhs5);
+								listsp.add(xhs6);
+								listsp.add(xhs7);
+								listsp.add(bz);
+
+								d.wxs(dh, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid,"order",date);
+								
+							}
+							String[][] sparr = d.spcxdj(spjt.getText().trim());
+							DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
+								private static final long serialVersionUID = 1L;
+
+								public boolean isCellEditable(int row, int colunm) {
+									return false;
+								}
+							};
+							spdm.setColumnIdentifiers(spcn);
+							sptable.setModel(spdm);
+							TableColumn sptablecl1 = sptable.getColumnModel().getColumn(0); // 设置列宽
+							sptablecl1.setPreferredWidth(80);
+							sptablecl1.setMinWidth(80);
+							sptablecl1.setMaxWidth(80);
+							TableColumn sptablecl = sptable.getColumnModel().getColumn(1); // 设置列宽
+							sptablecl.setPreferredWidth(180);
+							sptablecl.setMinWidth(180);
+							sptablecl.setMaxWidth(180);
+							listhj.add(changenum(hj));
+							listhj.add(slhj);
+							listhj.add(String.format("%.2f", hj));
+							mdm.setRowCount(0);
+							spcount.clear(); // clear count
+							ml.setText(d.tempNo());
+						}
+					}
+				}
+			}
+		});
+		mxsb.setBounds(750, 560, 60, 25);
 		mfc.setLayout(null);
 		mfc.add(jtp);
 		mfc.add(mxsb);
@@ -655,7 +791,7 @@ public class CreateOrder {
 					addrt.setText(addr);
 					addrt.setEditable(false);
 					khf.dispose();
-					String s = d.xsdh();
+					String s = d.tempNo();
 					// System.out.println(s);
 					ml.setText(s);
 					mf.setEnabled(true);
@@ -681,7 +817,7 @@ public class CreateOrder {
 		// -------------------------------------------------------------------------------------------
 		int r = JOptionPane.showConfirmDialog(khf, "客户是否为新客户", "选择", JOptionPane.YES_NO_OPTION);// 返回选择值
 		if (r == 0) {
-			String s = d.xsdh();
+			String s = d.tempNo();
 			// System.out.println(s);
 			ml.setText(s);
 			mf.setVisible(true);

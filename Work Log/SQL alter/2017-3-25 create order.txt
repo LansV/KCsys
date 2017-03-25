@@ -1,0 +1,16 @@
+CREATE TABLE [dbo].[order](
+	[dh] [varchar](10) NULL,
+	[khmc] [varchar](100) NULL,
+	[bh] [int] NULL,
+	[xh] [varchar](10) NULL,
+	[sp] [varchar](255) NULL,
+	[dw] [varchar](10) NULL,
+	[zk] [float] NULL,
+	[dj] [money] NULL,
+	[sl] [int] NULL,
+	[je] [money] NULL,
+	[bz] [varchar](255) NULL,
+	[bdate] [date] NULL,
+	[bstatus] [int] NULL,
+	[belong] [int] NULL
+)

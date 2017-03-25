@@ -19,12 +19,59 @@ public class CreateOrderData {
 	Connection con = d.getcon();	
 	SimpleDateFormat timef= new SimpleDateFormat("HH:mm:ss");
 	//-----------------------------------------------------XS获取单号-------------------------------------------
-	public String xsdh(){
+	public String getNo(){
 		String ls="";
 		Date d=new Date();
 		String y=String.format("%ty",d);
 		String m=String.format("%tm",d);
-		String s="D"+y+m;
+		String s="O"+y+m;
+		String st=null;
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select max(dh) as dh from comfirmorder");
+				while(res.next()){
+					st=res.getString("dh");
+					if(st==null){
+						ls=s+"001";
+					}else{
+						st=res.getString("dh").trim();
+						String stl=st.substring(st.length()-3,st.length());
+						int i=Integer.parseInt(stl);
+						i=i+1;
+						String z=Integer.toString(i);
+						if(z.length()==1){
+							ls=s+"00"+z;
+						}else if(z.length()==2){
+							ls=s+"0"+z;
+						}else{
+							ls=s+z;
+						}
+					}
+				}
+ 		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"获取订单号错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return ls;
+	}
+	//-----------------------------------------------------XS获取临时单号-------------------------------------------
+	public String tempNo(){
+		String ls="";
+		Date d=new Date();
+		String y=String.format("%ty",d);
+		String m=String.format("%tm",d);
+		String s="L"+y+m;
 		String st=null;
 		try {
 			sql = con.createStatement();
@@ -50,7 +97,7 @@ public class CreateOrderData {
 				}
  		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null,"错误");
+			JOptionPane.showMessageDialog(null,"获取临时单号错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){
@@ -66,20 +113,14 @@ public class CreateOrderData {
 		return ls;
 	}
 	//-------------------------------------------------写入定单---------------------------------------------
-	public Boolean wxs(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
-			Double dj, int sl, Double je, String bz,int belong) {
-		Boolean b=true;
-		Date date2=new Date();
-		String ckd=String.format("%tF", date2);
+	public void wxs(String dh,String khmc,int bh, String xh, String sp, String dw, Double zk,
+			Double dj, int sl, Double je, String bz,int belong,String table,String ckd) {
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into temporder values"
+			sql.execute("insert into "+table+" values"
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
 					+ ",0,"+belong+")");
-			JFrame f=new JFrame();
-			f.setAlwaysOnTop(true);
 		}catch(Exception e){
-			b=false;
 			JFrame f=new JFrame();
 			f.setAlwaysOnTop(true);
 			JOptionPane.showMessageDialog(f,"添加订单错误");
@@ -95,7 +136,6 @@ public class CreateOrderData {
 		     		 JOptionPane.showMessageDialog(null,"断开错误");
 		     	 }
 		}
-		return b;
 	}
 	//------------------------------------------------------添加客户-----------------------------
 	public void addCustomer(String name,String contact,String tel,String addr,int id){
