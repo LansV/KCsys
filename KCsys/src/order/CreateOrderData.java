@@ -223,6 +223,98 @@ public class CreateOrderData {
 	   	count=0;
 		return data;
 	}
+	//-----------------------------------------查询临时单---------------------------
+	public String[][] getTempListDate(String dh,int id){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select*from temporder where dh='"+dh+"' and belong = "+id+" order by bh");
+			while(res.next()){
+				ls.add(res.getString("bh").trim());
+				ls.add(res.getString("xh").trim());
+				ls.add(res.getString("sp").trim());
+				ls.add(res.getString("dw").trim());
+				if(res.getString("zk")==null){
+					ls.add(res.getString("zk"));
+				}else{
+					ls.add(res.getString("zk").trim());
+				}
+				ls.add(res.getString("dj").trim());
+				ls.add(res.getString("sl").trim());
+				ls.add(res.getString("je").trim());
+				ls.add(res.getString("bz").trim());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JFrame f=new JFrame();
+			f.setAlwaysOnTop(true);
+			JOptionPane.showMessageDialog(f,"获取临时单错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=9;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
+	//-----------------------------------------查询临时单---------------------------
+	public String[][] getTempListName(int id){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select dh, max(khmc) as khmc,max(bdate) as bdate from temporder where belong = "+id+" and bstatus = 0 group by dh");
+			while(res.next()){
+				ls.add(res.getString("dh").trim());
+				ls.add(res.getString("khmc").trim());
+				ls.add(res.getString("bdate").trim());
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JFrame f=new JFrame();
+			f.setAlwaysOnTop(true);
+			JOptionPane.showMessageDialog(f,"获取临时单错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=3;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
 	//-----------------------------------------客户查询---------------------------
 	public String[][] khx(int id,String Contact,String name){
 		List<String> ls=new ArrayList<String>();

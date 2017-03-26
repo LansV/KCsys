@@ -43,6 +43,7 @@ public class CreateOrder {
 		new CreateOrder(1);
 	}
 	public CreateOrder(int userid) {
+		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		CreateOrderData d = new CreateOrderData();
 		List<String> spcount = new ArrayList<String>(); // 商品名称
 		// -------------------------------------显示表格---------------------------------------------------
@@ -99,7 +100,7 @@ public class CreateOrder {
 			}
 		});
 		// =================================tablemodel========================================
-		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "备注" };
+		String[] mcn = { "序号", "商品编号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "备注" };
 		DefaultTableModel mdm = new DefaultTableModel() {
 			/**
 			 * 
@@ -117,7 +118,6 @@ public class CreateOrder {
 			}
 		};
 		mtable.getTableHeader().setReorderingAllowed(false);
-		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(JLabel.CENTER);
 		mtable.setDefaultRenderer(Object.class, tcr);
 		mdm.setColumnIdentifiers(mcn);
@@ -464,19 +464,76 @@ public class CreateOrder {
 		mf.setAlwaysOnTop(true);
 		mf.setResizable(false);
 		//-------------------------------------------临时单据-------------------------------------------------
-				JFrame tempList=new JFrame("临时数据");
-				tempList.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-				tempList.setAlwaysOnTop(true);
-				tempList.setResizable(false);
-				tempList.setBounds(420,280,300,400);
-				Container tempListC=tempList.getContentPane();
-				tempListC.setLayout(null);
-				tempList.addWindowListener(new WindowAdapter(){
-					public void windowClosing(WindowEvent e){
-						mf.setEnabled(true);
+		JFrame tempList=new JFrame("临时数据");
+		tempList.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		tempList.setAlwaysOnTop(true);
+		tempList.setResizable(false);
+		tempList.setBounds(420,280,380,400);
+		Container tempListC=tempList.getContentPane();
+		tempListC.setLayout(null);
+		tempList.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				mf.setEnabled(true);
+				tempList.dispose();
+			}
+		});
+		JTable tempListTable=new JTable();
+		tempListTable.getTableHeader().setReorderingAllowed(false);
+		String[] tempListTableC={"单号","名称","日期"};
+		DefaultTableModel tempListTableModel=new DefaultTableModel(d.getTempListName(userid),tempListTableC){
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		tempListTable.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==1){
+					if(e.getClickCount()==2){
+						int row=tempListTable.getSelectedRow();
+						String dh=tempListTable.getValueAt(row, 0).toString().trim();
+						mdm.setRowCount(0);
+						mdm.setDataVector(d.getTempListDate(dh, userid), mcn);
+						TableColumn cktablecxh = mtable.getColumnModel().getColumn(0); // 设置列宽
+						cktablecxh.setPreferredWidth(40);
+						cktablecxh.setMinWidth(40);
+						cktablecxh.setMaxWidth(40);
+						TableColumn cktableczl = mtable.getColumnModel().getColumn(1); // 设置列宽
+						cktableczl.setPreferredWidth(120);
+						cktableczl.setMinWidth(120);
+						cktableczl.setMaxWidth(120);
+						TableColumn cktableccp = mtable.getColumnModel().getColumn(2); // 设置列宽
+						cktableccp.setPreferredWidth(180);
+						cktableccp.setMinWidth(180);
+						cktableccp.setMaxWidth(180);
+						TableColumn cktablecdw = mtable.getColumnModel().getColumn(3); // 设置列宽
+						cktablecdw.setPreferredWidth(40);
+						cktablecdw.setMinWidth(40);
+						cktablecdw.setMaxWidth(40);
+						TableColumn cktablecbz = mtable.getColumnModel().getColumn(8); // 设置列宽
+						cktablecbz.setPreferredWidth(350);
+						cktablecbz.setMinWidth(350);
+						cktablecbz.setMaxWidth(350);
 						tempList.dispose();
+						mf.setEnabled(true);
 					}
-				});
+				}
+			}
+		});
+		tempListTable.setModel(tempListTableModel);
+		tempListTable.setRowHeight(22);
+		tempListTable.setDefaultRenderer(Object.class,tcr);
+		TableColumn tempListTC1=tempListTable.getColumnModel().getColumn(1);
+		tempListTC1.setMaxWidth(180);
+		tempListTC1.setMinWidth(180);
+		JScrollPane tempListJSP=new JScrollPane();
+		tempListJSP.setBounds(10,10,350,350);
+		tempListJSP.setViewportView(tempListTable);
+		tempListC.add(tempListJSP);
 		//--------------------------------------------------------------------------------------------------
 		Container mfc = mf.getContentPane();
 		JButton kh_b = new JButton("选择客户");
