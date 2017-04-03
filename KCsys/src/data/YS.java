@@ -32,7 +32,7 @@ import javax.swing.table.TableColumn;
 
 import security.CheckDate;
 import security.Lock;
-import test.Printclass;
+import tool.Printclass;
 
 public class YS {
 	YSdata d = new YSdata();

@@ -23,9 +23,9 @@ public class CustomerInfoData {
 		String s = null;
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from CustomerInfo where id="+id+"");
+			res = sql.executeQuery("select*from customerinfo where customerid="+id+"");
 			while(res.next()){
-				s=res.getString("Address").trim();
+				s=res.getString("address").trim();
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -60,13 +60,13 @@ public class CustomerInfoData {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from CustomerInfo where Belong = "+id+" and (Contact like '%"+Contact+"%' "
-					+ "and CName like '%"+name+"%')  order by id");
+			res = sql.executeQuery("select*from customerinfo where belong = "+id+" and (contact like '%"+Contact+"%' "
+					+ "and customername like '%"+name+"%')  order by id");
 			while(res.next()){
-				ls.add(res.getString("id").trim());
-				ls.add(res.getString("CName").trim());
-				ls.add(res.getString("Contact"));
-				ls.add(res.getString("Tel").trim());
+				ls.add(res.getString("customerid").trim());
+				ls.add(res.getString("customername").trim());
+				ls.add(res.getString("contact"));
+				ls.add(res.getString("tel").trim());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -97,23 +97,19 @@ public class CustomerInfoData {
 		return data;
 	}
 	//-----------------------------------------修改客户-------------------------------------
-	public void alterCustomer(String name,String contact,String tel,String addr,String id){
+	public void alterCustomer(JFrame f,String name,String contact,String tel,String addr,String id){
 		//Date cd=new Date();
 		/*String time=timef.format(cd);
 		String ckd=String.format("%tF",cd);*/
 		try {
 			sql = con.createStatement();
-			sql.execute("update CustomerInfo set CName = '"+name+"' where id = "+id+";"
-					+ "update CustomerInfo set Contact = '"+contact+"' where id = "+id+";"
-					+ "update CustomerInfo set Tel = '"+tel+"' where id = "+id+";"
-					+ "update CustomerInfo set Address = '"+addr+"' where id = "+id+";");
-			JFrame f=new JFrame();
-			f.setAlwaysOnTop(true);
+			sql.execute("update customerinfo set customername = '"+name+"' where customerid = "+id+";"
+					+ "update customerinfo set contact = '"+contact+"' where customerid = "+id+";"
+					+ "update customerinfo set tel = '"+tel+"' where customerid = "+id+";"
+					+ "update customerinfo set address = '"+addr+"' where customerid = "+id+";");
 			JOptionPane.showMessageDialog(f,"修改成功");
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			JFrame f=new JFrame();
-			f.setAlwaysOnTop(true);
 			JOptionPane.showMessageDialog(f,"\t添加失败\n请重新录入信息");
 		}finally{
 			if(res!=null){
@@ -136,22 +132,51 @@ public class CustomerInfoData {
 			}
 		}
 	}
+	//-----------------------------------------------------获取客户单号-------------------------------------------
+	public Integer getCustomerNo(){
+		String st=null;
+		int i = 0;
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select max(customerid) as customerid from customerinfo");
+				while(res.next()){
+					st=res.getString("customerid");
+					if(st==null){
+						i=10001;
+					}else{
+						int j=res.getInt("customerid");
+						i=j+1;
+					}
+				}
+ 		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"获取订单号错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return i;
+	}
 	//-----------------------------------------添加客户-------------------------------------
-	public void addCustomer(String name,String contact,String tel,String addr,int id){
+	public void addCustomer(JFrame f,String name,String contact,String tel,String addr,int id){
 		Date cd=new Date();
 		String time=timef.format(cd);
 		String ckd=String.format("%tF",cd);
 		try {
 			sql = con.createStatement();
-			sql.execute("insert into CustomerInfo values('"+name+"','"+contact+"','"+tel+"','"+addr+"',"
+			sql.execute("insert into customerinfo values("+getCustomerNo()+",'"+name+"','"+contact+"','"+tel+"','"+addr+"',"
 					+ ""+id+",'"+ckd+"','"+time+"')");
-			JFrame f=new JFrame();
-			f.setAlwaysOnTop(true);
 			JOptionPane.showMessageDialog(f,"添加成功");
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
-			JFrame f=new JFrame();
-			f.setAlwaysOnTop(true);
 			JOptionPane.showMessageDialog(f,"\t添加失败\n请重新录入信息");
 		}finally{
 			if(res!=null){

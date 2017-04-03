@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -20,7 +22,15 @@ public class MainFrame {
 		JFrame MainFrame=new JFrame();
 		MainFrame.setAlwaysOnTop(true);
 		MainFrame.setResizable(false);
-		MainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		MainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		MainFrame.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				Lock.SingleUnLock(MainFrame, "order/lock/CustomerInfo.txt");
+				Lock.SingleUnLock(MainFrame, "order/lock/CreateOrder.txt");
+				Lock.SingleUnLock(MainFrame, "order/lock/QuerySaleAndRepair.txt");
+				System.exit(0);
+			}
+		});
 		Image img = null;
 		try{
 	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
@@ -88,7 +98,7 @@ public class MainFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				if(Lock.SingleLock(MainFrame,"order/lock/QuerySaleAndRepair.txt")==true){
-					new QuerySaleAndRepair(id);
+					new QueryOrder(id);
 				}
 			}
 		});

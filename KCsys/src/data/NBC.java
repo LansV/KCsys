@@ -23,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import security.Lock;
-import test.PrintNBC;
+import tool.PrintNBC;
 public class NBC {
 	public NBC(String user){
 		wData w=new wData();

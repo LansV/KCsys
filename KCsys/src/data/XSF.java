@@ -18,8 +18,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import test.Printclass;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -39,6 +37,7 @@ import javax.swing.table.TableColumn;
 
 import security.CheckDate;
 import security.Lock;
+import tool.Printclass;
 public class XSF{
 	String mc="";                      //全局客户名称
 	String lxr="";						//全局联系人	

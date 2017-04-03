@@ -27,11 +27,22 @@ import javax.swing.table.TableColumn;
 
 import security.Lock;
 public class CustomerInfo {
+	Image img=null;
+	public static void main(String[] args){
+		new CustomerInfo(1);
+	}
 	public CustomerInfo(int userid){
 		System.out.println(userid);
 		CustomerInfoData d=new CustomerInfoData();
 		//---------------------------------客户资料主面板-----------------------------
 		JFrame CI_MainFrame=new JFrame("客户资料");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    CI_MainFrame.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
+		CI_MainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		CI_MainFrame.setAlwaysOnTop(true);
 		CI_MainFrame.setResizable(false);
 		try{
@@ -84,8 +95,14 @@ public class CustomerInfo {
 		CI_MainTableJS.setViewportView(CI_MainTable);
 		CI_MainTableJS.setBounds(5,50,430,610);
 		CI_MainFrame_Content.add(CI_MainTableJS);
-		//--------------------------------------客户添加面板-----------------------------------------
+		//--------------------------------------客户修改面板-----------------------------------------
 		JFrame CI_AlterFrame=new JFrame("信息详情");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    CI_AlterFrame.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
 		CI_AlterFrame.setAlwaysOnTop(true);
 		CI_AlterFrame.setResizable(false);
 		try{
@@ -140,8 +157,9 @@ public class CustomerInfo {
 				String addr=CI_AlterFrame_AddrT.getText().trim();
 				if(name.length()!=0&&contact.length()!=0&&tel.length()!=0&&addr.length()!=0){
 					int row=CI_MainTable.getSelectedRow();
-					d.alterCustomer(name, contact, tel, addr,CI_MainTable.getValueAt(row,0).toString());
+					d.alterCustomer(CI_AlterFrame,name, contact, tel, addr,CI_MainTable.getValueAt(row,0).toString());
 					CI_MainTable_Model.setDataVector(d.getCustomerInfo(userid,"","" ),CI_MainTable_Cn);
+					CI_MainTable.setRowSelectionInterval(row, row);
 					TableColumn cI_MainTable_Col0=CI_MainTable.getColumnModel().getColumn(0);   //设置列宽    
 			    	cI_MainTable_Col0.setPreferredWidth(40);   
 			    	cI_MainTable_Col0.setMinWidth(40);
@@ -182,6 +200,12 @@ public class CustomerInfo {
 		});
 		//--------------------------------------客户添加面板-----------------------------------------
 		JFrame CI_AddFrame=new JFrame("客户添加");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    CI_AddFrame.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
 		CI_AddFrame.setAlwaysOnTop(true);
 		CI_AddFrame.setResizable(false);
 		try{
@@ -235,7 +259,7 @@ public class CustomerInfo {
 				String tel=CI_AddFrame_TelT.getText().trim();
 				String addr=CI_AddFrame_AddrT.getText().trim();
 				if(name.length()!=0&&contact.length()!=0&&tel.length()!=0&&addr.length()!=0){
-					d.addCustomer(name, contact, tel, addr,userid);
+					d.addCustomer(CI_AddFrame,name, contact, tel, addr,userid);
 					CI_AddFrame_NameT.setText("");
 					CI_AddFrame_ContactT.setText("");
 					CI_AddFrame_TelT.setText("");

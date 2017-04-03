@@ -17,7 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 import security.CheckDate;
-import test.PrintRegister;
+import tool.PrintRegister;
 
 public class ProductRegister {
 	public ProductRegister(String user){

@@ -1,6 +1,8 @@
 package order;
 
 import java.awt.Container;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -30,6 +32,7 @@ import javax.swing.table.TableColumn;
 
 import security.Lock;
 import security.ReturnDate;
+import tool.CreateExcel;
 
 public class CreateOrder {
 	String mc = ""; // 全局客户名称
@@ -37,8 +40,9 @@ public class CreateOrder {
 	String lxtel = ""; // 全局联系电话
 	String addr = ""; // 全局地址
 	Double hj; // 合计
-	JLabel showhj = new JLabel("test"); // 显示合计
-
+	JLabel showhj = new JLabel(""); // 显示合计
+	String tempEq=null;
+	Image img = null;
 	public static void main(String[] args) {
 		new CreateOrder(1);
 	}
@@ -46,6 +50,7 @@ public class CreateOrder {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		CreateOrderData d = new CreateOrderData();
 		List<String> spcount = new ArrayList<String>(); // 商品名称
+		
 		// -------------------------------------显示表格---------------------------------------------------
 		JPanel mp = new JPanel();
 		JScrollPane msp = new JScrollPane();
@@ -185,6 +190,12 @@ public class CreateOrder {
 		row[8] = "";
 		// --------------------------------商品数量------------------------------------------------------
 		JFrame spsl = new JFrame("填写数量");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    spsl.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
 		spsl.setAlwaysOnTop(true);
 		spsl.setResizable(false);
 		Container spslc = spsl.getContentPane();
@@ -200,6 +211,12 @@ public class CreateOrder {
 		spslc.add(splb);
 		// ------------------------------------商品选择面板---------------------------------------------------
 		JFrame spFrame = new JFrame("商品");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    spFrame.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
 		spFrame.setAlwaysOnTop(true);
 		spFrame.setResizable(false);
 		Container spc = spFrame.getContentPane();
@@ -407,16 +424,23 @@ public class CreateOrder {
 		});
 		// ------------------------------------选择客户面板-------------------------------------------------
 		JFrame khf = new JFrame("选择客户");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    khf.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
+		khf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		khf.setAlwaysOnTop(true);
 		khf.setResizable(false);
 		Container khfc = khf.getContentPane();
 		khfc.setLayout(null);
-		khf.setBounds(700, 10, 320, 650);
+		khf.setBounds(700, 10, 380, 650);
 		JTextField cxjt = new JTextField();
 		cxjt.setBounds(10, 10, 120, 25);
 		khfc.add(cxjt);
 		String[][] arr = d.khx(userid, "", ""); // 数据类里取二维数组
-		String[] cxcn = { "名称", "联系人", "电话", "地址" };
+		String[] cxcn = { "编号","名称", "联系人", "电话", "地址" };
 		JScrollPane cxjsp = new JScrollPane();
 		JTable jtab = new JTable();
 		jtab.getTableHeader().setReorderingAllowed(false);
@@ -452,23 +476,36 @@ public class CreateOrder {
 			}
 		});
 		JPanel cxjp = new JPanel();
-		cxjp.setBounds(10, 50, 280, 550);
+		cxjp.setBounds(10, 50, 380, 550);
 		cxjsp.setViewportView(jtab);
-		cxjsp.setBounds(0, 0, 280, 550);
+		cxjsp.setBounds(0, 0, 350, 550);
 		cxjp.setLayout(null);
 		cxjp.add(cxjsp);
 		khfc.add(cxjp);
 		
 		// -----------------------------------------主面板----------------------------------------------------
 		JFrame mf = new JFrame("订单提交");
+		Image img = null;
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    mf.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
 		mf.setAlwaysOnTop(true);
 		mf.setResizable(false);
 		//-------------------------------------------临时单据-------------------------------------------------
 		JFrame tempList=new JFrame("临时数据");
+		try{
+	 	    img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
+	 	    tempList.setIconImage(img);
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"获取系统图标错误");
+		}
 		tempList.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		tempList.setAlwaysOnTop(true);
 		tempList.setResizable(false);
-		tempList.setBounds(420,280,380,400);
+		tempList.setBounds(420,280,450,400);
 		Container tempListC=tempList.getContentPane();
 		tempListC.setLayout(null);
 		tempList.addWindowListener(new WindowAdapter(){
@@ -479,8 +516,8 @@ public class CreateOrder {
 		});
 		JTable tempListTable=new JTable();
 		tempListTable.getTableHeader().setReorderingAllowed(false);
-		String[] tempListTableC={"单号","名称","日期"};
-		DefaultTableModel tempListTableModel=new DefaultTableModel(d.getTempListName(userid),tempListTableC){
+		String[] tempListTableC={"单号","客户编号","名称","日期"};
+		DefaultTableModel tempListTableModel=new DefaultTableModel(d.getTempListName(mf,userid),tempListTableC){
 
 			/**
 			 * 
@@ -490,48 +527,14 @@ public class CreateOrder {
 				return false;
 			}
 		};
-		tempListTable.addMouseListener(new MouseAdapter(){
-			public void mousePressed(MouseEvent e){
-				if(e.getButton()==1){
-					if(e.getClickCount()==2){
-						int row=tempListTable.getSelectedRow();
-						String dh=tempListTable.getValueAt(row, 0).toString().trim();
-						mdm.setRowCount(0);
-						mdm.setDataVector(d.getTempListDate(dh, userid), mcn);
-						TableColumn cktablecxh = mtable.getColumnModel().getColumn(0); // 设置列宽
-						cktablecxh.setPreferredWidth(40);
-						cktablecxh.setMinWidth(40);
-						cktablecxh.setMaxWidth(40);
-						TableColumn cktableczl = mtable.getColumnModel().getColumn(1); // 设置列宽
-						cktableczl.setPreferredWidth(120);
-						cktableczl.setMinWidth(120);
-						cktableczl.setMaxWidth(120);
-						TableColumn cktableccp = mtable.getColumnModel().getColumn(2); // 设置列宽
-						cktableccp.setPreferredWidth(180);
-						cktableccp.setMinWidth(180);
-						cktableccp.setMaxWidth(180);
-						TableColumn cktablecdw = mtable.getColumnModel().getColumn(3); // 设置列宽
-						cktablecdw.setPreferredWidth(40);
-						cktablecdw.setMinWidth(40);
-						cktablecdw.setMaxWidth(40);
-						TableColumn cktablecbz = mtable.getColumnModel().getColumn(8); // 设置列宽
-						cktablecbz.setPreferredWidth(350);
-						cktablecbz.setMinWidth(350);
-						cktablecbz.setMaxWidth(350);
-						tempList.dispose();
-						mf.setEnabled(true);
-					}
-				}
-			}
-		});
 		tempListTable.setModel(tempListTableModel);
 		tempListTable.setRowHeight(22);
 		tempListTable.setDefaultRenderer(Object.class,tcr);
-		TableColumn tempListTC1=tempListTable.getColumnModel().getColumn(1);
+		TableColumn tempListTC1=tempListTable.getColumnModel().getColumn(2);
 		tempListTC1.setMaxWidth(180);
 		tempListTC1.setMinWidth(180);
 		JScrollPane tempListJSP=new JScrollPane();
-		tempListJSP.setBounds(10,10,350,350);
+		tempListJSP.setBounds(10,10,420,350);
 		tempListJSP.setViewportView(tempListTable);
 		tempListC.add(tempListJSP);
 		//--------------------------------------------------------------------------------------------------
@@ -550,6 +553,9 @@ public class CreateOrder {
 		jtp.setLayout(null);
 		jtp.add(kh_b);
 		// jtp.add(jc);
+		JLabel customerid=new JLabel("");
+		customerid.setBounds(600, 60, 90, 25);
+		jtp.add(customerid);
 		JLabel mcl = new JLabel("客户:");
 		mcl.setBounds(10, 20, 40, 25);
 		JTextField mct = new JTextField();
@@ -586,12 +592,73 @@ public class CreateOrder {
 			}
 		});
 		mbutton.setBounds(910, 560, 60, 25);
+		//------------------------------------------<临时表单监听>--------------------------------------
+		tempListTable.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==1){
+					if(e.getClickCount()==2){
+						int row=tempListTable.getSelectedRow();
+						String dh=tempListTable.getValueAt(row, 0).toString().trim();
+						String khid=tempListTable.getValueAt(row, 1).toString().trim();
+						List<String> ls=d.getCustomerInfo(userid, khid);
+						mct.setText(ls.get(1));
+						mct.setEditable(false);
+						lxrt.setText(ls.get(2));
+						lxrt.setEditable(false);
+						lxrtelt.setText(ls.get(3));
+						lxrtelt.setEditable(false);
+						addrt.setText(ls.get(4));
+						addrt.setEditable(false);
+						customerid.setText(ls.get(0));
+						//System.out.println();
+						mdm.setRowCount(0);
+						mdm.setDataVector(d.getTempListDate(dh, userid), mcn);
+						tempEq=dh;
+						TableColumn cktablecxh = mtable.getColumnModel().getColumn(0); // 设置列宽
+						cktablecxh.setPreferredWidth(40);
+						cktablecxh.setMinWidth(40);
+						cktablecxh.setMaxWidth(40);
+						TableColumn cktableczl = mtable.getColumnModel().getColumn(1); // 设置列宽
+						cktableczl.setPreferredWidth(120);
+						cktableczl.setMinWidth(120);
+						cktableczl.setMaxWidth(120);
+						TableColumn cktableccp = mtable.getColumnModel().getColumn(2); // 设置列宽
+						cktableccp.setPreferredWidth(180);
+						cktableccp.setMinWidth(180);
+						cktableccp.setMaxWidth(180);
+						TableColumn cktablecdw = mtable.getColumnModel().getColumn(3); // 设置列宽
+						cktablecdw.setPreferredWidth(40);
+						cktablecdw.setMinWidth(40);
+						cktablecdw.setMaxWidth(40);
+						TableColumn cktablecbz = mtable.getColumnModel().getColumn(8); // 设置列宽
+						cktablecbz.setPreferredWidth(350);
+						cktablecbz.setMinWidth(350);
+						cktablecbz.setMaxWidth(350);
+						Double chj = 0.0;
+						for (int i = 0; i < mtable.getRowCount(); i++) {
+							String s = mtable.getValueAt(i, 7).toString().trim();
+							Double d = Double.parseDouble(s);
+							chj = chj + d;
+						}
+						hj = chj;
+						showhj.setText(String.format("%.2f", hj));
+						tempList.dispose();
+						mf.setEnabled(true);
+					}
+				}
+			}
+		});
+		//------------------------------------------</临时表单监听>-------------------------------------
 		JButton templist = new JButton("临时单据");
 		templist.setBounds(120, 560, 100, 25);
 		templist.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
+				tempListTableModel.setDataVector(d.getTempListName(tempList,userid),tempListTableC);
+				TableColumn tempListTC1=tempListTable.getColumnModel().getColumn(2);
+				tempListTC1.setMaxWidth(180);
+				tempListTC1.setMinWidth(180);
 				tempList.setVisible(true);
 				mf.setEnabled(false);
 			}
@@ -620,7 +687,7 @@ public class CreateOrder {
 
 						int slhj = 0;
 						List<Object> listkh = new ArrayList<Object>();
-						List<Object> listsp = new ArrayList<Object>();
+						//List<Object> listsp = new ArrayList<Object>();
 						List<Object> listhj = new ArrayList<Object>();
 						lxr = lxrt.getText().trim();
 						lxtel = lxrtelt.getText().trim();
@@ -632,10 +699,17 @@ public class CreateOrder {
 						listkh.add(addr);
 						listkh.add("");
 						if (mct.isEditable() == true) {
-							d.addCustomer(mc, lxr, lxtel, addr, userid);
+							d.addCustomer(mf,customerid.getText().trim(),mc, lxr, lxtel, addr, userid);
 						}
+						mct.setEditable(false);
+						lxrt.setEditable(false);
+						lxrtelt.setEditable(false);
+						addrt.setEditable(false);
+						String mcid=customerid.getText().trim();
 						String date=ReturnDate.netDate();
 						if(dh.equals(d.tempNo())){
+							String[][] data=new String[cr][9];
+							int count=0;
 							for (int i = 0; i < cr; i++) {
 
 								String xhs = mtable.getValueAt(i, 0).toString().trim();
@@ -658,7 +732,16 @@ public class CreateOrder {
 								String xhs7 = mtable.getValueAt(i, 7).toString().trim();
 								Double je = Double.parseDouble(xhs7);
 								String bz = mtable.getValueAt(i, 8).toString().trim();
-								listsp.add(xhs);
+								data[count][0]=xhs;
+								data[count][1]=xh;
+								data[count][2]=sp;
+								data[count][3]=dw;
+								data[count][4]=xhs4;
+								data[count][5]=xhs5;
+								data[count][6]=xhs6;
+								data[count][7]=xhs7;
+								data[count][8]=bz;
+						/*		listsp.add(xhs);
 								listsp.add(xh);
 								listsp.add(sp);
 								listsp.add(dw);
@@ -666,11 +749,15 @@ public class CreateOrder {
 								listsp.add(xhs5);
 								listsp.add(xhs6);
 								listsp.add(xhs7);
-								listsp.add(bz);
-
-								d.wxs(dh, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid,"temporder",date);
-							
+								listsp.add(bz);*/
+								d.wxs(mf,dh,mcid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid,"temporder",date);
+								count++;
 							}
+							count=0;
+							int r = JOptionPane.showConfirmDialog(mf, "是否导出excel", "导出表格", JOptionPane.YES_NO_OPTION);// 返回选择值
+							if (r == 0) {
+								CreateExcel.exportExcel(mf, mc+"报价单.xls", data);
+							};
 							String[][] sparr = d.spcxdj(spjt.getText().trim());
 							DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 								private static final long serialVersionUID = 1L;
@@ -699,6 +786,7 @@ public class CreateOrder {
 						mdm.setRowCount(0);
 						spcount.clear(); // clear count
 						ml.setText(d.tempNo());
+						showhj.setText("0.0");
 					}
 				}
 			}
@@ -729,7 +817,7 @@ public class CreateOrder {
 						if (r == 0) {
 							int slhj = 0;
 							List<Object> listkh = new ArrayList<Object>();
-							List<Object> listsp = new ArrayList<Object>();
+							//List<Object> listsp = new ArrayList<Object>();
 							List<Object> listhj = new ArrayList<Object>();
 							lxr = lxrt.getText().trim();
 							lxtel = lxrtelt.getText().trim();
@@ -741,17 +829,27 @@ public class CreateOrder {
 							listkh.add(addr);
 							listkh.add("");
 							if (mct.isEditable() == true) {
-								d.addCustomer(mc, lxr, lxtel, addr, userid);
+								d.addCustomer(mf,customerid.getText().trim(),mc, lxr, lxtel, addr, userid);
 							}
+							String mcid=customerid.getText().trim();
+							mct.setEditable(false);
+							lxrt.setEditable(false);
+							lxrtelt.setEditable(false);
+							addrt.setEditable(false);
 							String date=ReturnDate.netDate();
+							if(tempEq!=null){
+								d.alertTempListStatus(tempEq, userid);
+								tempEq=null;
+							}
+							String[][] data=new String[cr][9];
+							int count=0;
 							for (int i = 0; i < cr; i++) {
-
 								String xhs = mtable.getValueAt(i, 0).toString().trim();
 								int bh = Integer.parseInt(xhs);
 								String xh = mtable.getValueAt(i, 1).toString().trim();
 								String sp = mtable.getValueAt(i, 2).toString().trim();
 								String dw = mtable.getValueAt(i, 3).toString().trim();
-								String xhs4 = mtable.getValueAt(i, 4).toString().trim();
+								String xhs4 = mtable.getValueAt(i, 4).toString();
 								Double zk = null;
 								if (xhs4.length() == 0) {
 
@@ -766,7 +864,16 @@ public class CreateOrder {
 								String xhs7 = mtable.getValueAt(i, 7).toString().trim();
 								Double je = Double.parseDouble(xhs7);
 								String bz = mtable.getValueAt(i, 8).toString().trim();
-								listsp.add(xhs);
+								data[count][0]=xhs;
+								data[count][1]=xh;
+								data[count][2]=sp;
+								data[count][3]=dw;
+								data[count][4]=xhs4;
+								data[count][5]=xhs5;
+								data[count][6]=xhs6;
+								data[count][7]=xhs7;
+								data[count][8]=bz;
+						/*		listsp.add(xhs);
 								listsp.add(xh);
 								listsp.add(sp);
 								listsp.add(dw);
@@ -774,11 +881,17 @@ public class CreateOrder {
 								listsp.add(xhs5);
 								listsp.add(xhs6);
 								listsp.add(xhs7);
-								listsp.add(bz);
+								listsp.add(bz);*/
 
-								d.wxs(dh, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid,"order",date);
-								
+								d.wxs(mf,dh,mcid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, userid,"comfirmorder",date);
+								count++;
 							}
+							count=0;
+							int rr = JOptionPane.showConfirmDialog(mf, "是否导出excel", "导出表格", JOptionPane.YES_NO_OPTION);// 返回选择值
+							if (rr == 0) {
+								CreateExcel.exportExcel(mf, mc+"报价单.xls", data);
+								
+							};
 							String[][] sparr = d.spcxdj(spjt.getText().trim());
 							DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 								private static final long serialVersionUID = 1L;
@@ -803,6 +916,7 @@ public class CreateOrder {
 							mdm.setRowCount(0);
 							spcount.clear(); // clear count
 							ml.setText(d.tempNo());
+							showhj.setText("0.0");
 						}
 					}
 				}
@@ -835,10 +949,11 @@ public class CreateOrder {
 				// TODO Auto-generated method stub
 				if (e.getClickCount() == 2 && e.getButton() == 1) {
 					int r = jtab.getSelectedRow();
-					mc = jtab.getValueAt(r, 0).toString().trim();
-					lxr = jtab.getValueAt(r, 1).toString().trim();
-					lxtel = jtab.getValueAt(r, 2).toString().trim();
-					addr = jtab.getValueAt(r, 3).toString().trim();
+					mc = jtab.getValueAt(r, 1).toString().trim();
+					lxr = jtab.getValueAt(r, 2).toString().trim();
+					lxtel = jtab.getValueAt(r, 3).toString().trim();
+					addr = jtab.getValueAt(r, 4).toString().trim();
+					customerid.setText(jtab.getValueAt(r, 0).toString().trim());
 					mct.setText(mc);
 					mct.setEditable(false);
 					lxrt.setText(lxr);
@@ -876,6 +991,7 @@ public class CreateOrder {
 		if (r == 0) {
 			String s = d.tempNo();
 			// System.out.println(s);
+			customerid.setText(Integer.toString(d.getCustomerNo()));
 			ml.setText(s);
 			mf.setVisible(true);
 		} else {

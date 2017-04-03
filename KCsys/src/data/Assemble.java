@@ -32,7 +32,7 @@ import javax.swing.table.TableColumn;
 
 import security.CheckDate;
 import security.Lock;
-import test.PrintAssembleSheet;
+import tool.PrintAssembleSheet;
 
 public class Assemble {
 	List<String> spcount=new ArrayList<String>();

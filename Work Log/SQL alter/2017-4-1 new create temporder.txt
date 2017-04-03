@@ -1,0 +1,36 @@
+USE [CKsys3]
+GO
+
+/****** Object:  Table [dbo].[temporder]    Script Date: 04/01/2017 15:16:27 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[temporder](
+	[dh] [varchar](10) NULL,
+	[customerid] [int] NULL,
+	[customer] [varchar](100) NULL,
+	[bh] [int] NULL,
+	[xh] [varchar](10) NULL,
+	[sp] [varchar](255) NULL,
+	[dw] [varchar](10) NULL,
+	[zk] [float] NULL,
+	[dj] [money] NULL,
+	[sl] [int] NULL,
+	[je] [money] NULL,
+	[bz] [varchar](255) NULL,
+	[bdate] [date] NULL,
+	[bstatus] [int] NULL,
+	[belong] [int] NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
+

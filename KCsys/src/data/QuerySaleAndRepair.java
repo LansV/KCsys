@@ -31,7 +31,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 
 import security.CheckDate;
-import test.Printclass;
+import tool.Printclass;
 
 public class QuerySaleAndRepair {
 	QuerySaleAndRepairData d = new QuerySaleAndRepairData();

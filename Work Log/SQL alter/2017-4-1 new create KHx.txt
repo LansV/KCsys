@@ -1,0 +1,29 @@
+USE [CKsys3]
+GO
+
+/****** Object:  Table [dbo].[CustomerInfo]    Script Date: 04/01/2017 09:54:17 ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+SET ANSI_PADDING ON
+GO
+
+CREATE TABLE [dbo].[customerinfo](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[customerid] [int] NULL,
+	[customername] [varchar](255) NULL,
+	[contact] [varchar](255) NULL,
+	[tel] [varchar](255) NULL,
+	[address] [varchar](255) NULL,
+	[belong] [int] NULL,
+	[cdate] [date] NULL,
+	[ctime] [time](7) NULL
+) ON [PRIMARY]
+
+GO
+
+SET ANSI_PADDING OFF
+GO
