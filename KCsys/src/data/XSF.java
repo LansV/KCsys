@@ -45,6 +45,7 @@ public class XSF{
 	String addr="";						//全局地址
 	Double hj;                           //合计
 	JLabel showhj=new JLabel();           //显示合计
+	JLabel showkhid=new JLabel();
 	public XSF(String user){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 	   	Date date2=new Date();
@@ -411,7 +412,7 @@ public class XSF{
 		khfc.add(cxjt);
 		String ss="";
 		String[][] arr=gd.khx(ss);          //数据类里取二维数组
-		String[] cxcn={"名称","联系人","电话","地址"};
+		String[] cxcn={"编号","名称","联系人","电话","地址"};
 		JScrollPane cxjsp=new JScrollPane();
 		JTable jtab=new JTable();
 		jtab.getTableHeader().setReorderingAllowed(false);
@@ -460,7 +461,16 @@ public class XSF{
 		jc.addItem("现金");
 		jc.addItem("银行");
 		jc.addItem("其他");
-		jc.setBounds(600,60,80,25);
+		jc.setBounds(620,60,80,25);
+		JComboBox<String> jcsaleman=new JComboBox<String>();
+		String[][] salemanarr=gd.getSaleman();
+		int salemani=salemanarr.length;
+		jcsaleman.addItem("请选择业务员");
+		for(int i=0;i<salemani;i++){
+			jcsaleman.addItem(salemanarr[i][1]);
+		}
+		jcsaleman.setBounds(480,60,110,25);
+		mfc.add(jcsaleman);
 		JButton kh_b=new JButton("选择客户");
 		kh_b.addActionListener(new ActionListener(){
 			@Override
@@ -469,13 +479,15 @@ public class XSF{
 				khf.setVisible(true);
 			}
 		});
-		kh_b.setBounds(450,60,90,25);
+		kh_b.setBounds(370,60,90,25);
 		JPanel jtp=new JPanel();
 		jtp.setLayout(null);
 		jtp.add(kh_b);
 		jtp.add(jc);
 		JLabel mcl=new JLabel("客户:");
 		mcl.setBounds(10,20,40,25);
+		showkhid.setBounds(250,20,40,25);
+		mfc.add(showkhid);
 		JTextField mct=new JTextField();
 		mct.setBounds(50,20,180,25);
 		jtp.add(mct);
@@ -568,6 +580,19 @@ public class XSF{
 							if(mct.isEditable()==true){
 								gd.wkh(mc,lxr,lxtel,addr);
 							}
+							int salec=jcsaleman.getSelectedIndex();
+							//System.out.println(salec);
+							String saleid = null;
+							String salename = null;
+							if(salec==0){
+								saleid="0";
+								salename="总公司";
+							}else{
+								saleid=salemanarr[salec-1][0].trim();
+								salename=jcsaleman.getSelectedItem().toString().trim();
+							}
+							String customerid=showkhid.getText().trim();
+							//System.out.println(saleid+","+salename);
 								for(int i=0;i<cr;i++){
 									String xhs=mtable.getValueAt(i,0).toString().trim();
 									int bh=Integer.parseInt(xhs);
@@ -591,8 +616,8 @@ public class XSF{
 									String bz=mtable.getValueAt(i,8).toString().trim();
 									listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 									listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-									gd.wxs(dh,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user);
-									gd.wkcout(xh,sp,sl,"1,"+dh,user);
+									gd.wxs(dh,customerid,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user,saleid,salename);
+									//gd.wkcout(xh,sp,sl,"1,"+dh,user);
 									String[][] sparr=gd.spcxdj(spjt.getText().trim());
 									DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 										private static final long serialVersionUID = 1L;
@@ -621,8 +646,10 @@ public class XSF{
 								ml.setText(gd.xsdh());
 								Printclass.setTitel("天澜清洗设备有限公司销售单");
 								Printclass.setUser(user);
+								Printclass.setJsr(salename);
 								Printclass.setkhls(listkh);
 								Printclass.setsp(listsp);
+								
 								Printclass.sethj(listhj);
 								new Printclass();
 	/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
@@ -679,10 +706,11 @@ public class XSF{
 				// TODO Auto-generated method stub
 				if(e.getClickCount()==2&&e.getButton()==1){
 					int r=jtab.getSelectedRow();
-					mc=jtab.getValueAt(r,0).toString().trim();
-					lxr=jtab.getValueAt(r,1).toString().trim();
-					lxtel=jtab.getValueAt(r,2).toString().trim();
-					addr=jtab.getValueAt(r,3).toString().trim();
+					mc=jtab.getValueAt(r,1).toString().trim();
+					lxr=jtab.getValueAt(r,2).toString().trim();
+					lxtel=jtab.getValueAt(r,3).toString().trim();
+					addr=jtab.getValueAt(r,4).toString().trim();
+					showkhid.setText(jtab.getValueAt(r, 0).toString().trim());
 					mct.setText(mc);
 					mct.setEditable(false);
 					lxrt.setText(lxr);
@@ -704,6 +732,7 @@ public class XSF{
 		if(r==0){
 			String s=gd.xsdh();
 			//System.out.println(s);
+			showkhid.setText(gd.getCustomerNo().toString());
 			ml.setText(s);
 			mf.setVisible(true);
 		}else{

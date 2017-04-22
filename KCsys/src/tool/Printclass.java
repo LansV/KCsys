@@ -23,6 +23,7 @@ public class Printclass {
 	static String khm;
 	static String add;
 	static String js;
+	static String jsr;
 	static String receiptStatus="";
 	static List<Object> kh=new ArrayList<Object>();
 	static List<Object> sp=new ArrayList<Object>();
@@ -40,6 +41,9 @@ public class Printclass {
 		}
 		Date d=new Date();
 		date=String.format("%tF",d);
+	}
+	public static void setJsr(String jsr){
+		Printclass.jsr=jsr;
 	}
 	public static void setTitel(String title){
 		Printclass.title=title;
@@ -217,7 +221,7 @@ public class Printclass {
 										}
 									}
 									//System.out.println(y);
-									g2.drawString("开单人:"+user+"                                经手人:                          收货人:",20,y+20);
+									g2.drawString("开单人:"+user+"                                经手人:"+jsr+"                       收货人:",20,y+20);
 									g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 									return Printable.PAGE_EXISTS;
 								}
@@ -397,7 +401,7 @@ public class Printclass {
 											}
 										}
 										//System.out.println(y);
-										g2.drawString("开单人:                                   经手人:                          收货人:",20,y+20);
+										g2.drawString("开单人:"+user+"                                经手人:"+jsr+"                       收货人:",20,y+20);
 										g2.drawString("白色:存根联         红色:记账联      蓝色:收款联         黄色:收货联",20,y+40);
 										return Printable.PAGE_EXISTS;
 									}
@@ -571,7 +575,7 @@ public class Printclass {
 				}
 			}
 			//System.out.println(y);
-			g2.drawString("开单人:"+user+"                                经手人:                          收货人:",20,y+20);
+			g2.drawString("开单人:"+user+"                                经手人:"+jsr+"                       收货人:",20,y+20);
 			g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 		}
 	}

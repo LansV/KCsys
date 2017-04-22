@@ -170,16 +170,16 @@ public class MF {
 		});
 		qSAR.setBounds(90,170,60,30);
 		mfc.add(qSAR);
-//		JButton assemble=new JButton("组装");
-//		assemble.addActionListener(new ActionListener(){
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				// TODO Auto-generated method stub
-//				new Assemble(user);
-//			}
-//		});
-//		assemble.setBounds(160,170,60,30);
-//		mfc.add(assemble);
+		JButton queryAllOrder=new JButton("组装");
+		queryAllOrder.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				new QueryAllOrder(user);
+			}
+		});
+		queryAllOrder.setBounds(160,170,60,30);
+		mfc.add(queryAllOrder);
 		mf.setVisible(true);
 	}
 }

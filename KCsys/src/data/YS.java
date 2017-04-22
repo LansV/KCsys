@@ -44,9 +44,9 @@ public class YS {
 
 	public YS(String user) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-	   	Date date2=new Date();
-	   	String s1=sdf.format(date2);
-	   	CheckDate.ReturnCheckDateResult(s1);
+		Date date2 = new Date();
+		String s1 = sdf.format(date2);
+		CheckDate.ReturnCheckDateResult(s1);
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "收款", "备注" };
@@ -788,11 +788,11 @@ public class YS {
 					String bz = hzt.getText().trim();
 					String b = null;
 					if (dh.substring(0, 1).equals("X")) {
-						b="WXD";
+						b = "WXD";
 					} else {
-						b="XSD";
+						b = "XSD";
 					}
-					d.whz(dh, kh, je, bz,user,b);
+					d.whz(dh, kh, je, bz, user, b);
 					String[][] xarr = d.xys(kh);
 					xdm.setDataVector(xarr, xcn);
 					TableColumn cktablecxh = table.getColumnModel().getColumn(1); // 设置列宽
@@ -826,20 +826,20 @@ public class YS {
 		fc.setLayout(null);
 		f.setBounds(1000, 50, 380, 670);
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		f.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent e){
-				if(Lock.SingleUnLock(f, "lock/YS.txt")){
+		f.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				if (Lock.SingleUnLock(f, "lock/YS.txt")) {
 					f.dispose();
 				}
 			}
 		});
 		JLabel fhj = new JLabel("");
-		JTextField querycustomer=new JTextField();
+		JTextField querycustomer = new JTextField();
 		querycustomer.setBounds(8, 613, 180, 24);
 		fc.add(querycustomer);
 		fhj.setBounds(210, 605, 200, 20);
 		String[][] arr = d.ys(querycustomer.getText().trim());
-		String[] cxcn = { "客户名称", "应收", "最后日期" };
+		String[] cxcn = { "编号","客户名称", "应收", "最后日期" };
 		JScrollPane jsp = new JScrollPane();
 		JTable jtab = new JTable();
 		jtab.getTableHeader().setReorderingAllowed(false);
@@ -864,9 +864,9 @@ public class YS {
 			fthj = t + fthj;
 		}
 		fhj.setText("合计: " + String.format("%.2f", fthj));
-		querycustomer.addKeyListener(new KeyAdapter(){
-			public void keyPressed(KeyEvent e){
-				if(e.getKeyChar()=='\n'){
+		querycustomer.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyChar() == '\n') {
 					String[][] arr2 = d.ys(querycustomer.getText().trim());
 					dm.setDataVector(arr2, cxcn);
 					TableColumn cj = jtab.getColumnModel().getColumn(0); // 设置列宽
@@ -1012,15 +1012,72 @@ public class YS {
 								if (sk > 0) {
 									Double ys = Double.parseDouble(table.getValueAt(sr, 4).toString());
 									String dh = table.getValueAt(sr, 0).toString();
-									if (sk > ys) { // proceeds more than
+									System.out.println(sr);
+									if (sk >= ys) { // proceeds more than
 													// receivables
 										int j = xxtable.getRowCount();
-										for (int i = 0; i < j; i++) {
-											Double je = Double.parseDouble(xxtable.getValueAt(i, 7).toString());
+										for (int k = 0; k < j; k++) {
+											Double je = Double.parseDouble(xxtable.getValueAt(k, 7).toString());
 											if (dh.substring(0, 1).equals("X")) {
-												d.updateWxys(dh, i + 1, je, 0);
+												d.updateWxys(dh, k + 1, je, 0);
 											} else {
-												d.updatexsys(dh, i + 1, je, 0);
+												d.updatexsys(dh, k + 1, je, 0);
+											}
+										}
+										sk = sk - ys;
+										while (sk > 0) {
+											int srtable = table.getRowCount();
+											for (int i = 0; i < srtable; i++) {
+												if (i != sr) {
+													Double ys2 = Double.parseDouble(table.getValueAt(i, 4).toString());
+													String dh2=table.getValueAt(i, 0).toString();
+													if (dh2.substring(0, 1).equals("X")) {
+														xxmdm.setDataVector(d.wxd(dh2), mcn);
+													} else {
+														xxmdm.setDataVector(d.xsd(dh2), mcn);
+													}
+													if (sk >= ys2) {
+														int l = xxtable.getRowCount();
+														for (int k = 0; k < l; k++) {
+															Double je = Double
+																	.parseDouble(xxtable.getValueAt(k, 7).toString());
+															if (dh.substring(0, 1).equals("X")) {
+																d.updateWxys(dh2, k + 1, je, 0);
+															} else {
+																d.updatexsys(dh2, k + 1, je, 0);
+															}
+														}
+														sk = sk - ys2;
+													} else if (sk < ys2) {
+														int l = xxtable.getRowCount();
+														for (int k = 0; k < l; k++) {
+															Double zje = Double
+																	.parseDouble(xxtable.getValueAt(k, 7).toString());
+															Double ysk = Double
+																	.parseDouble(xxtable.getValueAt(k, 8).toString());
+															if (zje > ysk) {
+																// System.out.println(i+1);
+																if (sk - (zje - ysk) >= 0) {
+																	if (dh2.substring(0, 1).equals("X")) {
+																		d.updateWxys(dh2, k + 1, zje, 0);
+																	} else {
+																		d.updatexsys(dh2, k + 1, zje, 0);
+																	}
+																	sk=0.0;
+																} else {
+																	if (dh.substring(0, 1).equals("X")) {
+																		d.updateWxys(dh2, k + 1, sk + ysk, 1);
+																	} else {
+																		d.updatexsys(dh2, k + 1, sk + ysk, 1);
+																	}
+																	sk=0.0;
+																	break;
+																}
+															}
+														}
+														break;
+													}
+												}
 											}
 										}
 									} else if (sk < ys) {
@@ -1046,17 +1103,6 @@ public class YS {
 													}
 													break;
 												}
-											}
-										}
-									} else {
-										// System.out.println("=");
-										int j = xxtable.getRowCount();
-										for (int i = 0; i < j; i++) {
-											Double je = Double.parseDouble(xxtable.getValueAt(i, 7).toString());
-											if (dh.substring(0, 1).equals("X")) {
-												d.updateWxys(dh, i + 1, je, 0);
-											} else {
-												d.updatexsys(dh, i + 1, je, 0);
 											}
 										}
 									}

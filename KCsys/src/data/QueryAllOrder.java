@@ -1,5 +1,4 @@
 package data;
-
 import java.awt.Container;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -12,9 +11,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,11 +27,11 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import security.Lock;
+import tool.Printclass;
 
-public class QueryOrder {
-	QueryOrderData d = new QueryOrderData();
+public class QueryAllOrder {
+	QueryAllOrderData d = new QueryAllOrderData();
 	wData w = new wData();
 	Double hj;
 	Image img = null;
@@ -41,10 +40,10 @@ public class QueryOrder {
 	int wzy;
 
 	public static void main(String[] args) {
-		new QueryOrder(1);
+		new QueryAllOrder("test");
 	}
 
-	public QueryOrder(int userid) {
+	public QueryAllOrder(String user) {
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "备注", "状态", "单号" };
@@ -58,11 +57,11 @@ public class QueryOrder {
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "获取系统图标错误");
 		}
-		xxf.setAlwaysOnTop(true);
 		xxf.setResizable(false);
 		Container xxfc = xxf.getContentPane();
 		// =====================================================table===========================
 		JTable xxtable = new JTable();
+		xxtable.getTableHeader().setReorderingAllowed(false);
 		xxtable.getTableHeader().setResizingAllowed(false);
 		DefaultTableModel xxmdm = new DefaultTableModel() {
 			/**
@@ -115,20 +114,23 @@ public class QueryOrder {
 		JLabel custid = new JLabel();
 		custid.setBounds(400, 60, 90, 25);
 		jtp.add(custid);
+		JLabel salemanidL=new JLabel("");
+		salemanidL.setBounds(500,60,60,25);
+		jtp.add(salemanidL);
+		JLabel salemanL=new JLabel("");
+		salemanL.setBounds(530,60,90,25);
+		jtp.add(salemanL);
 		JLabel xxf_ShowNo = new JLabel("");
 		xxf_ShowNo.setBounds(20, 560, 80, 25);
 		jtp.setBounds(0, 0, 850, 90);
 		msp.setBounds(0, 0, 810, 450);
 		mp.setLayout(null);
-
-		JButton print_b = new JButton("打印");
 		// -------------------------
-		print_b.setVisible(false);
-		// -------------------------
-		print_b.setBounds(330, 560, 60, 25);
-		xxfc.add(print_b);
 		mp.add(msp);
 		mp.setBounds(18, 100, 850, 450);
+		JButton addsalelist_button = new JButton("出货");
+		addsalelist_button.setBounds(350, 560, 60, 25);
+		xxfc.add(addsalelist_button);
 		xxf_ShowTotal.setBounds(593, 560, 60, 25);
 		xxfc.setLayout(null);
 		xxfc.add(jtp);
@@ -159,7 +161,6 @@ public class QueryOrder {
 		});
 		Container qSAR_MainFrame_Content = qSAR_MainFrame.getContentPane();
 		qSAR_MainFrame_Content.setLayout(null);
-		qSAR_MainFrame.setAlwaysOnTop(true);
 		qSAR_MainFrame.setBounds(400, 100, 650, 500);
 		JButton qSAR_MainFrame_QueryB = new JButton("查询");
 		qSAR_MainFrame_QueryB.setBounds(570, 10, 60, 22);
@@ -182,8 +183,8 @@ public class QueryOrder {
 		JTable qSAR_MainTable = new JTable();
 		qSAR_MainTable.getTableHeader().setReorderingAllowed(false);
 		qSAR_MainTable.setDefaultRenderer(Object.class, tcr);
-		String[] qSAR_MainTable_ColumnName = { "单号", "名称", "订单日期", "狀態" };
-		DefaultTableModel xdm = new DefaultTableModel(d.xys(userid, "", "", "", ""), qSAR_MainTable_ColumnName) {
+		String[] qSAR_MainTable_ColumnName = { "单号", "名称", "订单日期", "狀態" ,"编号","下单人"};
+		DefaultTableModel xdm = new DefaultTableModel(d.xys("", "", "", ""), qSAR_MainTable_ColumnName) {
 			private static final long serialVersionUID = 1L;
 
 			public boolean isCellEditable(int row, int column) {
@@ -217,7 +218,7 @@ public class QueryOrder {
 					Date cDate = sdf.parse(QueryDate1);
 					Date xDate = sdf.parse(QueryDate2);
 					xdm.setDataVector(
-							d.xys(userid, QueryName, QueryNo, String.format("%tF", cDate), String.format("%tF", xDate)),
+							d.xys(QueryName, QueryNo, String.format("%tF", cDate), String.format("%tF", xDate)),
 							qSAR_MainTable_ColumnName);
 					TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(1); // 设置列宽
 					cktablecxh.setPreferredWidth(180);
@@ -268,6 +269,116 @@ public class QueryOrder {
 		JPopupMenu pm = new JPopupMenu();
 		JMenuItem mit = new JMenuItem("详细列表");
 		pm.add(mit);
+		// ----------------------------------------------出货监听-------------------------------------
+		addsalelist_button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int src = xxtable.getSelectedRowCount();
+				if (src <= 0) {
+					JOptionPane.showMessageDialog(xxf, "请选择出货行\n全部出货请全选");
+				} else {
+					int[] sr = xxtable.getSelectedRows();
+					boolean checkb = false;
+					String[][] insertdata = new String[sr.length][9];
+					List<Object> splist = new ArrayList<Object>();
+					int slhj = 0;
+					Double hj = 0.0;
+					for (int i = 0; i < sr.length; i++) {
+						String kcstatus = xxtable.getValueAt(sr[i], 9).toString();
+						if (kcstatus.equals("可出货")) {
+							insertdata[i][0] = Integer.toString(i + 1);
+							splist.add(Integer.toString(i + 1));
+							insertdata[i][1] = xxtable.getValueAt(sr[i], 1).toString();
+							splist.add(xxtable.getValueAt(sr[i], 1).toString());
+							insertdata[i][2] = xxtable.getValueAt(sr[i], 2).toString();
+							splist.add(xxtable.getValueAt(sr[i], 2).toString());
+							insertdata[i][3] = xxtable.getValueAt(sr[i], 3).toString();
+							splist.add(xxtable.getValueAt(sr[i], 3).toString());
+							if (xxtable.getValueAt(sr[i], 4).toString().length() == 0) {
+								insertdata[i][4] = "NULL";
+							} else {
+								insertdata[i][4] = xxtable.getValueAt(sr[i], 4).toString();
+							}
+							splist.add(xxtable.getValueAt(sr[i], 4).toString());
+							insertdata[i][5] = xxtable.getValueAt(sr[i], 5).toString();
+							splist.add(xxtable.getValueAt(sr[i], 5).toString());
+							insertdata[i][6] = xxtable.getValueAt(sr[i], 6).toString();
+							splist.add(xxtable.getValueAt(sr[i], 6).toString());
+							slhj = slhj + Integer.parseInt(xxtable.getValueAt(sr[i], 6).toString());
+							insertdata[i][7] = xxtable.getValueAt(sr[i], 7).toString();
+							splist.add(xxtable.getValueAt(sr[i], 7).toString());
+							hj = hj + Double.parseDouble(xxtable.getValueAt(sr[i], 7).toString());
+							insertdata[i][8] = xxtable.getValueAt(sr[i], 8).toString();
+							splist.add(xxtable.getValueAt(sr[i], 8).toString());
+							checkb = true;
+						} else {
+							JOptionPane.showMessageDialog(xxf, "选中行含有不支持出货产品\n请重新选择");
+							checkb = false;
+							break;
+						}
+
+					}
+					if (checkb) {
+						String custn = mct.getText().trim(); // 获取客户名称
+						String cusid = custid.getText(); // 获取客户编号
+						String dh = d.xsdh();
+						String odh = xxf_ShowNo.getText();
+						String saleid=salemanidL.getText().trim();
+						String saleman=salemanL.getText().trim();
+						for (int i = 0; i < insertdata.length; i++) {
+							System.out.println(insertdata[i][0] + "," + insertdata[i][1] + "," + insertdata[i][2] + ","
+									+ insertdata[i][3] + "," + insertdata[i][4] + "," + insertdata[i][5] + ","
+									+ insertdata[i][6] + "," + insertdata[i][7] + "," + insertdata[i][8]);
+						}
+						d.insertSaleList(xxf, odh, dh, custn, cusid, insertdata, user,saleid,saleman);
+						xxmdm.setDataVector(d.xsd(odh), mcn);
+						TableColumn cktablecxh = xxtable.getColumnModel().getColumn(0); // 设置列宽
+						cktablecxh.setPreferredWidth(40);
+						cktablecxh.setMinWidth(40);
+						cktablecxh.setMaxWidth(40);
+						TableColumn cktableczl = xxtable.getColumnModel().getColumn(1); // 设置列宽
+						cktableczl.setPreferredWidth(70);
+						cktableczl.setMinWidth(70);
+						cktableczl.setMaxWidth(70);
+						TableColumn cktableccp = xxtable.getColumnModel().getColumn(2); // 设置列宽
+						cktableccp.setPreferredWidth(180);
+						cktableccp.setMinWidth(180);
+						cktableccp.setMaxWidth(180);
+						TableColumn cktablecdw = xxtable.getColumnModel().getColumn(3); // 设置列宽
+						cktablecdw.setPreferredWidth(40);
+						cktablecdw.setMinWidth(40);
+						cktablecdw.setMaxWidth(40);
+						TableColumn cktablezk = xxtable.getColumnModel().getColumn(4); // 设置列宽
+						cktablezk.setPreferredWidth(40);
+						cktablezk.setMinWidth(40);
+						cktablezk.setMaxWidth(40);
+						TableColumn cktablesl = xxtable.getColumnModel().getColumn(6); // 设置列宽
+						cktablesl.setPreferredWidth(40);
+						cktablesl.setMinWidth(40);
+						cktablesl.setMaxWidth(40);
+						List<Object> listkh = new ArrayList<Object>();
+						listkh.add(dh);
+						listkh.add(mct.getText());
+						listkh.add(lxrt.getText());
+						listkh.add(lxrtelt.getText());
+						listkh.add(addrt.getText());
+						listkh.add("");
+						Printclass.setTitel("天澜清洗设备有限公司销售单");
+						Printclass.setUser(user);
+						Printclass.setkhls(listkh);
+						Printclass.setsp(splist);
+						List<Object> listhj = new ArrayList<Object>();
+						listhj.add(changenum(hj));
+						listhj.add(slhj);
+						listhj.add(String.format("%.2f", hj));
+						Printclass.sethj(listhj);
+						new Printclass();
+						System.out.println(odh + "," + dh + "," + custn + "," + cusid);
+					}
+				}
+			}
+		});
 		// ------------------------------------------表格监听---------------------------------
 		qSAR_MainTable.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -287,7 +398,6 @@ public class QueryOrder {
 				}
 			}
 		});
-
 		// -----------------------------------Listener of show detailed
 		// panel-------------------------------------------
 		mit.addActionListener(new ActionListener() {
@@ -305,6 +415,8 @@ public class QueryOrder {
 				lxrtelt.setText(ls.get(2));
 				addrt.setText(ls.get(3));
 				custid.setText(ls.get(4));
+				salemanidL.setText(qSAR_MainTable.getValueAt(r, 4).toString().trim());
+				salemanL.setText(qSAR_MainTable.getValueAt(r, 5).toString().trim());
 				xxmdm.setDataVector(d.xsd(st), mcn);
 				int row = xxtable.getRowCount();
 				hj = 0.0;
@@ -342,7 +454,6 @@ public class QueryOrder {
 				xxf.setVisible(true);
 			}
 		});
-
 		// -----------------------------------------------------------------------------------------------
 		JScrollPane qSAR_MainFrame_Js = new JScrollPane();
 		qSAR_MainFrame_Js.setViewportView(qSAR_MainTable);
@@ -350,21 +461,95 @@ public class QueryOrder {
 		qSAR_MainFrame_Content.add(qSAR_MainFrame_Js);
 		// ---------------------------------------------------应收总面板-------------------------------------------
 		// -----------------------------------------detail panel close
-		// listener------------------------------------------
+		//-------------------------------------------------------listener------------------------------------------
 		xxf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
 				// int i=jtab.getSelectedRow();
 				// xdm.setDataVector(d.xys(jtab.getValueAt(i,0).toString()),xcn);
-				TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(1); // 设置列宽
-				cktablecxh.setPreferredWidth(180);
-				cktablecxh.setMinWidth(180);
-				cktablecxh.setMaxWidth(180);
+				String QueryName = qSAR_MainFrame_QueryName.getText().trim();
+				String QueryNo = qSAR_MainFrame_QueryNo.getText().trim();
+				String QueryDate1 = qSAR_MainFrame_QueryDate1.getText().trim();
+				String QueryDate2 = qSAR_MainFrame_QueryDate2.getText().trim();
+				if (QueryDate1.length() == 0) {
+					QueryDate1 = "2000-1-1";
+				}
+				if (QueryDate2.length() == 0) {
+					Date cDate = new Date();
+					QueryDate2 = String.format("%tF", cDate);
+				}
+				try {
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+					Date cDate = sdf.parse(QueryDate1);
+					Date xDate = sdf.parse(QueryDate2);
+					xdm.setDataVector(
+							d.xys(QueryName, QueryNo, String.format("%tF", cDate), String.format("%tF", xDate)),
+							qSAR_MainTable_ColumnName);
+					TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(1); // 设置列宽
+					cktablecxh.setPreferredWidth(180);
+					cktablecxh.setMinWidth(180);
+					cktablecxh.setMaxWidth(180);
+				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(qSAR_MainFrame, "日期格式错误");
+				}
 				qSAR_MainFrame.setEnabled(true);
 				xxf.dispose();
 			}
 		});
 		// -------------------------------------------------------------------------------------------------------
 		qSAR_MainFrame.setVisible(true);
+	}
+
+	public String changenum(Double numb) {
+		String num[] = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };
+		String d[] = { "元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟", "兆", "拾", "佰", "仟" };
+		String x[] = { "角", "分" };
+		String sd = String.format("%.2f", numb);
+		String[] cf = sd.split("\\.");
+		String s = cf[0];
+		int n = new Integer(s);
+		String xs = cf[1];
+		int xl = new Integer(xs);
+		StringBuilder sb = new StringBuilder();
+		List<Integer> ls = new ArrayList<Integer>();
+		int cl = 0;
+		for (int i = 0; i < s.length(); i++) {
+			cl = (int) Math.pow(10, s.length() - (i + 1));
+			int st = n / cl;
+			ls.add(st);
+			n = n - st * cl;
+		}
+		for (int i = 0; i < ls.size(); i++) {
+			sb.append(num[ls.get(i)]);
+			sb.append(d[ls.size() - 1 - i]);
+		}
+		if (xl >= 10) {
+			int st = xl / 10;
+			sb.append(num[st]);
+			sb.append(x[0]);
+			int f = xl - st * 10;
+			sb.append(num[f]);
+			sb.append(x[1]);
+		} else if (xl == 0) {
+			sb.append("整");
+		} else {
+			sb.append(num[xl]);
+			sb.append(x[1]);
+		}
+		String regex1[] = { "零仟", "零佰", "零拾" };
+		String regex2[] = { "零亿", "零万", "零元" };
+		String regex3[] = { "亿", "万", "元" };
+		String send = new String(sb);
+		for (int i = 0; i < 3; i++) {
+			send = send.replaceAll(regex1[i], "零");
+		}
+		for (int i = 0; i < 3; i++) {
+			send = send.replaceAll("零零零", "零");
+			send = send.replaceAll("零零", "零");
+			send = send.replaceAll(regex2[i], regex3[i]);
+		}
+		send = send.replaceAll("零角", "");
+		send = send.replaceAll("零分", "");
+		return send;
 	}
 }

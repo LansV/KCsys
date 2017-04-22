@@ -8,12 +8,61 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-public class QueryOrderData{
+public class QueryAllOrderData{
 	Statement sql=null;
    	ResultSet res=null;
    	Dao d=new Dao();
 	Connection con = d.getcon();
+	SimpleDateFormat timef= new SimpleDateFormat("HH:mm:ss");
+	//-----------------------------------------------------XS获取单号-------------------------------------------
+	public String xsdh(){
+		String ls="";
+		Date d=new Date();
+		String y=String.format("%ty",d);
+		String m=String.format("%tm",d);
+		String s="K"+y+m;
+		String st=null;
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select max(dh) as dh from XSD where dh like '"+s+"%'");
+				while(res.next()){
+					st=res.getString("dh");
+					if(st==null){
+						ls=s+"001";
+					}else{
+						st=res.getString("dh").trim();
+						String stl=st.substring(st.length()-3,st.length());
+						int i=Integer.parseInt(stl);
+						i=i+1;
+						String z=Integer.toString(i);
+						if(z.length()==1){
+							ls=s+"00"+z;
+						}else if(z.length()==2){
+							ls=s+"0"+z;
+						}else{
+							ls=s+z;
+						}
+					}
+				}
+ 		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return ls;
+	}
 	//====================================================get proceeds method===========================
 	public int getproceedsmethod(String s){
 		int i=0;
@@ -71,7 +120,7 @@ public class QueryOrderData{
 		return ls;
 	}
 	//--------------------------------------------------------获取指定客户应收-----------------------------------
-	public String[][] xys(int user,String QueryName,String QueryNo,String QueryDate1,String QueryDate2){
+	public String[][] xys(String QueryName,String QueryNo,String QueryDate1,String QueryDate2){
 		List<String> ls=new ArrayList<String>();
 		if(QueryDate1.length()==0){
 			QueryDate1="2000-1-1";
@@ -82,9 +131,10 @@ public class QueryOrderData{
 		}
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select dh,max(customer) as khmc, MAX(bdate) as bdate ,min(bstatus) as bs from comfirmorder "
+			res = sql.executeQuery("select dh,max(customer) as khmc, MAX(bdate) as bdate ,min(bstatus) as bs ,max(id) as id,max(username) as n from comfirmorder,UserB "
 					+ "where  customer like '%"+QueryName+"%' "
 					+ "and dh like '%"+QueryNo+"%' and bdate between '"+QueryDate1+"' and '"+QueryDate2+"' "
+					+ "and comfirmorder.belong=UserB.id "
 					+ "group by dh");
 			while(res.next()){
 				ls.add(res.getString("dh"));
@@ -92,7 +142,11 @@ public class QueryOrderData{
 				ls.add(res.getString("bdate"));
 				if(res.getInt("bs")==0){
 					ls.add("备货中");
+				}else{
+					ls.add("已出货");
 				}
+				ls.add(res.getString("id").trim());
+				ls.add(res.getString("n").trim());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -114,7 +168,7 @@ public class QueryOrderData{
 		     		 
 		     	 }
 		}
-		int xl=4;
+		int xl=6;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //行
@@ -289,7 +343,9 @@ public class QueryOrderData{
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from comfirmorder where dh = '"+dh+"'");
+			res = sql.executeQuery("select*from"
+					+ "(select dh,customerid,customer,bh,xh,sp,dw,zk,dj,sl,je,bz,bdate,bstatus,belong,xsdh,sl-KC_sl as kcstatus "
+					+ "from comfirmorder left join KC on comfirmorder.xh=KC.KC_sbh) temp where dh='"+dh+"'");
 			while(res.next()){
 				ls.add(res.getString("bh").trim());
 				ls.add(res.getString("xh").trim());
@@ -305,7 +361,11 @@ public class QueryOrderData{
 				ls.add(String.format("%.2f",res.getDouble("je")));
 				ls.add(res.getString("bz").trim());
 				if(res.getInt("bstatus")==0){
-					ls.add("备货中");
+					if(res.getInt("kcstatus")<=0){
+						ls.add("可出货");
+					}else{
+						ls.add("缺货:"+res.getString("kcstatus"));
+					}
 					ls.add("");
 				}else{
 					ls.add("已出货");
@@ -436,6 +496,95 @@ public class QueryOrderData{
 		     	   }
 		     	 }catch(Exception e){
 		     		 
+		     	 }
+		}
+	}
+	//==============================================插入销售单=============================================
+	public void insertSaleList(JFrame f,String odh,String dh,String custn,String custid,String[][] data,String user,String saleid,String saleman){
+		Date date2=new Date();
+		String ckd=String.format("%tF", date2);
+		try {
+			sql = con.createStatement();
+			int co=data.length;
+			for(int i=0;i<co;i++){
+				sql.execute("insert into XSD values ('"+dh+"',"+custid+","
+						+ "'"+custn+"',"+data[i][0]+",'"+data[i][1]+"','"+data[i][2]+"','"+data[i][3]+"',"
+						+ ""+data[i][4]+","+data[i][5]+","+data[i][6]+","
+						+ ""+data[i][7]+",'"+data[i][8]+"','"+ckd+"',0,0,'"+ckd+"',0,'"+user+"',"+saleid+",'"+saleman+"');"
+						+ "update comfirmorder set bstatus = 1 where dh='"+odh+"' and xh="+data[i][1]+";"
+						+ "update comfirmorder set xsdh = '"+dh+"' where dh='"+odh+"' and xh="+data[i][1]+";");
+				wkcout(data[i][1],data[i][2],Integer.parseInt(data[i][6]),"1,"+dh,user);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(f, "添加销售单错误");
+		/*	StackTraceElement[] st=e.getStackTrace();
+			String s="";
+			for(StackTraceElement i:st){
+				s=s+i.toString()+'\n';
+			}
+			System.out.println(s);
+			JTextArea ta=new JTextArea();
+			ta.setEditable(false);
+			ta.setText(s);
+			JScrollPane errorjsp=new JScrollPane(ta);
+			errorjsp.setBounds(0,0,200,300);
+			MyJOptionPane.showMessageDialog(f, errorjsp);*/
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		JOptionPane.showMessageDialog(f, "断开错误"); 
+		     	 }
+		}
+	}
+	//--------------------------------------------------------更新出库-----------------------------------
+	public void wkcout(String sbh,String sckcp,int sn,String qx,String user){
+		int kcsl = 0;
+		int jg = 0;
+		Date date2=new Date();
+		String ckd=String.format("%tF", date2);
+		String time=timef.format(date2);
+		try{
+			sql = con.createStatement();
+			res=sql.executeQuery("select*from KC where KC_sbh = '"+sbh+"'");
+			while(res.next()){
+				kcsl=res.getInt("KC_sl");
+			}
+			jg=kcsl-sn;
+		//System.out.println(kcsl);
+		// 出 0               进 1
+		}catch(Exception e1){
+			JOptionPane.showMessageDialog(null,"得到库存数量失败");
+		}
+		try{
+			sql = con.createStatement();
+			if(qx.length()>1){
+				String[] st=qx.split(",");
+				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','"+user+"','"+ckd+"','"+time+"','"+st[1]+"')");
+			}else{
+				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','NULL')");
+			}
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"出库错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
 		     	 }
 		}
 	}
