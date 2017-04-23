@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -29,24 +28,22 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import security.CheckDate;
 import security.Lock;
+import security.SQLFilter;
 import tool.Printclass;
 
 public class YS {
 	YSdata d = new YSdata();
 	wData w = new wData();
 	Double hj;
+	JTable jtab;
 	int tabler;
 	int wzx;
 	int wzy;
-
+	
 	public YS(String user) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-		Date date2 = new Date();
-		String s1 = sdf.format(date2);
-		CheckDate.ReturnCheckDateResult(s1);
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "收款", "备注" };
@@ -336,6 +333,9 @@ public class YS {
 				new Printclass();
 			}
 		});
+		JLabel salemanL = new JLabel("测试中..");
+		salemanL.setBounds(180, 560, 80, 25);
+		xxfc.add(salemanL);
 		xxfc.add(print_b);
 		mp.add(msp);
 		mp.setBounds(18, 100, 750, 450);
@@ -426,6 +426,10 @@ public class YS {
 		thtyz.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n') {
+					new SQLFilter(thtyz,thtyz.getText().trim(),user);
+					Date date2 = new Date();
+					String s1 = sdf.format(date2);
+					CheckDate.ReturnCheckDateResult(s1);
 					if (thtsl.isEnabled()) {
 						// one product return
 						int r = xxtable.getSelectedRow();
@@ -459,7 +463,8 @@ public class YS {
 											zk = Double.parseDouble(szk);
 											thje = dj * thsl * zk / 10;
 										}
-										d.gth(dh, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
+										String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
+										d.gth(dh, sid, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
 										if (sp.equals("人工费") == false) {
 											w.wkcin(xh, sp, thsl, kh + "退货", user, dh);
 										}
@@ -520,8 +525,9 @@ public class YS {
 							int r = table.getSelectedRow();
 							String yy = thtyz.getText().trim();
 							String dh = table.getValueAt(r, 0).toString().trim();
-							String kh = table.getValueAt(r, 1).toString().trim();
+							String kh = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 							int xrc = xxtable.getRowCount();
+							String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 							for (int i = 0; i < xrc; i++) {
 								String xh = xxtable.getValueAt(i, 1).toString().trim();
 								String sp = xxtable.getValueAt(i, 2).toString().trim();
@@ -540,7 +546,7 @@ public class YS {
 										zk = Double.parseDouble(szk);
 										thje = dj * sl * zk / 10;
 									}
-									d.gth(dh, kh, i + 1, xh, sp, dw, zk, dj, sl, thje, yy, 3, user);
+									d.gth(dh, sid, kh, i + 1, xh, sp, dw, zk, dj, sl, thje, yy, 3, user);
 									if (sp.equals("人工费") == false) {
 										w.wkcin(xh, sp, sl, kh + "退货", user, dh);
 									}
@@ -565,6 +571,10 @@ public class YS {
 		thtsl.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n') {
+					new SQLFilter(thtsl,thtsl.getText().trim(),user);
+					Date date2 = new Date();
+					String s1 = sdf.format(date2);
+					CheckDate.ReturnCheckDateResult(s1);
 					if (thtyz.getText().trim().length() == 0) {
 						JOptionPane.showMessageDialog(null, "原因为空");
 					} else {
@@ -596,7 +606,8 @@ public class YS {
 										zk = Double.parseDouble(szk);
 										thje = dj * thsl * zk / 10;
 									}
-									d.gth(dh, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
+									String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
+									d.gth(dh, sid, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
 									if (sp.equals("人工费") == false) {
 										w.wkcin(xh, sp, thsl, kh + "退货", user, dh);
 									}
@@ -725,19 +736,22 @@ public class YS {
 				// TODO Auto-generated method stub
 				int r = table.getSelectedRow();
 				String st = table.getValueAt(r, 0).toString().trim();
-				String sn = table.getValueAt(r, 1).toString().trim();
+				String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 				xxf_ShowNo.setText(st);
 				ff.setEnabled(false);
-				List<String> ls = d.getcustomerinfo(sn);
+				List<String> ls = d.getcustomerinfo(sid);
 				mct.setText(ls.get(0));
 				lxrt.setText(ls.get(1));
 				lxrtelt.setText(ls.get(2));
 				addrt.setText(ls.get(3));
-				jc.setSelectedIndex(d.getproceedsmethod(st));
 				if (st.substring(0, 1).equals("X")) {
 					xxmdm.setDataVector(d.wxd(st), mcn);
+					jc.setSelectedIndex(d.getproceedsmethod("WXD", st));
+					salemanL.setText(d.getSaleMan("WXD", st));
 				} else {
 					xxmdm.setDataVector(d.xsd(st), mcn);
+					jc.setSelectedIndex(d.getproceedsmethod("XSD", st));
+					salemanL.setText(d.getSaleMan("XSD", st));
 				}
 				int row = xxtable.getRowCount();
 				hj = 0.0;
@@ -780,6 +794,10 @@ public class YS {
 		hzt.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n') {
+					new SQLFilter(hzt,hzt.getText().trim(),user);
+					Date date2 = new Date();
+					String s1 = sdf.format(date2);
+					CheckDate.ReturnCheckDateResult(s1);
 					int r = table.getSelectedRow();
 					String dh = table.getValueAt(r, 0).toString().trim();
 					String kh = table.getValueAt(r, 1).toString().trim();
@@ -792,8 +810,9 @@ public class YS {
 					} else {
 						b = "XSD";
 					}
-					d.whz(dh, kh, je, bz, user, b);
-					String[][] xarr = d.xys(kh);
+					String sid=jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
+					d.whz(dh, sid,kh, je, bz, user, b);
+					String[][] xarr = d.xys(sid);
 					xdm.setDataVector(xarr, xcn);
 					TableColumn cktablecxh = table.getColumnModel().getColumn(1); // 设置列宽
 					cktablecxh.setPreferredWidth(180);
@@ -839,9 +858,9 @@ public class YS {
 		fc.add(querycustomer);
 		fhj.setBounds(210, 605, 200, 20);
 		String[][] arr = d.ys(querycustomer.getText().trim());
-		String[] cxcn = { "编号","客户名称", "应收", "最后日期" };
+		String[] cxcn = { "编号", "客户名称", "应收", "最后日期" };
 		JScrollPane jsp = new JScrollPane();
-		JTable jtab = new JTable();
+		jtab = new JTable();
 		jtab.getTableHeader().setReorderingAllowed(false);
 		DefaultTableModel dm = new DefaultTableModel(arr, cxcn) {
 			private static final long serialVersionUID = 1L;
@@ -852,7 +871,7 @@ public class YS {
 		};
 		jtab.setModel(dm);
 		jtab.setRowHeight(20);
-		TableColumn cj = jtab.getColumnModel().getColumn(0); // 设置列宽
+		TableColumn cj = jtab.getColumnModel().getColumn(1); // 设置列宽
 		cj.setPreferredWidth(180);
 		cj.setMinWidth(180);
 		cj.setMaxWidth(180);
@@ -860,23 +879,24 @@ public class YS {
 		Double fthj = 0.0;
 		int fjtabr = jtab.getRowCount();
 		for (int fx = 0; fx < fjtabr; fx++) {
-			Double t = Double.parseDouble(jtab.getValueAt(fx, 1).toString());
+			Double t = Double.parseDouble(jtab.getValueAt(fx, 2).toString());
 			fthj = t + fthj;
 		}
 		fhj.setText("合计: " + String.format("%.2f", fthj));
 		querycustomer.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyChar() == '\n') {
+					new SQLFilter(querycustomer,querycustomer.getText().trim(),user);
 					String[][] arr2 = d.ys(querycustomer.getText().trim());
 					dm.setDataVector(arr2, cxcn);
-					TableColumn cj = jtab.getColumnModel().getColumn(0); // 设置列宽
+					TableColumn cj = jtab.getColumnModel().getColumn(1); // 设置列宽
 					cj.setPreferredWidth(180);
 					cj.setMinWidth(180);
 					cj.setMaxWidth(180);
 					Double fthj = 0.0;
 					int fjtabr = jtab.getRowCount();
 					for (int fx = 0; fx < fjtabr; fx++) {
-						Double t = Double.parseDouble(jtab.getValueAt(fx, 1).toString());
+						Double t = Double.parseDouble(jtab.getValueAt(fx, 2).toString());
 						fthj = t + fthj;
 					}
 					fhj.setText("合计: " + String.format("%.2f", fthj));
@@ -923,6 +943,10 @@ public class YS {
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getKeyCode() == '\n') {
+					new SQLFilter(xt,xt.getText().trim(),user);
+					Date date2 = new Date();
+					String s1 = sdf.format(date2);
+					CheckDate.ReturnCheckDateResult(s1);
 					if (xxf.isVisible() == true) {
 						int sr = xxtable.getSelectedRow();
 						String s = xt.getText().trim();
@@ -935,24 +959,18 @@ public class YS {
 								if (sk > 0) {
 									Double zj = Double.parseDouble(xxtable.getValueAt(sr, 7).toString());
 									Double ys = Double.parseDouble(xxtable.getValueAt(sr, 8).toString());
-									if (sk > zj - ys) { // proceeds more than
+									if (sk >= zj - ys) { // proceeds more than
 														// receivables
 										if (st.substring(0, 1).equals("X")) {
-											d.updateWxys(xxf_ShowNo.getText(), sr + 1, zj, 0);
+											d.updateWxys(st, sr + 1, zj, 0);
 										} else {
-											d.updatexsys(xxf_ShowNo.getText(), sr + 1, zj, 0);
+											d.updatexsys(st, sr + 1, zj, 0);
 										}
 									} else if (sk < zj - ys) {
 										if (st.substring(0, 1).equals("X")) {
-											d.updateWxys(xxf_ShowNo.getText(), sr + 1, zj, 1);
+											d.updateWxys(st, sr + 1, ys+sk, 1);
 										} else {
-											d.updatexsys(xxf_ShowNo.getText(), sr + 1, zj, 1);
-										}
-									} else if (sk.equals(zj - ys)) {
-										if (st.substring(0, 1).equals("X")) {
-											d.updateWxys(xxf_ShowNo.getText(), sr + 1, zj, 0);
-										} else {
-											d.updatexsys(xxf_ShowNo.getText(), sr + 1, zj, 0);
+											d.updatexsys(st, sr + 1, ys+sk, 1);
 										}
 									}
 								} else {
@@ -1030,7 +1048,7 @@ public class YS {
 											for (int i = 0; i < srtable; i++) {
 												if (i != sr) {
 													Double ys2 = Double.parseDouble(table.getValueAt(i, 4).toString());
-													String dh2=table.getValueAt(i, 0).toString();
+													String dh2 = table.getValueAt(i, 0).toString();
 													if (dh2.substring(0, 1).equals("X")) {
 														xxmdm.setDataVector(d.wxd(dh2), mcn);
 													} else {
@@ -1063,14 +1081,14 @@ public class YS {
 																	} else {
 																		d.updatexsys(dh2, k + 1, zje, 0);
 																	}
-																	sk=0.0;
+																	sk = 0.0;
 																} else {
 																	if (dh.substring(0, 1).equals("X")) {
 																		d.updateWxys(dh2, k + 1, sk + ysk, 1);
 																	} else {
 																		d.updatexsys(dh2, k + 1, sk + ysk, 1);
 																	}
-																	sk=0.0;
+																	sk = 0.0;
 																	break;
 																}
 															}
@@ -1112,8 +1130,7 @@ public class YS {
 							} catch (Exception e1) {
 								JOptionPane.showMessageDialog(null, "非法输入");
 							}
-							String kh = table.getValueAt(sr, 1).toString().trim();
-							String[][] xarr = d.xys(kh);
+							String[][] xarr = d.xys(jtab.getValueAt(jtab.getSelectedRow(), 0).toString());
 							xdm.setDataVector(xarr, xcn);
 							TableColumn cktablecxh = table.getColumnModel().getColumn(1); // 设置列宽
 							cktablecxh.setPreferredWidth(180);
@@ -1133,14 +1150,14 @@ public class YS {
 				// TODO Auto-generated method stub
 				String[][] arr2 = d.ys(querycustomer.getText().trim());
 				dm.setDataVector(arr2, cxcn);
-				TableColumn cj = jtab.getColumnModel().getColumn(0); // 设置列宽
+				TableColumn cj = jtab.getColumnModel().getColumn(1); // 设置列宽
 				cj.setPreferredWidth(180);
 				cj.setMinWidth(180);
 				cj.setMaxWidth(180);
 				Double fthj = 0.0;
 				int fjtabr = jtab.getRowCount();
 				for (int fx = 0; fx < fjtabr; fx++) {
-					Double t = Double.parseDouble(jtab.getValueAt(fx, 1).toString());
+					Double t = Double.parseDouble(jtab.getValueAt(fx, 2).toString());
 					fthj = t + fthj;
 				}
 				fhj.setText("合计: " + String.format("%.2f", fthj));

@@ -24,7 +24,7 @@ public class CheckDate {
 				// JOptionPane.showMessageDialog(null,"日期核对成功");
 				return true;
 			} else {
-				JOptionPane.showMessageDialog(null, "系统日期与服务器日期不相符\n请同步系统日期后重试");
+				JOptionPane.showMessageDialog(null, "系统日期与服务器日期不相符\n请同步系统日期后重试\n确认后系统自动退出..");
 				System.exit(0);
 			}
 		} catch (MalformedURLException e) {

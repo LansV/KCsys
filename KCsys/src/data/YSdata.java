@@ -14,12 +14,38 @@ public class YSdata {
    	ResultSet res=null;
    	Dao d=new Dao();
 	Connection con = d.getcon();
+	//====================================================获取业务员===========================
+	public String getSaleMan(String b,String s){
+		String i = null;
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select salemanname from "+b+" where dh='"+s+"'");
+			while(res.next()){
+				i=res.getString("salemanname").trim();
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			JOptionPane.showMessageDialog(null,"获取收款方式出错");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return i;
+	}
 	//====================================================get proceeds method===========================
-	public int getproceedsmethod(String s){
+	public int getproceedsmethod(String b,String s){
 		int i=0;
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select skfs from XSD where dh='"+s+"'");
+			res = sql.executeQuery("select skfs from "+b+" where dh='"+s+"'");
 			while(res.next()){
 				i=res.getInt("skfs");
 			}
@@ -45,12 +71,12 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from KHx where KH_name ='"+s+"'");
+			res = sql.executeQuery("select*from customerinfo where customerid ='"+s+"'");
 			while(res.next()){
-				ls.add(res.getString("KH_name").trim());
-				ls.add(res.getString("KH_llx").trim());
-				ls.add(res.getString("KH_tel").trim());
-				ls.add(res.getString("KH_add").trim());
+				ls.add(res.getString("customername").trim());
+				ls.add(res.getString("contact").trim());
+				ls.add(res.getString("tel").trim());
+				ls.add(res.getString("address").trim());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -75,15 +101,15 @@ public class YSdata {
 		try {
 			sql = con.createStatement();
 			res = sql.executeQuery(""
-					+ "select dh,SUM(zj) as je,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from"
+					+ "select dh,max(khmc) as khmc,SUM(zj) as je,SUM(skje) as skje,Sum(zj)-SUM(skje) as s,MAX(skdate) as skdate from"
 					+ "("
-					+ "select dh,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khmc = '"+s+"'group by dh "
+					+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD where khid = '"+s+"'group by dh "
 					+ "union "
-					+ "select dh,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from WXD where khmc = '"+s+"'group by dh "
+					+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from WXD where khid = '"+s+"'group by dh "
 					+ "union "
-					+ "select dh,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khmc= '"+s+"' group by dh "
+					+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD where khid= '"+s+"' group by dh "
 					+ "union "
-					+ "select dh,-sum(je) as zj,0 as skje,max(date) as skdate from HZ where kh= '"+s+"' group by dh "
+					+ "select dh,max(khmc) as khmc,-sum(je) as zj,0 as skje,max(date) as skdate from HZ where khid= '"+s+"' group by dh "
 					+ ") "
 					+ "temp group by dh");
 			while(res.next()){
@@ -91,7 +117,7 @@ public class YSdata {
 					
 				}else{
 					ls.add(res.getString("dh").trim());
-					ls.add(s);
+					ls.add(res.getString("khmc").trim());
 					ls.add(String.format("%.2f",res.getDouble("je")));
 					ls.add(String.format("%.2f",res.getDouble("skje")));
 					ls.add(String.format("%.2f",res.getDouble("s")));
@@ -350,17 +376,18 @@ public class YSdata {
 		try {
 			sql = con.createStatement();
 			res = sql.executeQuery("select*from"
-					+ "(select khmc,SUM(je) as zj,MAX(lastdate) as fdate from("
-					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from XSD where khmc like '%"+customer+"%' group by khmc "
+					+ "(select  khid,max(khmc) as khmc ,SUM(je) as zj,MAX(lastdate) as fdate from("
+					+ "select khid,max(khmc) as khmc ,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from XSD where khmc like '%"+customer+"%' group by khid "
 					+ "union "
-					+ "select khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from WXD where khmc like '%"+customer+"%' group by khmc "
+					+ "select khid,max(khmc) as khmc,SUM(je)-SUM(skje) as je ,MAX (date) as lastdate from WXD where khmc like '%"+customer+"%' group by khid "
 					+ "union "
-					+ "select khmc,-SUM(tje) as je, max(tdate) as lastdate from THD where khmc like '%"+customer+"%' group by khmc "
+					+ "select  khid,max(khmc) as khmc,-SUM(tje) as je, max(tdate) as lastdate from THD where khmc like '%"+customer+"%' group by khid "
 					+ "union "
-					+ "select kh as khmc,-SUM(je) as je, max(date) as lastdate from HZ where kh like '%"+customer+"%' group by kh "
-					+ ") temp group by khmc"
+					+ "select  khid,max(khmc) as khmc,-SUM(je) as je, max(date) as lastdate from HZ where khmc like '%"+customer+"%' group by khid "
+					+ ") temp group by khid"
 					+ ") temp where zj >0");
 			while(res.next()){
+					ls.add(res.getString("khid").trim());
 					ls.add(res.getString("khmc").trim());
 					ls.add(String.format("%.2f",res.getDouble("zj")));
 					if(res.getString("fdate")==null){
@@ -384,7 +411,7 @@ public class YSdata {
 		     		 
 		     	 }
 		}
-		int xl=3;
+		int xl=4;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //行
@@ -445,8 +472,8 @@ public class YSdata {
 		}
 	}
 	//------------------------------------------------------部分退货----------------------------------------
-	public void gth(String dh,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy,int type,
-			String user){
+	public void gth(String dh,String khid,String khmc,int bh,String xh,String sp,String dw,Double zk,Double dj,int sl,Double thje,String yy,
+			int type,String user){
 		Date date2=new Date();
 		SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		String time=timeFormat.format(date2);
@@ -454,7 +481,7 @@ public class YSdata {
 		// 0为收款完成  1为未收款  2商品退货
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into THD values ('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","
+			sql.execute("insert into THD values ('"+dh+"',"+khid+",'"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","
 					+ ""+dj+","+sl+","+thje+",'"+yy+"','"+ckd+"','"+time+"',"+type+",'"+user+"');"
 					+ "update XSD set skstatus="+type+" where dh='"+dh+"' and bh="+bh+"");
 		}catch(Exception e){
@@ -543,13 +570,13 @@ public class YSdata {
 		}
 	}
 	//---------------------------------------------写入坏账--------------------------------------------------
-	public void whz(String dh,String kh,Double je,String bz,String user,String b){
+	public void whz(String dh,String khid,String kh,Double je,String bz,String user,String b){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into HZ values('"+dh+"','"+kh+"',"+je+",'"+ckd+"','"+bz+"','"+user+"');"
-					+ "update "+b+" set skstatus = 0 where dh='"+dh+"';"
+			sql.execute("insert into HZ values('"+dh+"',"+khid+",'"+kh+"',"+je+",'"+ckd+"','"+bz+"','"+user+"');"
+					+ "update "+b+" set skstatus = 2 where dh='"+dh+"';"
 					+ "update "+b+" set skdate = '"+ckd+"' where dh='"+dh+"'");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"添加坏账数据错误");

@@ -510,7 +510,7 @@ public class QueryAllOrderData{
 				sql.execute("insert into XSD values ('"+dh+"',"+custid+","
 						+ "'"+custn+"',"+data[i][0]+",'"+data[i][1]+"','"+data[i][2]+"','"+data[i][3]+"',"
 						+ ""+data[i][4]+","+data[i][5]+","+data[i][6]+","
-						+ ""+data[i][7]+",'"+data[i][8]+"','"+ckd+"',0,0,'"+ckd+"',0,'"+user+"',"+saleid+",'"+saleman+"');"
+						+ ""+data[i][7]+",'"+data[i][8]+"','"+ckd+"',0,0,'"+ckd+"',1,'"+user+"',"+saleid+",'"+saleman+"');"
 						+ "update comfirmorder set bstatus = 1 where dh='"+odh+"' and xh="+data[i][1]+";"
 						+ "update comfirmorder set xsdh = '"+dh+"' where dh='"+odh+"' and xh="+data[i][1]+";");
 				wkcout(data[i][1],data[i][2],Integer.parseInt(data[i][6]),"1,"+dh,user);
