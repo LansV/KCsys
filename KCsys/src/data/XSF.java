@@ -37,6 +37,7 @@ import javax.swing.table.TableColumn;
 
 import security.CheckDate;
 import security.Lock;
+import security.SQLFilter;
 import tool.Printclass;
 public class XSF{
 	String mc="";                      //全局客户名称
@@ -263,6 +264,7 @@ public class XSF{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyCode()=='\n'){
+					new SQLFilter(spjt,spjt.getText().trim(),user);
 					String[][] sparr=gd.spcxdj(spjt.getText().trim());
 					DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 						/**
@@ -348,6 +350,7 @@ public class XSF{
 				int mr=mtable.getRowCount();
 				int spr=sptable.getSelectedRow();
 				if(e.getKeyCode()=='\n'){
+					new SQLFilter(sptx,sptx.getText().trim(),user);
 					if(sptx.getText().trim().length()==0){
 						JOptionPane.showMessageDialog(null,"未填写数量");
 					}else{
@@ -430,6 +433,7 @@ public class XSF{
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyChar()=='\n'){
+					new SQLFilter(cxjt,cxjt.getText(),user);
 					String[][] arr2=gd.khx(cxjt.getText().trim());
 					DefaultTableModel dm2=new DefaultTableModel(arr2,cxcn){
 
@@ -577,9 +581,7 @@ public class XSF{
 							listkh.add(lxtel);
 							listkh.add(addr);
 							listkh.add(jc.getSelectedItem());
-							if(mct.isEditable()==true){
-								gd.wkh(mc,lxr,lxtel,addr);
-							}
+							new SQLFilter(jtp,mc+lxr+lxtel+addr,user);
 							int salec=jcsaleman.getSelectedIndex();
 							//System.out.println(salec);
 							String saleid = null;
@@ -592,6 +594,14 @@ public class XSF{
 								salename=jcsaleman.getSelectedItem().toString().trim();
 							}
 							String customerid=showkhid.getText().trim();
+							if(mct.isEditable()==true){
+								if(customerid.equals(gd.getCustomerNo().toString())){
+									gd.wkh(customerid,mc,lxr,lxtel,addr,"0");
+								}else{
+									JOptionPane.showMessageDialog(mct, "客户编号存在差异，请重新登录系统");
+								}
+							}
+							
 							//System.out.println(saleid+","+salename);
 								for(int i=0;i<cr;i++){
 									String xhs=mtable.getValueAt(i,0).toString().trim();
@@ -617,7 +627,7 @@ public class XSF{
 									listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 									listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
 									gd.wxs(dh,customerid,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user,saleid,salename);
-									//gd.wkcout(xh,sp,sl,"1,"+dh,user);
+									gd.wkcout(xh,sp,sl,"1,"+dh,user);
 									String[][] sparr=gd.spcxdj(spjt.getText().trim());
 									DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 										private static final long serialVersionUID = 1L;

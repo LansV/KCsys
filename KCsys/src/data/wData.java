@@ -639,23 +639,13 @@ public class wData {
 		}
 	}
 	//--------------------------------------------------添加客户信息---------------------------------------------------
-	public void wkh(String mc,String lxr,String lxtel,String add){
-		int  sp=0;
-		try {
-			sql = con.createStatement();
-			//System.out.println(id);
-			res=sql.executeQuery("select max(KH_id) as id from KHx");
-			while(res.next()){
-				sp=res.getInt("id");
-			}
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null,"获取客户数据错误！","错误",0);
-		}
-		int ids=sp+1;
+	public void wkh(String khid,String mc,String lxr,String lxtel,String add,String belong){
+		Date date=new Date();
+		String ckd=String.format("%tF", date);
+		String time=timef.format(date);
 		try{
 			sql = con.createStatement();
-			sql.execute("insert into KHx values("+ids+",'"+mc+"','"+lxr+"','"+lxtel+"','','"+add+"')");
+			sql.execute("insert into customerinfo values("+khid+",'"+mc+"','"+lxr+"','"+lxtel+"','"+add+"',"+belong+",'"+ckd+"','"+time+"')");
 			JOptionPane.showMessageDialog(null,"客户添加完成");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"客户添加错误");
@@ -683,7 +673,7 @@ public class wData {
 					+ "('"+dh+"','"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
 					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"','"+pumpNo+"')");
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"错误");
+			JOptionPane.showMessageDialog(null,"写入维修数据错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){

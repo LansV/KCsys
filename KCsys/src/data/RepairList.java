@@ -38,6 +38,7 @@ import javax.swing.table.TableColumn;
 
 import security.CheckDate;
 import security.Lock;
+import security.SQLFilter;
 import tool.Printclass;
 
 public class RepairList {
@@ -47,11 +48,12 @@ public class RepairList {
 	String addr = ""; // 全局地址
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
+
 	public RepairList(String user) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-	   	Date date2=new Date();
-	   	String s1=sdf.format(date2);
-	   	CheckDate.ReturnCheckDateResult(s1);
+		Date date2 = new Date();
+		String s1 = sdf.format(date2);
+		CheckDate.ReturnCheckDateResult(s1);
 		RepairListData gd = new RepairListData(); // 调用数据类
 		wData w = new wData();
 		List<String> spcount = new ArrayList<String>(); // 商品名称
@@ -269,6 +271,7 @@ public class RepairList {
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getKeyCode() == '\n') {
+					new SQLFilter(spjt, spjt.getText().trim(), user);
 					String[][] sparr = gd.spcxdj(spjt.getText().trim()); // 商品查询（单价）
 					DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 						/**
@@ -355,6 +358,7 @@ public class RepairList {
 				int mr = mtable.getRowCount();
 				int spr = sptable.getSelectedRow();
 				if (e.getKeyCode() == '\n') {
+					new SQLFilter(sptx, sptx.getText().trim(), user);
 					if (sptx.getText().trim().length() == 0) {
 						JOptionPane.showMessageDialog(null, "未填写数量");
 					} else {
@@ -419,7 +423,7 @@ public class RepairList {
 		khfc.add(cxjt);
 		String ss = "";
 		String[][] arr = gd.khx(ss); // 获取客户信息
-		String[] cxcn = { "名称", "联系人", "电话", "地址" };
+		String[] cxcn = { "编号", "名称", "联系人", "电话", "地址" };
 		JScrollPane cxjsp = new JScrollPane();
 		JTable jtab = new JTable();
 		jtab.getTableHeader().setReorderingAllowed(false);
@@ -438,6 +442,7 @@ public class RepairList {
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getKeyChar() == '\n') {
+					new SQLFilter(cxjt, cxjt.getText().trim(), user);
 					String[][] arr2 = gd.khx(cxjt.getText().trim());
 					DefaultTableModel dm2 = new DefaultTableModel(arr2, cxcn) {
 
@@ -470,7 +475,16 @@ public class RepairList {
 		jc.addItem("现金");
 		jc.addItem("银行");
 		jc.addItem("其他");
-		jc.setBounds(600, 60, 80, 25);
+		jc.setBounds(620, 60, 80, 25);
+		JComboBox<String> jcrepairman = new JComboBox<String>();
+		String[][] repairmanarr = gd.getSaleman();
+		int repairmanarrc = repairmanarr.length;
+		jcrepairman.addItem("请选择业务员");
+		for (int i = 0; i < repairmanarrc; i++) {
+			jcrepairman.addItem(repairmanarr[i][1]);
+		}
+		jcrepairman.setBounds(480, 60, 110, 25);
+		mfc.add(jcrepairman);
 		JButton kh_b = new JButton("选择客户");
 		kh_b.addActionListener(new ActionListener() {
 			@Override
@@ -479,7 +493,7 @@ public class RepairList {
 				khf.setVisible(true);
 			}
 		});
-		kh_b.setBounds(450, 60, 90, 25);
+		kh_b.setBounds(370, 60, 90, 25);
 		JPanel jtp = new JPanel();
 		jtp.setLayout(null);
 		jtp.add(kh_b);
@@ -490,6 +504,9 @@ public class RepairList {
 		mct.setBounds(50, 20, 180, 25);
 		jtp.add(mct);
 		jtp.add(mcl);
+		JLabel showkhid = new JLabel();
+		showkhid.setBounds(260, 20, 80, 25);
+		jtp.add(showkhid);
 		JLabel lxrl = new JLabel("联系人:");
 		lxrl.setBounds(320, 20, 60, 25);
 		JTextField lxrt = new JTextField();
@@ -541,30 +558,30 @@ public class RepairList {
 					if (mc.length() == 0) {
 						JOptionPane.showMessageDialog(null, "客户未填写");
 					} else if (dh.length() != 0 && mc.length() != 0) {
-						if(dh.equals(gd.wxdh())){
-						 String webUrl4 = "http://www.ntsc.ac.cn";//中国科学院国家授时中心
-				       	 	try {
-				       		    Date date2=new Date();
-					            URL url = new URL(webUrl4);// 取得资源对象
-					            URLConnection uc = url.openConnection();// 生成连接对象
-					            uc.connect();// 发出连接
-					            long ld = uc.getDate();// 读取网站日期时间
-					            Date date = new Date(ld);// 转换为标准时间对象
-					            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-					            String s1=sdf.format(date2);
-					            String s=sdf.format(date);
-					            if(s.equals(s1)==true){
-					            	 //JOptionPane.showMessageDialog(null,"日期核对成功");
-					            }else{
-					            	JOptionPane.showMessageDialog(null,"系统日期与服务器日期不相符\n请同步系统日期后重试");
-						            System.exit(0);
-					            }
-					        } catch (MalformedURLException e1) {
-					            e1.printStackTrace();
-					        } catch (IOException e1) {
-					            JOptionPane.showMessageDialog(null,"请检查网络，确保网络畅通");
-					            System.exit(0);
-					        }
+						if (dh.equals(gd.wxdh())) {
+							String webUrl4 = "http://www.ntsc.ac.cn";// 中国科学院国家授时中心
+							try {
+								Date date2 = new Date();
+								URL url = new URL(webUrl4);// 取得资源对象
+								URLConnection uc = url.openConnection();// 生成连接对象
+								uc.connect();// 发出连接
+								long ld = uc.getDate();// 读取网站日期时间
+								Date date = new Date(ld);// 转换为标准时间对象
+								SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
+								String s1 = sdf.format(date2);
+								String s = sdf.format(date);
+								if (s.equals(s1) == true) {
+									// JOptionPane.showMessageDialog(null,"日期核对成功");
+								} else {
+									JOptionPane.showMessageDialog(null, "系统日期与服务器日期不相符\n请同步系统日期后重试");
+									System.exit(0);
+								}
+							} catch (MalformedURLException e1) {
+								e1.printStackTrace();
+							} catch (IOException e1) {
+								JOptionPane.showMessageDialog(null, "请检查网络，确保网络畅通");
+								System.exit(0);
+							}
 							int slhj = 0;
 							List<Object> listkh = new ArrayList<Object>();
 							List<Object> listsp = new ArrayList<Object>();
@@ -579,12 +596,28 @@ public class RepairList {
 							listkh.add(lxtel);
 							listkh.add(addr);
 							listkh.add(jc.getSelectedItem());
+							String khid = showkhid.getText().trim();
+							String repairid;
+							String repairman;
+							int jcrepairs = jcrepairman.getSelectedIndex();
+							if (jcrepairs == 0) {
+								repairid = "0";
+								repairman = "未选择";
+							} else {
+								repairid = repairmanarr[jcrepairs - 1][0];
+								repairman = jcrepairman.getSelectedItem().toString();
+							}
+							new SQLFilter(jtp, mc + lxr + lxtel + addr + sPumpNo, user);
 							if (mct.isEditable() == true) {
-								w.wkh(mc, lxr, lxtel, addr);
-								mct.setEditable(false);
-								lxrt.setEditable(false);
-								lxrtelt.setEditable(false);
-								addrt.setEditable(false);
+								if (khid.equals(gd.getCustomerNo().toString())) {
+									w.wkh(khid,mc, lxr, lxtel, addr,"0");
+									mct.setEditable(false);
+									lxrt.setEditable(false);
+									lxrtelt.setEditable(false);
+									addrt.setEditable(false);
+								} else {
+									JOptionPane.showMessageDialog(mct, "客户编号存在差异");
+								}
 							}
 							for (int i = 0; i < cr; i++) {
 								String xhs = mtable.getValueAt(i, 0).toString().trim();
@@ -616,7 +649,8 @@ public class RepairList {
 								listsp.add(xhs6);
 								listsp.add(xhs7);
 								listsp.add(bz);
-								w.wx(dh, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, jc.getSelectedIndex(), user, sPumpNo);
+								gd.wx(dh, khid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, jc.getSelectedIndex(), user,
+										repairid, repairman, sPumpNo);
 								if (sp.equals("人工费") == false) {
 									w.wkcout(xh, sp, sl, "2," + dh, user);
 								}
@@ -624,7 +658,6 @@ public class RepairList {
 							String[][] sparr = gd.spcxdj(spjt.getText().trim());
 							DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 								private static final long serialVersionUID = 1L;
-
 								public boolean isCellEditable(int row, int colunm) {
 									return false;
 								}
@@ -654,15 +687,15 @@ public class RepairList {
 							Printclass.sethj(listhj);
 							new Printclass();
 							/*
-							 * int
-							 * khselect=JOptionPane.showConfirmDialog(null,"是否继续开单",
-							 * "选择",0); if(khselect==0){ khf.setVisible(true);
-							 * }else{ mf.dispose(); sp.dispose(); }
+							 * int khselect=JOptionPane.showConfirmDialog(null,
+							 * "是否继续开单", "选择",0); if(khselect==0){
+							 * khf.setVisible(true); }else{ mf.dispose();
+							 * sp.dispose(); }
 							 */
-						}else{
-							JOptionPane.showMessageDialog(null,"单号重复，自动修正单号");
+						} else {
+							JOptionPane.showMessageDialog(null, "单号存在差异，自动修正单号");
 							ml.setText(gd.wxdh());
-							JOptionPane.showMessageDialog(null,"修正成功");
+							JOptionPane.showMessageDialog(null, "修正成功，请重新点击出单");
 						}
 
 					}
@@ -683,6 +716,7 @@ public class RepairList {
 				// TODO Auto-generated method stub
 				int mr = mtable.getRowCount();
 				if (e.getKeyChar() == '\n') {
+					new SQLFilter(rL_LabourFrame_TextF, rL_LabourFrame_TextF.getText().trim(), user);
 					try {
 						Double LF_labour = Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
 						if (LF_labour <= 0) {
@@ -742,7 +776,7 @@ public class RepairList {
 		mf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				if(Lock.SingleUnLock(mf, "lock/RepairList.txt")){
+				if (Lock.SingleUnLock(mf, "lock/RepairList.txt")) {
 					mf.dispose();
 				}
 				khf.dispose();
@@ -753,10 +787,12 @@ public class RepairList {
 		khf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
-				if(!mf.isVisible()){
-					if(Lock.SingleUnLock(mf, "lock/RepairList.txt")){
+				if (!mf.isVisible()) {
+					if (Lock.SingleUnLock(mf, "lock/RepairList.txt")) {
 						khf.dispose();
 					}
+				}else{
+					khf.dispose();
 				}
 			}
 		});
@@ -766,10 +802,11 @@ public class RepairList {
 				// TODO Auto-generated method stub
 				if (e.getClickCount() == 2 && e.getButton() == 1) {
 					int r = jtab.getSelectedRow();
-					mc = jtab.getValueAt(r, 0).toString().trim();
-					lxr = jtab.getValueAt(r, 1).toString().trim();
-					lxtel = jtab.getValueAt(r, 2).toString().trim();
-					addr = jtab.getValueAt(r, 3).toString().trim();
+					showkhid.setText(jtab.getValueAt(r, 0).toString().trim());
+					mc = jtab.getValueAt(r, 1).toString().trim();
+					lxr = jtab.getValueAt(r, 2).toString().trim();
+					lxtel = jtab.getValueAt(r, 3).toString().trim();
+					addr = jtab.getValueAt(r, 4).toString().trim();
 					mct.setText(mc);
 					mct.setEditable(false);
 					lxrt.setText(lxr);
@@ -790,6 +827,7 @@ public class RepairList {
 		int r = JOptionPane.showConfirmDialog(null, "客户是否为新客户", "选择", JOptionPane.YES_NO_OPTION);// 返回选择值
 		if (r == 0) {
 			String s = gd.wxdh();
+			showkhid.setText(gd.getCustomerNo().toString());
 			// System.out.println(s);
 			ml.setText(s);
 			mf.setVisible(true);
