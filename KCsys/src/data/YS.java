@@ -1,5 +1,4 @@
 package data;
-
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -38,6 +37,7 @@ public class YS {
 	wData w = new wData();
 	Double hj;
 	JTable jtab;
+	JLabel salemanL=new JLabel();
 	int tabler;
 	int wzx;
 	int wzy;
@@ -179,7 +179,7 @@ public class YS {
 		JLabel xxf_ShowNo = new JLabel("");
 		xxf_ShowNo.setBounds(20, 560, 80, 25);
 		jtp.setBounds(0, 0, 750, 90);
-		msp.setBounds(0, 0, 700, 450);
+		msp.setBounds(0, 0, 740, 450);
 		mp.setLayout(null);
 		JButton xxf_OldSaleReceipt_b = new JButton("查看原单");
 		xxf_OldSaleReceipt_b.setVisible(false);
@@ -196,8 +196,6 @@ public class YS {
 					} else {
 						xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()), mcn);
 					}
-					// xxmdm.setDataVector(d.yxsd(xxf_ShowNo.getText().trim()),
-					// mcn);
 					TableColumn cktablecxh = xxtable.getColumnModel().getColumn(0); // 设置列宽
 					cktablecxh.setPreferredWidth(40);
 					cktablecxh.setMinWidth(40);
@@ -222,6 +220,10 @@ public class YS {
 					cktablesl.setPreferredWidth(40);
 					cktablesl.setMinWidth(40);
 					cktablesl.setMaxWidth(40);
+					TableColumn cktablebz = xxtable.getColumnModel().getColumn(9); // 设置列宽
+					cktablebz.setPreferredWidth(120);
+					cktablebz.setMinWidth(120);
+					cktablebz.setMaxWidth(120);
 					int row = xxtable.getRowCount();
 					Double hj = 0.0;
 					for (int i = 0; i < row; i++) {
@@ -238,8 +240,6 @@ public class YS {
 					} else {
 						xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()), mcn);
 					}
-					// xxmdm.setDataVector(d.xsd(xxf_ShowNo.getText().trim()),
-					// mcn);
 					TableColumn cktablecxh = xxtable.getColumnModel().getColumn(0); // 设置列宽
 					cktablecxh.setPreferredWidth(40);
 					cktablecxh.setMinWidth(40);
@@ -264,6 +264,10 @@ public class YS {
 					cktablesl.setPreferredWidth(40);
 					cktablesl.setMinWidth(40);
 					cktablesl.setMaxWidth(40);
+					TableColumn cktablebz = xxtable.getColumnModel().getColumn(9); // 设置列宽
+					cktablebz.setPreferredWidth(120);
+					cktablebz.setMinWidth(120);
+					cktablebz.setMaxWidth(120);
 					int row = xxtable.getRowCount();
 					Double hj = 0.0;
 					for (int i = 0; i < row; i++) {
@@ -327,13 +331,13 @@ public class YS {
 				} else {
 					Printclass.setTitel("天澜清洗设备有限公司销售单");
 				}
+				Printclass.setJsr(salemanL.getText());
 				Printclass.setkhls(listkh);
 				Printclass.setsp(listsp);
 				Printclass.sethj(listhj);
 				new Printclass();
 			}
 		});
-		JLabel salemanL = new JLabel("测试中..");
 		salemanL.setBounds(180, 560, 80, 25);
 		xxfc.add(salemanL);
 		xxfc.add(print_b);
@@ -345,7 +349,7 @@ public class YS {
 		xxfc.add(xxf_ShowNo);
 		xxfc.add(mp);
 		xxfc.add(xxf_ShowTotal);
-		xxf.setBounds(20, 50, 750, 630);
+		xxf.setBounds(20, 50, 780, 630);
 		xxf.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		// =============================================above is detailed
 		// panel=========================
@@ -504,6 +508,10 @@ public class YS {
 										cktablesl.setPreferredWidth(40);
 										cktablesl.setMinWidth(40);
 										cktablesl.setMaxWidth(40);
+										TableColumn cktablebz = xxtable.getColumnModel().getColumn(9); // 设置列宽
+										cktablebz.setPreferredWidth(120);
+										cktablebz.setMinWidth(120);
+										cktablebz.setMaxWidth(120);
 										xxf.setEnabled(true);
 										thtsl.setEnabled(false);
 										thtsl.setText("");
@@ -647,6 +655,10 @@ public class YS {
 									cktablesl.setPreferredWidth(40);
 									cktablesl.setMinWidth(40);
 									cktablesl.setMaxWidth(40);
+									TableColumn cktablebz = xxtable.getColumnModel().getColumn(9); // 设置列宽
+									cktablebz.setPreferredWidth(120);
+									cktablebz.setMinWidth(120);
+									cktablebz.setMaxWidth(120);
 									xxf.setEnabled(true);
 									thtsl.setEnabled(false);
 									thtsl.setText("");
@@ -784,6 +796,10 @@ public class YS {
 				cktablesl.setPreferredWidth(40);
 				cktablesl.setMinWidth(40);
 				cktablesl.setMaxWidth(40);
+				TableColumn cktablebz = xxtable.getColumnModel().getColumn(9); // 设置列宽
+				cktablebz.setPreferredWidth(120);
+				cktablebz.setMinWidth(120);
+				cktablebz.setMaxWidth(120);
 				if (d.pdj(st).isEmpty() == false) {
 					xxf_OldSaleReceipt_b.setVisible(true);
 				}
@@ -843,7 +859,7 @@ public class YS {
 		f.setResizable(false);
 		Container fc = f.getContentPane();
 		fc.setLayout(null);
-		f.setBounds(1000, 50, 380, 670);
+		f.setBounds(1000, 50, 420, 670);
 		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		f.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -1015,6 +1031,10 @@ public class YS {
 							cktablesl.setPreferredWidth(40);
 							cktablesl.setMinWidth(40);
 							cktablesl.setMaxWidth(40);
+							TableColumn cktablebz = xxtable.getColumnModel().getColumn(9); // 设置列宽
+							cktablebz.setPreferredWidth(120);
+							cktablebz.setMinWidth(120);
+							cktablebz.setMaxWidth(120);
 							xxf.setEnabled(true);
 							xt.setText("");
 							xf.dispose();
@@ -1189,9 +1209,9 @@ public class YS {
 		});
 		// -------------------------------------------------------------------------------------------------------
 		jsp.setViewportView(jtab);
-		jsp.setBounds(0, 0, 355, 600);
+		jsp.setBounds(0, 0, 400, 600);
 		JPanel jp = new JPanel();
-		jp.setBounds(8, 10, 380, 640);
+		jp.setBounds(8, 10, 420, 640);
 		jp.setLayout(null);
 		jp.add(jsp);
 		jp.add(fhj);

@@ -37,6 +37,9 @@ import tool.PrintAssembleSheet;
 public class Assemble {
 	List<String> spcount=new ArrayList<String>();
 	AssembleData d=new AssembleData();
+	public static void main(String[] args){
+		new Assemble("test");
+	}
 	public Assemble(String user){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 	   	Date date2=new Date();

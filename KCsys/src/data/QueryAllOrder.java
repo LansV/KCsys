@@ -1,4 +1,5 @@
 package data;
+
 import java.awt.Container;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -70,6 +71,9 @@ public class QueryAllOrder {
 			private static final long serialVersionUID = 1L;
 
 			public boolean isCellEditable(int row, int colunm) {
+				if(colunm==8){
+					return true;
+				}
 				return false;
 			}
 		};
@@ -114,11 +118,11 @@ public class QueryAllOrder {
 		JLabel custid = new JLabel();
 		custid.setBounds(400, 60, 90, 25);
 		jtp.add(custid);
-		JLabel salemanidL=new JLabel("");
-		salemanidL.setBounds(500,60,60,25);
+		JLabel salemanidL = new JLabel("");
+		salemanidL.setBounds(500, 60, 60, 25);
 		jtp.add(salemanidL);
-		JLabel salemanL=new JLabel("");
-		salemanL.setBounds(530,60,90,25);
+		JLabel salemanL = new JLabel("");
+		salemanL.setBounds(530, 60, 90, 25);
 		jtp.add(salemanL);
 		JLabel xxf_ShowNo = new JLabel("");
 		xxf_ShowNo.setBounds(20, 560, 80, 25);
@@ -183,7 +187,7 @@ public class QueryAllOrder {
 		JTable qSAR_MainTable = new JTable();
 		qSAR_MainTable.getTableHeader().setReorderingAllowed(false);
 		qSAR_MainTable.setDefaultRenderer(Object.class, tcr);
-		String[] qSAR_MainTable_ColumnName = { "单号", "名称", "订单日期", "狀態" ,"编号","下单人"};
+		String[] qSAR_MainTable_ColumnName = { "单号", "编号", "名称", "订单日期", "狀態", "编号", "下单人" };
 		DefaultTableModel xdm = new DefaultTableModel(d.xys("", "", "", ""), qSAR_MainTable_ColumnName) {
 			private static final long serialVersionUID = 1L;
 
@@ -192,7 +196,7 @@ public class QueryAllOrder {
 			}
 		};
 		qSAR_MainTable.setModel(xdm);
-		TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(1); // 设置列宽
+		TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(2); // 设置列宽
 		cktablecxh.setPreferredWidth(180);
 		cktablecxh.setMinWidth(180);
 		cktablecxh.setMaxWidth(180);
@@ -220,7 +224,7 @@ public class QueryAllOrder {
 					xdm.setDataVector(
 							d.xys(QueryName, QueryNo, String.format("%tF", cDate), String.format("%tF", xDate)),
 							qSAR_MainTable_ColumnName);
-					TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(1); // 设置列宽
+					TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(2); // 设置列宽
 					cktablecxh.setPreferredWidth(180);
 					cktablecxh.setMinWidth(180);
 					cktablecxh.setMaxWidth(180);
@@ -324,14 +328,14 @@ public class QueryAllOrder {
 						String cusid = custid.getText(); // 获取客户编号
 						String dh = d.xsdh();
 						String odh = xxf_ShowNo.getText();
-						String saleid=salemanidL.getText().trim();
-						String saleman=salemanL.getText().trim();
+						String saleid = salemanidL.getText().trim();
+						String saleman = salemanL.getText().trim();
 						for (int i = 0; i < insertdata.length; i++) {
 							System.out.println(insertdata[i][0] + "," + insertdata[i][1] + "," + insertdata[i][2] + ","
 									+ insertdata[i][3] + "," + insertdata[i][4] + "," + insertdata[i][5] + ","
 									+ insertdata[i][6] + "," + insertdata[i][7] + "," + insertdata[i][8]);
 						}
-						d.insertSaleList(xxf, odh, dh, custn, cusid, insertdata, user,saleid,saleman);
+						d.insertSaleList(xxf, odh, dh, custn, cusid, insertdata, user, saleid, saleman);
 						xxmdm.setDataVector(d.xsd(odh), mcn);
 						TableColumn cktablecxh = xxtable.getColumnModel().getColumn(0); // 设置列宽
 						cktablecxh.setPreferredWidth(40);
@@ -415,8 +419,8 @@ public class QueryAllOrder {
 				lxrtelt.setText(ls.get(2));
 				addrt.setText(ls.get(3));
 				custid.setText(ls.get(4));
-				salemanidL.setText(qSAR_MainTable.getValueAt(r, 4).toString().trim());
-				salemanL.setText(qSAR_MainTable.getValueAt(r, 5).toString().trim());
+				salemanidL.setText(qSAR_MainTable.getValueAt(r, 5).toString().trim());
+				salemanL.setText(qSAR_MainTable.getValueAt(r, 6).toString().trim());
 				xxmdm.setDataVector(d.xsd(st), mcn);
 				int row = xxtable.getRowCount();
 				hj = 0.0;
@@ -461,7 +465,7 @@ public class QueryAllOrder {
 		qSAR_MainFrame_Content.add(qSAR_MainFrame_Js);
 		// ---------------------------------------------------应收总面板-------------------------------------------
 		// -----------------------------------------detail panel close
-		//-------------------------------------------------------listener------------------------------------------
+		// -------------------------------------------------------listener------------------------------------------
 		xxf.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
@@ -485,7 +489,7 @@ public class QueryAllOrder {
 					xdm.setDataVector(
 							d.xys(QueryName, QueryNo, String.format("%tF", cDate), String.format("%tF", xDate)),
 							qSAR_MainTable_ColumnName);
-					TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(1); // 设置列宽
+					TableColumn cktablecxh = qSAR_MainTable.getColumnModel().getColumn(2); // 设置列宽
 					cktablecxh.setPreferredWidth(180);
 					cktablecxh.setMinWidth(180);
 					cktablecxh.setMaxWidth(180);

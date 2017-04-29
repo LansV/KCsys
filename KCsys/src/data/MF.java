@@ -170,7 +170,7 @@ public class MF {
 		});
 		qSAR.setBounds(90,170,60,30);
 		mfc.add(qSAR);
-		JButton queryAllOrder=new JButton("组装");
+		JButton queryAllOrder=new JButton("订单");
 		queryAllOrder.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -180,6 +180,18 @@ public class MF {
 		});
 		queryAllOrder.setBounds(160,170,60,30);
 		mfc.add(queryAllOrder);
+		JButton customerinfo=new JButton("客户");
+		customerinfo.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				if(Lock.SingleLock(mf,"lock/CustomerInfo.txt")==true){
+					new CustomerInfo(user);
+				}
+			}
+		});
+		customerinfo.setBounds(20,210,60,30);
+		mfc.add(customerinfo);
 		mf.setVisible(true);
 	}
 }

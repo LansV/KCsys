@@ -94,7 +94,7 @@ public class QueryAllOrderData{
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from customerinfo where customername ='"+s+"'");
+			res = sql.executeQuery("select*from customerinfo where customerid ="+s);
 			while(res.next()){
 				ls.add(res.getString("customername").trim());
 				ls.add(res.getString("contact").trim());
@@ -131,13 +131,14 @@ public class QueryAllOrderData{
 		}
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select dh,max(customer) as khmc, MAX(bdate) as bdate ,min(bstatus) as bs ,max(id) as id,max(username) as n from comfirmorder,UserB "
+			res = sql.executeQuery("select dh,max(customerid) as khid,max(customer) as khmc, MAX(bdate) as bdate ,min(bstatus) as bs ,max(id) as id,max(username) as n from comfirmorder,UserB "
 					+ "where  customer like '%"+QueryName+"%' "
 					+ "and dh like '%"+QueryNo+"%' and bdate between '"+QueryDate1+"' and '"+QueryDate2+"' "
 					+ "and comfirmorder.belong=UserB.id "
 					+ "group by dh");
 			while(res.next()){
 				ls.add(res.getString("dh"));
+				ls.add(res.getString("khid"));
 				ls.add(res.getString("khmc"));
 				ls.add(res.getString("bdate"));
 				if(res.getInt("bs")==0){
@@ -168,7 +169,7 @@ public class QueryAllOrderData{
 		     		 
 		     	 }
 		}
-		int xl=6;
+		int xl=7;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //ÐÐ

@@ -221,7 +221,7 @@ public class Printclass {
 										}
 									}
 									//System.out.println(y);
-									g2.drawString("开单人:"+user+"                                经手人:"+jsr+"                       收货人:",20,y+20);
+									g2.drawString("开单人:"+user+"              业务员:"+jsr+"                  经手人:                  收货人:",20,y+20);
 									g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 									return Printable.PAGE_EXISTS;
 								}
@@ -401,7 +401,7 @@ public class Printclass {
 											}
 										}
 										//System.out.println(y);
-										g2.drawString("开单人:"+user+"                                经手人:"+jsr+"                       收货人:",20,y+20);
+										g2.drawString("开单人:"+user+"              业务员:"+jsr+"                  经手人:                  收货人:",20,y+20);
 										g2.drawString("白色:存根联         红色:记账联      蓝色:收款联         黄色:收货联",20,y+40);
 										return Printable.PAGE_EXISTS;
 									}
@@ -517,6 +517,7 @@ public class Printclass {
 						s=n[j]*14;
 						x=x+s;
 						//System.out.println(j+"    "+x);
+						//String st=lsx.get(count*9+8).toString();
 						switch(j){
 						case 0:
 							g2.drawString(lsx.get(j+count*9).toString().trim(),x+10,y-5);    // 写入当行数据
@@ -575,7 +576,7 @@ public class Printclass {
 				}
 			}
 			//System.out.println(y);
-			g2.drawString("开单人:"+user+"                                经手人:"+jsr+"                       收货人:",20,y+20);
+			g2.drawString("开单人:"+user+"              业务员:"+jsr+"                  经手人:                  收货人:",20,y+20);
 			g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联",20,y+40);
 		}
 	}

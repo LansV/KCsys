@@ -153,6 +153,11 @@ public class KCxdata {
 			while(res.next()){
 				ls.add(res.getString("KC_sbh").trim());
 				ls.add(res.getString("KC_type").trim());
+				if(res.getString("KC_gys")==null){
+					ls.add("");
+				}else{
+					ls.add(res.getString("KC_gys").trim());
+				}
 				if(res.getString("GYs_name")==null){
 					ls.add("");
 				}else{
@@ -187,11 +192,6 @@ public class KCxdata {
 				ls.add(res.getString("KC_dw").trim());
 				ls.add(res.getString("KC_date").trim());
 				ls.add(res.getString("KC_jgsl").trim());
-				if(res.getString("KC_gys")==null){
-					ls.add("");
-				}else{
-					ls.add(res.getString("KC_gys").trim());
-				}
 				
 			}
 		} catch (SQLException e) {
@@ -229,13 +229,13 @@ public class KCxdata {
 			sql = con.createStatement();
 			if(zl.length()==0){
 				res = sql.executeQuery("select KC_typeid,KC_type,KC_id,GYs_name,KC_name,KC_jhj,KC_fxj,KC_jxj,KC_dj,"
-						+ "KC_sl,KC_dw,KC_date,KC_jgsl,KC_sbh,KC_gys "
+						+ "KC_sl,KC_dw,KC_date,KC_jgsl,KC_sbh,KC_gys,KC_wz "
 						+ "from KC,GYs "
 						+ "where KC_gys=GYs_bh and KC_name like '%"+cx+"%'"
 						+ "order by KC_date desc");
 			}else{
 				res = sql.executeQuery("select KC_typeid,KC_type,KC_id,GYs_name,KC_name,KC_jhj,KC_fxj,KC_jxj,KC_dj,"
-						+ "KC_sl,KC_dw,KC_date,KC_jgsl,KC_sbh,KC_gys "
+						+ "KC_sl,KC_dw,KC_date,KC_jgsl,KC_sbh,KC_gys,KC_wz  "
 						+ "from KC,GYs "
 						+ "where KC_gys=GYs_bh and KC_name like '%"+cx+"%' and KC_typeid = '"+zl+"' "
 						+ "order by KC_date desc");
@@ -243,6 +243,11 @@ public class KCxdata {
 			while(res.next()){
 				ls.add(res.getString("KC_sbh").trim());
 				ls.add(res.getString("KC_type").trim());
+				if(res.getString("KC_gys")==null){
+					ls.add("");
+				}else{
+					ls.add(res.getString("KC_gys").trim());
+				}
 				if(res.getString("GYs_name")==null){
 					ls.add("");
 				}else{
@@ -277,11 +282,7 @@ public class KCxdata {
 				ls.add(res.getString("KC_dw").trim());
 				ls.add(res.getString("KC_date").trim());
 				ls.add(res.getString("KC_jgsl").trim());
-				if(res.getString("KC_gys")==null){
-					ls.add("");
-				}else{
-					ls.add(res.getString("KC_gys").trim());
-				}
+				ls.add(res.getString("KC_wz"));
 				
 			}
 		} catch (SQLException e) {
@@ -299,7 +300,7 @@ public class KCxdata {
 		     		 
 		     	 }
 		}
-		int xl=13;
+		int xl=14;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //ÐÐ

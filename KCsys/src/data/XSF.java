@@ -64,11 +64,29 @@ public class XSF{
 		JTable mtable=new JTable(){
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
+				if(columnIndex==4){
+					try{
+						if(aValue.toString().length()!=0){
+							String st=aValue.toString();
+							Double price=Double.parseDouble(st);
+							if(price<0){
+								JOptionPane.showMessageDialog(null,"不能小于0");
+								return;
+							}
+						}
+					}catch(Exception ex){
+						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						return;
+					}
+				}
 				if(columnIndex==5){
 					try{
 						String st=aValue.toString();
-						@SuppressWarnings("unused")
 						Double price=Double.parseDouble(st);
+						if(price<0){
+							JOptionPane.showMessageDialog(null,"不能小于0");
+							return;
+						}
 					}catch(Exception ex){
 						JOptionPane.showMessageDialog(null, "只能输入数字!");
 						return;
@@ -82,8 +100,8 @@ public class XSF{
 							JOptionPane.showMessageDialog(null,"超出库存");
 							return;
 						}
-						if(num==0){
-							JOptionPane.showMessageDialog(null,"不能为0");
+						if(num<=0){
+							JOptionPane.showMessageDialog(null,"不能为0或小于0");
 							return;
 						}
 	                }catch(Exception ex){
@@ -94,6 +112,7 @@ public class XSF{
 			      super.setValueAt(aValue,rowIndex,columnIndex);
 			}
 		};
+		mtable.setRowHeight(20);
 		//=======================================add table menu listener==================== 
 		mtable.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
@@ -114,7 +133,7 @@ public class XSF{
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm>3&&colunm<7){
+				if(colunm>3&&colunm<9&&colunm!=7){
 					return true;
 				}
 				return false;
@@ -205,6 +224,8 @@ public class XSF{
 		spjt.setBounds(20,10,120,25);
 		String[] spcn={"商品型号","商品名称","单位","单价","数量"};
 		JTable sptable=new JTable();
+		sptable.setRowHeight(20);
+		sptable.setDefaultRenderer(Object.class, tcr);
 		sptable.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -375,8 +396,8 @@ public class XSF{
 								if(pdnum>kcsl){
 									JOptionPane.showMessageDialog(null, "超出库存");
 								}else{
-									if(pdnum==0){
-										JOptionPane.showMessageDialog(null, "不能为0");
+									if(pdnum<=0){
+										JOptionPane.showMessageDialog(null, "不能为0或小于0");
 									}else{
 										if(b==true){
 											mdm.addRow(row);
@@ -418,6 +439,8 @@ public class XSF{
 		String[] cxcn={"编号","名称","联系人","电话","地址"};
 		JScrollPane cxjsp=new JScrollPane();
 		JTable jtab=new JTable();
+		jtab.setRowHeight(20);
+		jtab.setDefaultRenderer(Object.class, tcr);
 		jtab.getTableHeader().setReorderingAllowed(false);
 		DefaultTableModel khcxdm=new DefaultTableModel(arr,cxcn){     //table模型
 			/**
@@ -429,23 +452,54 @@ public class XSF{
 			}
 		};
 		jtab.setModel(khcxdm);
+		jtab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		TableColumn jtab0=jtab.getColumnModel().getColumn(0);
+		jtab0.setPreferredWidth(60);
+		jtab0.setMaxWidth(60);
+		jtab0.setMinWidth(60);
+		TableColumn jtab1=jtab.getColumnModel().getColumn(1);
+		jtab1.setPreferredWidth(220);
+		jtab1.setMaxWidth(220);
+		jtab1.setMinWidth(220);
+		TableColumn jtab2=jtab.getColumnModel().getColumn(2);
+		jtab2.setPreferredWidth(80);
+		jtab2.setMaxWidth(80);
+		jtab2.setMinWidth(80);
+		TableColumn jtab3=jtab.getColumnModel().getColumn(3);
+		jtab3.setPreferredWidth(90);
+		jtab3.setMaxWidth(90);
+		jtab3.setMinWidth(90);
+		TableColumn jtab4=jtab.getColumnModel().getColumn(4);
+		jtab4.setPreferredWidth(280);
+		jtab4.setMaxWidth(280);
+		jtab4.setMinWidth(280);
 		cxjt.addKeyListener(new KeyAdapter(){              //jtextfield添加文本框监听
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if(e.getKeyChar()=='\n'){
 					new SQLFilter(cxjt,cxjt.getText(),user);
 					String[][] arr2=gd.khx(cxjt.getText().trim());
-					DefaultTableModel dm2=new DefaultTableModel(arr2,cxcn){
-
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
-						public boolean isCellEditable(int row,int column){
-							return false;
-						}
-					};
-					jtab.setModel(dm2);    //table 设置模型
+					khcxdm.setDataVector(arr2, cxcn);
+					TableColumn jtab0=jtab.getColumnModel().getColumn(0);
+					jtab0.setPreferredWidth(60);
+					jtab0.setMaxWidth(60);
+					jtab0.setMinWidth(60);
+					TableColumn jtab1=jtab.getColumnModel().getColumn(1);
+					jtab1.setPreferredWidth(220);
+					jtab1.setMaxWidth(220);
+					jtab1.setMinWidth(220);
+					TableColumn jtab2=jtab.getColumnModel().getColumn(2);
+					jtab2.setPreferredWidth(80);
+					jtab2.setMaxWidth(80);
+					jtab2.setMinWidth(80);
+					TableColumn jtab3=jtab.getColumnModel().getColumn(3);
+					jtab3.setPreferredWidth(90);
+					jtab3.setMaxWidth(90);
+					jtab3.setMinWidth(90);
+					TableColumn jtab4=jtab.getColumnModel().getColumn(4);
+					jtab4.setPreferredWidth(280);
+					jtab4.setMaxWidth(280);
+					jtab4.setMinWidth(280);
 				}
 			}
 		});
@@ -642,7 +696,7 @@ public class XSF{
 							    	sptablecl1.setMinWidth(80);
 							    	sptablecl1.setMaxWidth(80);
 							    	TableColumn sptablecl=sptable.getColumnModel().getColumn(1);   //设置列宽    
-							    	sptablecl.setPreferredWidth(180);   
+							    	sptablecl.setPreferredWidth(180);
 							    	sptablecl.setMinWidth(180);
 							    	sptablecl.setMaxWidth(180);
 								}
@@ -659,7 +713,6 @@ public class XSF{
 								Printclass.setJsr(salename);
 								Printclass.setkhls(listkh);
 								Printclass.setsp(listsp);
-								
 								Printclass.sethj(listhj);
 								new Printclass();
 	/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);

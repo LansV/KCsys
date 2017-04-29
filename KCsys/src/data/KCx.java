@@ -42,27 +42,34 @@ public class KCx {
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
 				Double num;
-				if(columnIndex>3&&columnIndex<8){
+				if(columnIndex>4&&columnIndex<9){
 	                try{
 	                	String st=(String) aValue;
-	                	
-						num=Double.parseDouble(st);
-						super.setValueAt(num,rowIndex,columnIndex);
-						//System.out.println(st);
-						//System.out.println(kccount.get(rowIndex));
+	                	if(st.length()!=0){
+	                		num=Double.parseDouble(st);
+	                		if(num<0){
+	                			JOptionPane.showMessageDialog(null, "请勿输入负数");
+	                			return;
+	                		}else{
+	                			super.setValueAt(aValue,rowIndex,columnIndex);
+	                		}
+	                	}
 	                }catch(Exception ex){
 	                    JOptionPane.showMessageDialog(null, "只能输入数字!");
 	                    return;
 	                }
 				}else{
-					if(columnIndex==11){
+					if(columnIndex==12){
 		                try{
 		                	String st=(String) aValue;
 		                	int jgs=Integer.parseInt(st);
-							super.setValueAt(jgs,rowIndex,columnIndex);
-							//System.out.println(kccount.get(rowIndex));
+		                	if(jgs>=0){
+		                		super.setValueAt(jgs,rowIndex,columnIndex);
+		                	}else{
+		                		JOptionPane.showMessageDialog(null, "请勿输入负数");
+		                	}
 		                }catch(Exception ex){
-		                    JOptionPane.showMessageDialog(null, "只能输入数字!");
+		                    JOptionPane.showMessageDialog(null, "只能输入正整数");
 		                    return;
 		                }
 					}else{
@@ -85,14 +92,14 @@ public class KCx {
 			}
 		});*/
 		maintable.getTableHeader().setReorderingAllowed(false);
-		String[] cn={"种类编号","种类","供应商名称","名称","进货价","分销价","经销价","单价","数量","单位","修改日期","警告数量","供应商编号"};
+		String[] cn={"种类编号","种类","供应商编号","供应商名称","名称","进货价","分销价","经销价","单价","数量","单位","修改日期","警告数量","库存位置"};
 		DefaultTableModel maindm=new DefaultTableModel(arr,cn){
 			/**
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm>2&&colunm!=10&&colunm!=8){
+				if(colunm>3&&colunm!=11&&colunm!=9){
 					return true;
 				}
 				return false;
@@ -106,53 +113,56 @@ public class KCx {
 				int row=e.getFirstRow();
 				String xh=maintable.getValueAt(row,0).toString();
 				switch (column){
-				case 3:
+				case 4:
 					String spm=maintable.getValueAt(row, column).toString().trim();
 					wx.updateKC(xh,spm,"KC_name");
 					break;
-				case 4:
+				case 5:
 					Double jhj=Double.parseDouble(maintable.getValueAt(row, column).toString());
 					wx.updateKC(xh,jhj,"KC_jhj");
 					break;
-				case 5:
+				case 6:
 					Double fxj=Double.parseDouble(maintable.getValueAt(row, column).toString());
 					wx.updateKC(xh,fxj,"KC_fxj");
 					break;
-				case 6:
+				case 7:
 					Double jxj=Double.parseDouble(maintable.getValueAt(row, column).toString());
 					wx.updateKC(xh,jxj,"KC_jxj");
 					break;
-				case 7:
+				case 8:
 					Double dj=Double.parseDouble(maintable.getValueAt(row, column).toString());
 					wx.updateKC(xh,dj,"KC_dj");
 					break;
-				case 9:
+				case 10:
 					String sdw=maintable.getValueAt(row, column).toString().trim();
 					wx.updateKC(xh,sdw,"KC_dw");
 					break;
-				case 11:
+				case 12:
 					int sl=Integer.parseInt(maintable.getValueAt(row, column).toString());
 					wx.updateKC(xh,sl,"KC_jgsl");
 					break;
-				case 12:
-					String sgys=maintable.getValueAt(row, column).toString().trim();
-					wx.updateKC(xh,sgys,"KC_gys");
+				case 13:
+					String kcwz=maintable.getValueAt(row, column).toString();
+					wx.updateKC(xh, kcwz, "KC_wz");
 					break;
 				}
 			}
 		});
 		maintable.setModel(maindm);
-    	TableColumn mtablecl2=maintable.getColumnModel().getColumn(2);   //设置列宽    
+    	TableColumn mtablecl2=maintable.getColumnModel().getColumn(3);   //设置列宽    
     	mtablecl2.setPreferredWidth(160);   
     	mtablecl2.setMinWidth(160);
     	mtablecl2.setMaxWidth(160);
-    	TableColumn mtablecl=maintable.getColumnModel().getColumn(3);   //设置列宽    
+    	TableColumn mtablecl=maintable.getColumnModel().getColumn(4);   //设置列宽    
     	mtablecl.setPreferredWidth(200);   
     	mtablecl.setMinWidth(200);
     	mtablecl.setMaxWidth(200);
 		maintable.setDefaultRenderer(Object.class,new colorc());
 		maintable.setRowHeight(24);
 		return maintable;
+	}
+	public static void main(String[] args){
+		new KCx("test");
 	}
 	public KCx(String user){
 		//---------------------------------------------入库数量------------------------------------------------------
@@ -234,8 +244,8 @@ public class KCx {
 				// TODO Auto-generated method stub
 				mainf.setEnabled(false);
 				int r=mtt.getSelectedRow();
-				xhl.setText(mtt.getValueAt(r,2).toString());
-				sll.setText(mtt.getValueAt(r,3).toString());
+				xhl.setText(mtt.getValueAt(r,3).toString());
+				sll.setText(mtt.getValueAt(r,4).toString());
 				slf.setAlwaysOnTop(true);
 				slf.setVisible(true);
 			}
@@ -276,8 +286,8 @@ public class KCx {
 		int crow=mtt.getRowCount();
 		Double hjjhj=0.0;
 		for(int i=0;i<crow;i++){
-			String sjhj=mtt.getValueAt(i,4).toString();
-			String ssl=mtt.getValueAt(i,8).toString();
+			String sjhj=mtt.getValueAt(i,5).toString();
+			String ssl=mtt.getValueAt(i,9).toString();
 			Double jhj=Double.parseDouble(sjhj);
 			int sl=Integer.parseInt(ssl);
 			hjjhj=sl*jhj+hjjhj;
@@ -310,8 +320,8 @@ public class KCx {
 				mainjsp.setViewportView(mtt);
 				Double hjjhj=0.0;
 				for(int i=0;i<crow;i++){
-					String sjhj=mtt.getValueAt(i,4).toString();
-					String ssl=mtt.getValueAt(i,8).toString();
+					String sjhj=mtt.getValueAt(i,5).toString();
+					String ssl=mtt.getValueAt(i,9).toString();
 					Double jhj=Double.parseDouble(sjhj);
 					int sl=Integer.parseInt(ssl);
 					hjjhj=sl*jhj+hjjhj;
@@ -349,8 +359,8 @@ public class KCx {
 					mainjsp.setViewportView(mtt);
 					Double hjjhj=0.0;
 					for(int i=0;i<crow;i++){
-						String sjhj=mtt.getValueAt(i,4).toString();
-						String ssl=mtt.getValueAt(i,8).toString();
+						String sjhj=mtt.getValueAt(i,5).toString();
+						String ssl=mtt.getValueAt(i,9).toString();
 						Double jhj=Double.parseDouble(sjhj);
 						int sl=Integer.parseInt(ssl);
 						hjjhj=sl*jhj+hjjhj;
@@ -389,8 +399,8 @@ public class KCx {
 					mainjsp.setViewportView(mtt);
 					Double hjjhj=0.0;
 					for(int i=0;i<crow;i++){
-						String sjhj=mtt.getValueAt(i,4).toString();
-						String ssl=mtt.getValueAt(i,8).toString();
+						String sjhj=mtt.getValueAt(i,5).toString();
+						String ssl=mtt.getValueAt(i,9).toString();
 						Double jhj=Double.parseDouble(sjhj);
 						int sl=Integer.parseInt(ssl);
 						hjjhj=sl*jhj+hjjhj;
@@ -697,8 +707,8 @@ public class KCx {
 					try{
 						int sl=Integer.parseInt(slt.getText().trim());
 						int tr=mtt.getSelectedRow();
-						Double jhj=Double.parseDouble(mtt.getValueAt(tr,4).toString());
-						String gys=mtt.getValueAt(tr,12).toString();
+						Double jhj=Double.parseDouble(mtt.getValueAt(tr,5).toString());
+						String gys=mtt.getValueAt(tr,2).toString();
 						String sbh=mtt.getValueAt(tr,0).toString();
 						if(sl<=0){
 							JOptionPane.showMessageDialog(null,"不能小于等于零");
@@ -787,9 +797,9 @@ class colorc extends DefaultTableCellRenderer {
         }
         cell.setForeground(foreground);   
         cell.setBackground(background);  
-        if(column==8){
-        	String n=table.getValueAt(row,11).toString().trim();
-        	String n1=table.getValueAt(row,8).toString().trim();
+        if(column==9){
+        	String n=table.getValueAt(row,12).toString().trim();
+        	String n1=table.getValueAt(row,9).toString().trim();
         	int sl=0;
         	if(n1==""){
         		JOptionPane.showMessageDialog(null,"数据混乱");

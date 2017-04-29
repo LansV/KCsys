@@ -103,8 +103,8 @@ public class getData {
 				ls.add(res.getString("CPz_type").trim());
 				ls.add(res.getString("GYs_bh").trim());
 				ls.add(res.getString("GYs_name").trim());
-				ls.add(res.getString("GYs_lxr").trim());
-				ls.add(res.getString("GYs_tel").trim());
+				ls.add(res.getString("GYs_lxr"));
+				ls.add(res.getString("GYs_tel"));
 				if(res.getString("GYs_fax")==null){
 					ls.add("");
 				}else{

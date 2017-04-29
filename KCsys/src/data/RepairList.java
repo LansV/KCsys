@@ -48,7 +48,6 @@ public class RepairList {
 	String addr = ""; // 全局地址
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
-
 	public RepairList(String user) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 		Date date2 = new Date();
@@ -68,11 +67,29 @@ public class RepairList {
 			private static final long serialVersionUID = 1L;
 
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+				if (columnIndex == 4) {
+					try {
+						String st = aValue.toString();
+						if (st.length() != 0) {
+							Double price = Double.parseDouble(st);
+							if (price < 0) {
+								JOptionPane.showMessageDialog(null, "只能输入正数");
+								return;
+							}
+						}
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						return;
+					}
+				}
 				if (columnIndex == 5) {
 					try {
 						String st = aValue.toString();
-						@SuppressWarnings("unused")
 						Double price = Double.parseDouble(st);
+						if (price < 0) {
+							JOptionPane.showMessageDialog(null, "只能输入正数");
+							return;
+						}
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(null, "只能输入数字!");
 						return;
@@ -86,8 +103,8 @@ public class RepairList {
 							JOptionPane.showMessageDialog(null, "超出库存");
 							return;
 						}
-						if (num == 0) {
-							JOptionPane.showMessageDialog(null, "不能为0");
+						if (num <= 0) {
+							JOptionPane.showMessageDialog(null, "不能为0或小于0");
 							return;
 						}
 					} catch (Exception ex) {
@@ -98,6 +115,7 @@ public class RepairList {
 				super.setValueAt(aValue, rowIndex, columnIndex);
 			}
 		};
+		mtable.setRowHeight(20);
 		// =======================================add table menu
 		// listener====================
 		mtable.addMouseListener(new MouseAdapter() {
@@ -120,7 +138,7 @@ public class RepairList {
 			private static final long serialVersionUID = 1L;
 
 			public boolean isCellEditable(int row, int colunm) {
-				if (colunm > 3 && colunm < 7) {
+				if (colunm > 3 && colunm < 9 && colunm != 7) {
 					return true;
 				}
 				return false;
@@ -211,6 +229,8 @@ public class RepairList {
 		spjt.setBounds(20, 10, 120, 25);
 		String[] spcn = { "商品型号", "商品名称", "单位", "单价", "数量" };
 		JTable sptable = new JTable();
+		sptable.setRowHeight(20);
+		sptable.setDefaultRenderer(Object.class, tcr);
 		sptable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -383,8 +403,8 @@ public class RepairList {
 							if (pdnum > kcsl) {
 								JOptionPane.showMessageDialog(null, "超出库存");
 							} else {
-								if (pdnum == 0) {
-									JOptionPane.showMessageDialog(null, "不能为0");
+								if (pdnum <= 0) {
+									JOptionPane.showMessageDialog(null, "不能为0或小于0");
 								} else {
 									if (b == true) {
 										mdm.addRow(row);
@@ -416,7 +436,7 @@ public class RepairList {
 		khf.setResizable(false);
 		Container khfc = khf.getContentPane();
 		khfc.setLayout(null);
-		khf.setBounds(700, 10, 320, 650);
+		khf.setBounds(700, 10, 450, 650);
 		khf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		JTextField cxjt = new JTextField();
 		cxjt.setBounds(10, 10, 120, 25);
@@ -426,6 +446,8 @@ public class RepairList {
 		String[] cxcn = { "编号", "名称", "联系人", "电话", "地址" };
 		JScrollPane cxjsp = new JScrollPane();
 		JTable jtab = new JTable();
+		jtab.setRowHeight(20);
+		jtab.setDefaultRenderer(Object.class, tcr);
 		jtab.getTableHeader().setReorderingAllowed(false);
 		DefaultTableModel khcxdm = new DefaultTableModel(arr, cxcn) { // table模型
 			/**
@@ -438,31 +460,62 @@ public class RepairList {
 			}
 		};
 		jtab.setModel(khcxdm);
+		TableColumn jtab0 = jtab.getColumnModel().getColumn(0);
+		jtab0.setPreferredWidth(60);
+		jtab0.setMaxWidth(60);
+		jtab0.setMinWidth(60);
+		TableColumn jtab1 = jtab.getColumnModel().getColumn(1);
+		jtab1.setPreferredWidth(220);
+		jtab1.setMaxWidth(220);
+		jtab1.setMinWidth(220);
+		TableColumn jtab2 = jtab.getColumnModel().getColumn(2);
+		jtab2.setPreferredWidth(80);
+		jtab2.setMaxWidth(80);
+		jtab2.setMinWidth(80);
+		TableColumn jtab3 = jtab.getColumnModel().getColumn(3);
+		jtab3.setPreferredWidth(90);
+		jtab3.setMaxWidth(90);
+		jtab3.setMinWidth(90);
+		TableColumn jtab4 = jtab.getColumnModel().getColumn(4);
+		jtab4.setPreferredWidth(280);
+		jtab4.setMaxWidth(280);
+		jtab4.setMinWidth(280);
 		cxjt.addKeyListener(new KeyAdapter() { // jtextfield添加文本框监听
 			public void keyPressed(KeyEvent e) {
 				// TODO Auto-generated method stub
 				if (e.getKeyChar() == '\n') {
 					new SQLFilter(cxjt, cxjt.getText().trim(), user);
 					String[][] arr2 = gd.khx(cxjt.getText().trim());
-					DefaultTableModel dm2 = new DefaultTableModel(arr2, cxcn) {
-
-						/**
-						 * 
-						 */
-						private static final long serialVersionUID = 1L;
-
-						public boolean isCellEditable(int row, int column) {
-							return false;
-						}
-					};
-					jtab.setModel(dm2); // table 设置模型
+					khcxdm.setDataVector(arr2, cxcn);
+					TableColumn jtab0 = jtab.getColumnModel().getColumn(0);
+					jtab0.setPreferredWidth(60);
+					jtab0.setMaxWidth(60);
+					jtab0.setMinWidth(60);
+					TableColumn jtab1 = jtab.getColumnModel().getColumn(1);
+					jtab1.setPreferredWidth(220);
+					jtab1.setMaxWidth(220);
+					jtab1.setMinWidth(220);
+					TableColumn jtab2 = jtab.getColumnModel().getColumn(2);
+					jtab2.setPreferredWidth(80);
+					jtab2.setMaxWidth(80);
+					jtab2.setMinWidth(80);
+					TableColumn jtab3 = jtab.getColumnModel().getColumn(3);
+					jtab3.setPreferredWidth(90);
+					jtab3.setMaxWidth(90);
+					jtab3.setMinWidth(90);
+					TableColumn jtab4 = jtab.getColumnModel().getColumn(4);
+					jtab4.setPreferredWidth(280);
+					jtab4.setMaxWidth(280);
+					jtab4.setMinWidth(280);
 				}
 			}
 		});
 		JPanel cxjp = new JPanel();
-		cxjp.setBounds(10, 50, 280, 550);
+		jtab.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		cxjp.setBounds(10, 50, 450, 550);
 		cxjsp.setViewportView(jtab);
-		cxjsp.setBounds(0, 0, 280, 550);
+		cxjsp.setBounds(0, 0, 420, 550);
+		// cxjsp.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		cxjp.setLayout(null);
 		cxjp.add(cxjsp);
 		khfc.add(cxjp);
@@ -602,7 +655,7 @@ public class RepairList {
 							int jcrepairs = jcrepairman.getSelectedIndex();
 							if (jcrepairs == 0) {
 								repairid = "0";
-								repairman = "未选择";
+								repairman = "总公司";
 							} else {
 								repairid = repairmanarr[jcrepairs - 1][0];
 								repairman = jcrepairman.getSelectedItem().toString();
@@ -610,7 +663,7 @@ public class RepairList {
 							new SQLFilter(jtp, mc + lxr + lxtel + addr + sPumpNo, user);
 							if (mct.isEditable() == true) {
 								if (khid.equals(gd.getCustomerNo().toString())) {
-									w.wkh(khid,mc, lxr, lxtel, addr,"0");
+									w.wkh(khid, mc, lxr, lxtel, addr, "0");
 									mct.setEditable(false);
 									lxrt.setEditable(false);
 									lxrtelt.setEditable(false);
@@ -658,6 +711,7 @@ public class RepairList {
 							String[][] sparr = gd.spcxdj(spjt.getText().trim());
 							DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 								private static final long serialVersionUID = 1L;
+
 								public boolean isCellEditable(int row, int colunm) {
 									return false;
 								}
@@ -682,6 +736,7 @@ public class RepairList {
 							ml.setText(gd.wxdh());
 							Printclass.setTitel("天澜清洗设备有限公司维修单");
 							Printclass.setUser(user);
+							Printclass.setJsr(repairman);
 							Printclass.setkhls(listkh);
 							Printclass.setsp(listsp);
 							Printclass.sethj(listhj);
@@ -791,7 +846,7 @@ public class RepairList {
 					if (Lock.SingleUnLock(mf, "lock/RepairList.txt")) {
 						khf.dispose();
 					}
-				}else{
+				} else {
 					khf.dispose();
 				}
 			}

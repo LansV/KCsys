@@ -19,13 +19,21 @@ public class YSdata {
 		String i = null;
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select salemanname from "+b+" where dh='"+s+"'");
-			while(res.next()){
-				i=res.getString("salemanname").trim();
+			if(b.equals("WXD")){
+				res = sql.executeQuery("select repairmanname from "+b+" where dh='"+s+"'");
+				while(res.next()){
+					i=res.getString("repairmanname").trim();
+				}
+			}else{
+				res = sql.executeQuery("select salemanname from "+b+" where dh='"+s+"'");
+				while(res.next()){
+					i=res.getString("salemanname").trim();
+				}
 			}
+			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
-			JOptionPane.showMessageDialog(null,"获取收款方式出错");
+			JOptionPane.showMessageDialog(null,"获取业务员出错");
 		}finally{
 		   	 try{
 		     	   if(res!=null){
