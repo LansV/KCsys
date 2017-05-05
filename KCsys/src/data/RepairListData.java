@@ -16,8 +16,9 @@ public class RepairListData {
    	Dao d=new Dao();
 	Connection con = d.getcon();
 	//-------------------------------------------------写入维修---------------------------------------------
-	public void wx(String dh,String khid ,String khmc,int bh, String xh, String sp, String dw, Double zk,
+	public boolean wx(String dh,String khid ,String khmc,int bh, String xh, String sp, String dw, Double zk,
 			Double dj, int sl, Double je, String bz,int skfs,String user,String repairid,String repairman,String pumpNo) {
+		Boolean b=false;
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		try{
@@ -25,8 +26,9 @@ public class RepairListData {
 			sql.execute("insert into WXD values"
 					+ "('"+dh+"',"+khid+",'"+khmc+"',"+bh+",'"+xh+"','"+sp+"','"+dw+"',"+zk+","+dj+","+sl+","+je+",'"+bz+"','"+ckd+"'"
 					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"',"+repairid+",'"+repairman+"','"+pumpNo+"')");
+			 b=true;
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"写入维修数据错误");
+			
 		}finally{
 		   	 try{
 		     	   if(res!=null){
@@ -36,9 +38,11 @@ public class RepairListData {
 		     		   sql.close();
 		     	   }
 		     	 }catch(Exception e){
+		     		b=false;
 		     		 JOptionPane.showMessageDialog(null,"断开错误");
 		     	 }
 		}
+		return b;
 	}
 	//---------------------------------------------------商品查询（单价）--------------------------
 	public String[][] spcxdj(String s){

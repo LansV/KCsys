@@ -266,7 +266,7 @@ public class xsfData {
 					+ ","+skfs+",0,'"+ckd+"',1,'"+user+"',"+salemanid+",'"+salemanname+"')");
 		}catch(Exception e){
 			b=false;
-			JOptionPane.showMessageDialog(null,"添加销售单错误");
+			//JOptionPane.showMessageDialog(null,"添加销售单错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){

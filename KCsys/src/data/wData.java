@@ -595,36 +595,39 @@ public class wData {
 		}
 	}
 	//--------------------------------------------------------更新出库-----------------------------------
-	public void wkcout(String sbh,String sckcp,int sn,String qx,String user){
+	public Boolean wkcout(String sbh,String sckcp,int sn,String qx,String user,String dh){
 		int kcsl = 0;
-		int jg = 0;
+		int newkcsl = 0;
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		String time=timef.format(date2);
+		int ver = 0;
 		try{
 			sql = con.createStatement();
 			res=sql.executeQuery("select*from KC where KC_sbh = '"+sbh+"'");
 			while(res.next()){
 				kcsl=res.getInt("KC_sl");
+				ver=res.getInt("kc_version");
 			}
-			jg=kcsl-sn;
+			newkcsl=kcsl-sn;
 		//System.out.println(kcsl);
 		// 出 0               进 1
 		}catch(Exception e1){
-			JOptionPane.showMessageDialog(null,"得到库存数量失败");
+			//JOptionPane.showMessageDialog(null,"得到库存数量失败");
+			return false;
 		}
 		try{
-			sql = con.createStatement();
-			if(qx.length()>1){
-				String[] st=qx.split(",");
-				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
-						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+st[0]+"','"+user+"','"+ckd+"','"+time+"','"+st[1]+"')");
+			if(newkcsl>=0){
+				sql = con.createStatement();
+				sql.execute("UPDATE KC SET KC_sl="+newkcsl+",KC_date = '"+ckd+"',kc_version=kc_version+1 where KC_sbh ="+sbh+" and kc_version="+ver+";"
+						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','"+dh+"')");
+				return true;
 			}else{
-				sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = '"+sbh+"';"
-						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','NULL')");
+				return false;
 			}
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"出库错误");
+			//JOptionPane.showMessageDialog(null,"出库错误");
+			return false;
 		}finally{
 		   	 try{
 		     	   if(res!=null){

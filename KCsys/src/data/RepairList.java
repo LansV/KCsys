@@ -48,6 +48,7 @@ public class RepairList {
 	String addr = ""; // 全局地址
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
+
 	public RepairList(String user) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 		Date date2 = new Date();
@@ -672,6 +673,7 @@ public class RepairList {
 									JOptionPane.showMessageDialog(mct, "客户编号存在差异");
 								}
 							}
+							Boolean eq = false;
 							for (int i = 0; i < cr; i++) {
 								String xhs = mtable.getValueAt(i, 0).toString().trim();
 								int bh = Integer.parseInt(xhs);
@@ -702,10 +704,25 @@ public class RepairList {
 								listsp.add(xhs6);
 								listsp.add(xhs7);
 								listsp.add(bz);
-								gd.wx(dh, khid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, jc.getSelectedIndex(), user,
-										repairid, repairman, sPumpNo);
-								if (sp.equals("人工费") == false) {
-									w.wkcout(xh, sp, sl, "2," + dh, user);
+								eq = gd.wx(dh, khid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, jc.getSelectedIndex(),
+										user, repairid, repairman, sPumpNo);
+								if (eq) {
+									if (sp.equals("人工费") == false) {
+										w.wkcout(xh, sp, sl, "2", user, dh);
+									}
+								} else {
+									if (i == 0) {
+										if (dh.equals(gd.wxdh()) == true) {
+											JOptionPane.showMessageDialog(mf, "发生未知错误！请重试");
+										} else {
+											JOptionPane.showMessageDialog(mf, "并发单号重复，自动修正单号");
+											ml.setText(gd.wxdh());
+											JOptionPane.showMessageDialog(mf, "修正成功，请重新点击出单");
+										}
+									}else{
+										JOptionPane.showMessageDialog(mf, "严重错误！\n请勿继续操作，保持当前状态，并联系管理员");
+									}
+									break;
 								}
 							}
 							String[][] sparr = gd.spcxdj(spjt.getText().trim());
@@ -726,21 +743,23 @@ public class RepairList {
 							sptablecl.setPreferredWidth(180);
 							sptablecl.setMinWidth(180);
 							sptablecl.setMaxWidth(180);
-							w.wys(dh, mc, hj);
-							listhj.add(changenum(hj));
-							listhj.add(slhj);
-							listhj.add(String.format("%.2f", hj));
-							mdm.setRowCount(0);
-							spcount.clear(); // clear count
-							kccount.clear(); // clear count
-							ml.setText(gd.wxdh());
-							Printclass.setTitel("天澜清洗设备有限公司维修单");
-							Printclass.setUser(user);
-							Printclass.setJsr(repairman);
-							Printclass.setkhls(listkh);
-							Printclass.setsp(listsp);
-							Printclass.sethj(listhj);
-							new Printclass();
+							// w.wys(dh, mc, hj);
+							if (eq) {
+								listhj.add(changenum(hj));
+								listhj.add(slhj);
+								listhj.add(String.format("%.2f", hj));
+								mdm.setRowCount(0);
+								spcount.clear(); // clear count
+								kccount.clear(); // clear count
+								ml.setText(gd.wxdh());
+								Printclass.setTitel("天澜清洗设备有限公司维修单");
+								Printclass.setUser(user);
+								Printclass.setJsr(repairman);
+								Printclass.setkhls(listkh);
+								Printclass.setsp(listsp);
+								Printclass.sethj(listhj);
+								new Printclass();
+							}
 							/*
 							 * int khselect=JOptionPane.showConfirmDialog(null,
 							 * "是否继续开单", "选择",0); if(khselect==0){

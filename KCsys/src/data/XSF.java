@@ -113,6 +113,7 @@ public class XSF{
 			}
 		};
 		mtable.setRowHeight(20);
+		mtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		//=======================================add table menu listener==================== 
 		mtable.addMouseListener(new MouseAdapter(){
 			public void mousePressed(MouseEvent e){
@@ -161,6 +162,10 @@ public class XSF{
     	cktablecdw.setPreferredWidth(40);   
     	cktablecdw.setMinWidth(40);
     	cktablecdw.setMaxWidth(40);
+    	TableColumn cktablecbz=mtable.getColumnModel().getColumn(8);   //设置列宽    
+    	cktablecbz.setPreferredWidth(240);   
+    	cktablecbz.setMinWidth(240);
+    	cktablecbz.setMaxWidth(240);
     	//============================================删除行============================
 		deleteItem.addActionListener(new ActionListener(){
 			@Override
@@ -657,6 +662,7 @@ public class XSF{
 							}
 							
 							//System.out.println(saleid+","+salename);
+							Boolean eqinsert=false;
 								for(int i=0;i<cr;i++){
 									String xhs=mtable.getValueAt(i,0).toString().trim();
 									int bh=Integer.parseInt(xhs);
@@ -680,8 +686,20 @@ public class XSF{
 									String bz=mtable.getValueAt(i,8).toString().trim();
 									listsp.add(xhs);listsp.add(xh);listsp.add(sp);listsp.add(dw);listsp.add(xhs4);
 									listsp.add(xhs5);listsp.add(xhs6);listsp.add(xhs7);listsp.add(bz);
-									gd.wxs(dh,customerid,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user,saleid,salename);
-									gd.wkcout(xh,sp,sl,"1,"+dh,user);
+									eqinsert=gd.wxs(dh,customerid,mc,bh,xh,sp,dw,zk,dj,sl,je,bz,jc.getSelectedIndex(),user,saleid,salename);
+									if(eqinsert){
+										gd.wkcout(xh,sp,sl,"1,"+dh,user);
+									}else{
+										if(dh.equals(gd.xsdh())==true){
+											JOptionPane.showMessageDialog(mf, "发生未知错误！请重试");
+										}else{
+											JOptionPane.showMessageDialog(mf, "并发错误！请重试");
+											JOptionPane.showMessageDialog(null,"单号重复，自动修正单号");
+											ml.setText(gd.xsdh());
+											JOptionPane.showMessageDialog(null,"修正成功");
+										}
+										break;	
+									}
 									String[][] sparr=gd.spcxdj(spjt.getText().trim());
 									DefaultTableModel spdm=new DefaultTableModel(sparr,spcn){
 										private static final long serialVersionUID = 1L;
@@ -701,20 +719,22 @@ public class XSF{
 							    	sptablecl.setMaxWidth(180);
 								}
 //								w.wys(dh,mc,hj);
-								listhj.add(changenum(hj));
-								listhj.add(slhj);
-								listhj.add(String.format("%.2f",hj));
-								mdm.setRowCount(0);
-								spcount.clear();        //clear count 
-								kccount.clear();        //clear count
-								ml.setText(gd.xsdh());
-								Printclass.setTitel("天澜清洗设备有限公司销售单");
-								Printclass.setUser(user);
-								Printclass.setJsr(salename);
-								Printclass.setkhls(listkh);
-								Printclass.setsp(listsp);
-								Printclass.sethj(listhj);
-								new Printclass();
+								if(eqinsert){
+									listhj.add(changenum(hj));
+									listhj.add(slhj);
+									listhj.add(String.format("%.2f",hj));
+									mdm.setRowCount(0);
+									spcount.clear();        //clear count 
+									kccount.clear();        //clear count
+									ml.setText(gd.xsdh());
+									Printclass.setTitel("天澜清洗设备有限公司销售单");
+									Printclass.setUser(user);
+									Printclass.setJsr(salename);
+									Printclass.setkhls(listkh);
+									Printclass.setsp(listsp);
+									Printclass.sethj(listhj);
+									new Printclass();
+								}
 	/*							int khselect=JOptionPane.showConfirmDialog(null,"是否继续开单","选择",0);
 								if(khselect==0){
 									khf.setVisible(true);
