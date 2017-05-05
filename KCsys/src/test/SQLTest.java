@@ -24,12 +24,12 @@ class MyThread extends Thread {
 		this.ThreadName=ThreadName;
 	}
 	public void run() {
-		for(int i=0;i<100;i++){
-			System.out.println(ThreadName+":"+i);
-		}
+//		for(int i=0;i<100;i++){
+//			System.out.println(ThreadName+":"+i);
+//		}
 		try{
 			sql = con.createStatement();
-			sql.execute("update KC set KC_date='2017-2-3',kc_version=kc_version+1 where KC_sbh=102009 and kc_version=4");
+			sql.execute("update KC set KC_date='2017-2-3',kc_version=kc_version+1 where KC_sbh=102009 and kc_version=5");
 		}catch(Exception e1){
 			e1.printStackTrace();
 		}
