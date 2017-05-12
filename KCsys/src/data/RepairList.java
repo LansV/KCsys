@@ -708,7 +708,20 @@ public class RepairList {
 										user, repairid, repairman, sPumpNo);
 								if (eq) {
 									if (sp.equals("人工费") == false) {
-										w.wkcout(xh, sp, sl, "2", user, dh);
+										int error = w.wkcout(xh, sp, sl, "2", user, dh);
+										if (error > 0) {
+											switch (error) {
+											case 1:
+												JOptionPane.showMessageDialog(mf, "得到库存数量失败");
+												break;
+											case 2:
+												JOptionPane.showMessageDialog(mf, "库存小于零");
+												break;
+											case 3:
+												JOptionPane.showMessageDialog(mf, "出库错误");
+												break;
+											}
+										}
 									}
 								} else {
 									if (i == 0) {
@@ -719,7 +732,7 @@ public class RepairList {
 											ml.setText(gd.wxdh());
 											JOptionPane.showMessageDialog(mf, "修正成功，请重新点击出单");
 										}
-									}else{
+									} else {
 										JOptionPane.showMessageDialog(mf, "严重错误！\n请勿继续操作，保持当前状态，并联系管理员");
 									}
 									break;

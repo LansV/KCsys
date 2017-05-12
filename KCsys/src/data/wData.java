@@ -595,9 +595,10 @@ public class wData {
 		}
 	}
 	//--------------------------------------------------------更新出库-----------------------------------
-	public Boolean wkcout(String sbh,String sckcp,int sn,String qx,String user,String dh){
+	public int wkcout(String sbh,String sckcp,int sn,String qx,String user,String dh){
 		int kcsl = 0;
 		int newkcsl = 0;
+		int error;
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		String time=timef.format(date2);
@@ -614,20 +615,24 @@ public class wData {
 		// 出 0               进 1
 		}catch(Exception e1){
 			//JOptionPane.showMessageDialog(null,"得到库存数量失败");
-			return false;
+			error=1; //获取数量失败
+			return error;
 		}
 		try{
 			if(newkcsl>=0){
 				sql = con.createStatement();
 				sql.execute("UPDATE KC SET KC_sl="+newkcsl+",KC_date = '"+ckd+"',kc_version=kc_version+1 where KC_sbh ="+sbh+" and kc_version="+ver+";"
 						+ "insert into KCJL values(0,'"+sbh+"','"+sckcp+"',"+sn+",'"+qx+"','"+user+"','"+ckd+"','"+time+"','"+dh+"')");
-				return true;
+				error=0; //插入成功
+				return error;
 			}else{
-				return false;
+				error=2; //数量为0
+				return error;
 			}
 		}catch(Exception e){
 			//JOptionPane.showMessageDialog(null,"出库错误");
-			return false;
+			error=3; //插入失败或未更新成功
+			return error;
 		}finally{
 		   	 try{
 		     	   if(res!=null){
