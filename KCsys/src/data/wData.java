@@ -626,7 +626,7 @@ public class wData {
 				error=0; //插入成功
 				return error;
 			}else{
-				error=2; //数量为0
+				error=2; //数量小于0
 				return error;
 			}
 		}catch(Exception e){

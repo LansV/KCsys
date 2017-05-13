@@ -48,7 +48,6 @@ public class RepairList {
 	String addr = ""; // 全局地址
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
-
 	public RepairList(String user) {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 		Date date2 = new Date();

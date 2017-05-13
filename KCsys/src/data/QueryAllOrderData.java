@@ -504,6 +504,7 @@ public class QueryAllOrderData{
 	public void insertSaleList(JFrame f,String odh,String dh,String custn,String custid,String[][] data,String user,String saleid,String saleman){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
+		wData w=new wData();
 		try {
 			sql = con.createStatement();
 			int co=data.length;
@@ -514,7 +515,7 @@ public class QueryAllOrderData{
 						+ ""+data[i][7]+",'"+data[i][8]+"','"+ckd+"',0,0,'"+ckd+"',1,'"+user+"',"+saleid+",'"+saleman+"');"
 						+ "update comfirmorder set bstatus = 1 where dh='"+odh+"' and xh="+data[i][1]+";"
 						+ "update comfirmorder set xsdh = '"+dh+"' where dh='"+odh+"' and xh="+data[i][1]+";");
-				wkcout(data[i][1],data[i][2],Integer.parseInt(data[i][6]),"1,"+dh,user);
+				w.wkcout(data[i][1],data[i][2],Integer.parseInt(data[i][6]),"1",user,dh);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

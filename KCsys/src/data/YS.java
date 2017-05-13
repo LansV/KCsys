@@ -312,7 +312,7 @@ public class YS {
 					String xhs7 = xxtable.getValueAt(i, 7).toString().trim();
 					Double jg = Double.parseDouble(xhs7);
 					hj = jg + hj;
-					String bz = "";
+					String bz = xxtable.getValueAt(i, 9).toString().trim();;
 					listsp.add(xhs);
 					listsp.add(xh);
 					listsp.add(sp);

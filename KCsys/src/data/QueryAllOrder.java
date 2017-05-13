@@ -330,11 +330,11 @@ public class QueryAllOrder {
 						String odh = xxf_ShowNo.getText();
 						String saleid = salemanidL.getText().trim();
 						String saleman = salemanL.getText().trim();
-						for (int i = 0; i < insertdata.length; i++) {
+				/*		for (int i = 0; i < insertdata.length; i++) {
 							System.out.println(insertdata[i][0] + "," + insertdata[i][1] + "," + insertdata[i][2] + ","
 									+ insertdata[i][3] + "," + insertdata[i][4] + "," + insertdata[i][5] + ","
 									+ insertdata[i][6] + "," + insertdata[i][7] + "," + insertdata[i][8]);
-						}
+						}*/
 						d.insertSaleList(xxf, odh, dh, custn, cusid, insertdata, user, saleid, saleman);
 						xxmdm.setDataVector(d.xsd(odh), mcn);
 						TableColumn cktablecxh = xxtable.getColumnModel().getColumn(0); // ÉèÖÃÁÐ¿í

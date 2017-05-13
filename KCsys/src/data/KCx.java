@@ -33,6 +33,7 @@ import javax.swing.table.TableColumn;
 import security.Lock;
 public class KCx {
 	KCxdata wx=new KCxdata();
+	wData w=new wData();
 	JTable mtt;
 	public JTable mt(String[][] arr){
 		JTable maintable=new JTable(){
@@ -662,11 +663,24 @@ public class KCx {
 						int tr=mtt.getSelectedRow();
 						int sl=Integer.parseInt(xgslt.getText().trim());
 						String sbh=mtt.getValueAt(tr,0).toString();
-						int dbs=Integer.parseInt(mtt.getValueAt(tr,8).toString());
+						int dbs=Integer.parseInt(mtt.getValueAt(tr,9).toString());
 						if(sl>dbs){
 							JOptionPane.showMessageDialog(null,"库存不足");
 						}else{
-							wx.wkcout(sbh,xgl.getText(),sl,"4",user);
+							int error=w.wkcout(sbh,xgl.getText(),sl,"4",user,"");
+							if (error > 0) {
+								switch (error) {
+								case 1:
+									JOptionPane.showMessageDialog(xgslt, "得到库存数量失败");
+									break;
+								case 2:
+									JOptionPane.showMessageDialog(xgslt, "库存小于零");
+									break;
+								case 3:
+									JOptionPane.showMessageDialog(xgslt, "出库错误");
+									break;
+								}
+							}
 							xgslt.setText("");
 							if(cxzl.getSelectedIndex()==0){
 								mtt=mt(wx.KCdata(cxt.getText(),"",""));
@@ -707,14 +721,14 @@ public class KCx {
 					try{
 						int sl=Integer.parseInt(slt.getText().trim());
 						int tr=mtt.getSelectedRow();
-						Double jhj=Double.parseDouble(mtt.getValueAt(tr,5).toString());
-						String gys=mtt.getValueAt(tr,2).toString();
+						//Double jhj=Double.parseDouble(mtt.getValueAt(tr,5).toString());
+						//String gys=mtt.getValueAt(tr,2).toString();
 						String sbh=mtt.getValueAt(tr,0).toString();
 						if(sl<=0){
 							JOptionPane.showMessageDialog(null,"不能小于等于零");
 						}else{
-							wx.wkcin(sbh,sll.getText(),sl,"采购进货",user);
-							wx.addyf(gys,jhj,sl,sll.getText(),sbh);
+							w.wkcin(sbh,sll.getText(),sl,"采购进货",user,"");
+							//wx.addyf(gys,jhj,sl,sll.getText(),sbh);
 							slt.setText("");
 							if(cxzl.getSelectedIndex()==0){
 								mtt=mt(wx.KCdata(cxt.getText(),"",""));
