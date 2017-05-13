@@ -1,0 +1,4 @@
+select*from (select KC.KC_name,KC.KC_sbh as xh,temp.sl-KC.KC_sl as sl
+from KC,
+(select xh,SUM(sl) as sl  from comfirmorder where bstatus<5 group by xh) temp 
+where KC.KC_sbh=temp.xh) temp where sl>0

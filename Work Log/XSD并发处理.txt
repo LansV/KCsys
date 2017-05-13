@@ -1,0 +1,1 @@
+insert XSD(dh,khid,bh) select 'K1704017',10005,1 where 'K1704017' not in (select dh from XSD where khid!= 10005) and 1 not in (select bh from XSD where dh='K1704017')
