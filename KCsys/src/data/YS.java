@@ -470,7 +470,22 @@ public class YS {
 										String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 										d.gth(dh, sid, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
 										if (sp.equals("人工费") == false) {
-											w.wkcin(xh, sp, thsl, kh + "退货", user, dh);
+											//-- qx 1 销售
+											//-- qx 2 维修
+											//-- qx 3 采购入库
+											//-- qx 4 调整库存
+											//-- qx 5 退货
+											int error=w.wkcin(xh, sp, thsl, "5", user, dh);
+											if(error>0){
+												switch (error) {
+												case 1:
+													JOptionPane.showMessageDialog(xxf, "得到库存数量失败");
+													break;
+												case 2:
+													JOptionPane.showMessageDialog(xxf, "更新库存失败");
+													break;
+												}
+											}
 										}
 										if (dh.substring(0, 1).equals("X")) {
 											xxmdm.setDataVector(d.wxd(dh), mcn);
@@ -556,7 +571,22 @@ public class YS {
 									}
 									d.gth(dh, sid, kh, i + 1, xh, sp, dw, zk, dj, sl, thje, yy, 3, user);
 									if (sp.equals("人工费") == false) {
-										w.wkcin(xh, sp, sl, kh + "退货", user, dh);
+										//-- qx 1 销售
+										//-- qx 2 维修
+										//-- qx 3 采购入库
+										//-- qx 4 调整库存
+										//-- qx 5 退货
+										int error=w.wkcin(xh, sp, sl, "5", user, dh);
+										if(error>0){
+											switch (error) {
+											case 1:
+												JOptionPane.showMessageDialog(xxf, "得到库存数量失败");
+												break;
+											case 2:
+												JOptionPane.showMessageDialog(xxf, "更新库存失败");
+												break;
+											}
+										}
 									}
 								} else {
 									d.alterSkstatus(dh, i + 1, 3);

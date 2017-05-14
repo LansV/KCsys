@@ -584,8 +584,7 @@ public class YSdata {
 		try{
 			sql = con.createStatement();
 			sql.execute("insert into HZ values('"+dh+"',"+khid+",'"+kh+"',"+je+",'"+ckd+"','"+bz+"','"+user+"');"
-					+ "update "+b+" set skstatus = 2 where dh='"+dh+"';"
-					+ "update "+b+" set skdate = '"+ckd+"' where dh='"+dh+"'");
+					+ "update "+b+" set skstatus = 2,skdate = '"+ckd+"' where dh='"+dh+"';");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"Ìí¼Ó»µÕËÊı¾İ´íÎó");
 		}finally{

@@ -233,8 +233,8 @@ public class KCx {
 				// TODO Auto-generated method stub
 				mainf.setEnabled(false);
 				int r=mtt.getSelectedRow();
-				xgxh.setText(mtt.getValueAt(r,2).toString());
-				xgl.setText(mtt.getValueAt(r,3).toString());
+				xgxh.setText(mtt.getValueAt(r,3).toString());
+				xgl.setText(mtt.getValueAt(r,4).toString());
 				xgf.setAlwaysOnTop(true);
 				xgf.setVisible(true);
 			}
@@ -667,6 +667,11 @@ public class KCx {
 						if(sl>dbs){
 							JOptionPane.showMessageDialog(null,"库存不足");
 						}else{
+							//-- qx 1 销售
+							//-- qx 2 维修
+							//-- qx 3 采购入库
+							//-- qx 4 调整库存
+							//-- qx 5 退货
 							int error=w.wkcout(sbh,xgl.getText(),sl,"4",user,"");
 							if (error > 0) {
 								switch (error) {
@@ -727,7 +732,22 @@ public class KCx {
 						if(sl<=0){
 							JOptionPane.showMessageDialog(null,"不能小于等于零");
 						}else{
-							w.wkcin(sbh,sll.getText(),sl,"采购进货",user,"");
+							//-- qx 1 销售
+							//-- qx 2 维修
+							//-- qx 3 采购入库
+							//-- qx 4 调整库存
+							//-- qx 5 退货
+							int error=w.wkcin(sbh,sll.getText(),sl,"3",user,"");
+							if(error>0){
+								switch (error) {
+								case 1:
+									JOptionPane.showMessageDialog(mtt, "得到库存数量失败");
+									break;
+								case 2:
+									JOptionPane.showMessageDialog(mtt, "更新库存失败");
+									break;
+								}
+							}
 							//wx.addyf(gys,jhj,sl,sll.getText(),sbh);
 							slt.setText("");
 							if(cxzl.getSelectedIndex()==0){

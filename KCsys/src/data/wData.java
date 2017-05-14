@@ -557,30 +557,38 @@ public class wData {
 		}
 	}
 	//--------------------------------------------------------更新入库-----------------------------------
-	public void wkcin(String sbh,String sckcp,int sn,String ly,String user,String dh){
+	public int wkcin(String sbh,String sckcp,int sn,String ly,String user,String dh){
 		Date date2=new Date();
 		int kcsl = 0;
 		int jg = 0;
+		int error;
 		String ckd=String.format("%tF", date2);
 		String time=timef.format(date2);
 		//获取修改之前的库存数量
+		int ver = 0;
 		try{
 			sql = con.createStatement();
 			res=sql.executeQuery("select*from KC where KC_sbh = "+sbh+"");
 			while(res.next()){
 				kcsl=res.getInt("KC_sl");
+				ver=res.getInt("kc_version");
 			}
 			jg=kcsl+sn;
 		}catch(Exception e1){
-			JOptionPane.showMessageDialog(null,"得到库存数量失败");
+			error=1;
+			//JOptionPane.showMessageDialog(null,"得到库存数量失败");
+			return error;
 		}
 		try{
 			sql = con.createStatement();
-			sql.execute("UPDATE KC SET KC_sl="+jg+" where KC_sbh ="+sbh+";"
-					  + "UPDATE KC SET KC_date = '"+ckd+"' where KC_sbh = "+sbh+";"
+			sql.execute("UPDATE KC SET KC_sl="+jg+" ,KC_date = '"+ckd+"' ,kc_version=kc_version+1 where KC_sbh ="+sbh+" and kc_version="+ver+";"
 					  + "insert into KCJL values(1,'"+sbh+"','"+sckcp+"',"+sn+",'"+ly+"','"+user+"','"+ckd+"','"+time+"','"+dh+"')");
+			error=0; //插入成功
+			return error;
 		}catch(Exception e){
-			JOptionPane.showMessageDialog(null,"写入库存错误");
+			error=2; 
+			return error;
+			//JOptionPane.showMessageDialog(null,"写入库存错误");
 		}finally{
 		   	 try{
 		     	   if(res!=null){
