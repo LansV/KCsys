@@ -11,7 +11,7 @@ public class AddReceiptVoucher {
 	static private JFrame MFrame;
 	static private JTable MTable;
 	static private JComboBox<String> ReceiptMethod;
-	static private JLabel LeftSubject;
+	static private JComboBox<String> LeftSubject;
 	static private JLabel ReceiptNo;
 
 	public AddReceiptVoucher() {
@@ -22,6 +22,10 @@ public class AddReceiptVoucher {
 		MFrameC.setLayout(null);
 		MFrame.setBounds(100, 100, 700, 500);
 		MFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		LeftSubject=new JComboBox<String>();
+		LeftSubject.addItem("库存现金");
+		LeftSubject.addItem("银行存款");
+		MFrameC.add(LeftSubject);
 		MFrame.setVisible(true);
 	}
 
