@@ -1,11 +1,14 @@
 package account;
 
 import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
@@ -23,40 +26,40 @@ public class ManageAccountSubject {
 		for(int i=0;i<classlength;i++){
 			//添加类
 			String classid=classlist.get(i).split(":")[0];
-			DefaultMutableTreeNode classnode=new DefaultMutableTreeNode(classlist.get(i)+"   -----   类");
+			DefaultMutableTreeNode classnode=new DefaultMutableTreeNode(classlist.get(i));
 			List<String> firstlist=masd.getFirstSubject(classid);
 			int firstlength=firstlist.size();
 			if(firstlength!=0){
 				//添加一级科目
 				for(String first:firstlist){
 					String firstid=first.split(":")[0];
-					DefaultMutableTreeNode firstnode=new DefaultMutableTreeNode(first+"   -----   一级科目");
+					DefaultMutableTreeNode firstnode=new DefaultMutableTreeNode(first);
 					List<String> secondlist=masd.getSecondSubject(firstid);
 					int secondlength=secondlist.size();
 					if(secondlength!=0){
 						//添加二级科目
 						for(String second:secondlist){
 							String secondid=second.split(":")[0];
-							DefaultMutableTreeNode secondnode=new DefaultMutableTreeNode(second+"   -----   二级科目");
+							DefaultMutableTreeNode secondnode=new DefaultMutableTreeNode(second);
 							List<String> thirdlist=masd.getThirdSubject(secondid);
 							int thirdlength=thirdlist.size();
 							if(thirdlength!=0){
 								//添加三级科目
 								for(String third:thirdlist){
 									String thirdid=third.split(":")[0];
-									DefaultMutableTreeNode thirdnode=new DefaultMutableTreeNode(third+"   -----   三级科目");
+									DefaultMutableTreeNode thirdnode=new DefaultMutableTreeNode(third);
 									List<String> fourthlist=masd.getFourthSubject(thirdid);
 									int fourthlength=fourthlist.size();
 									if(fourthlength!=0){
 										//添加四级科目
 										for(String fourth:fourthlist){
 											String fourthid=fourth.split(":")[0];
-											DefaultMutableTreeNode fourthnode=new DefaultMutableTreeNode(fourth+"    -----   四级科目");
+											DefaultMutableTreeNode fourthnode=new DefaultMutableTreeNode(fourth);
 											List<String> fifthlist=masd.getFifthSubject(fourthid);
 											int fifthlength=fifthlist.size();
 											if(fifthlength!=0){
 												for(String fifth:fifthlist){
-													DefaultMutableTreeNode fifthnode=new DefaultMutableTreeNode(fifth+"    -----   五级科目");
+													DefaultMutableTreeNode fifthnode=new DefaultMutableTreeNode(fifth);
 													fourthnode.add(fifthnode);
 												}
 											}
@@ -87,7 +90,8 @@ public class ManageAccountSubject {
 		MFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		JScrollPane jsp=new JScrollPane();
 		final JPopupMenu rm=new JPopupMenu();
-		rm.add("增加");
+		JMenuItem addas=new JMenuItem("增加");
+		rm.add(addas);
 		rm.add("修改");
 		rm.add("删除");
 		MTree=accountTree();
@@ -101,6 +105,31 @@ public class ManageAccountSubject {
 					rm.show(MTree, e.getX(), e.getY());
 				}
 			}
+		});
+		addas.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				TreePath[] selectpath=MTree.getSelectionPaths();
+					String s=selectpath[0].toString().replace("[", "");
+					s=s.replace("]", "");
+					s=s.replace(":", ",");
+					s=s.replace(" ", "");
+					s=s.substring(2, s.length());
+					s=s+",12,test";
+					System.out.println(s);
+					String[] st=s.split(",");
+					MTree=accountTree();
+					jsp.setViewportView(MTree);
+				/*	System.out.println(st.length);
+					System.out.println(st[0]);
+					for(String ss:st){
+						System.out.println(ss);
+					}*/
+					masd.addSubject(st);
+				}
+			
+			
 		});
 		jsp.setViewportView(MTree);
 		jsp.setBounds(10,10,470,650);
