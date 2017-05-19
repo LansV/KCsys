@@ -13,13 +13,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 public class ManageAccountSubject {
 	static private JFrame MFrame; 
 	static private JTree MTree;
 	ManageAccountSubjectData masd=new ManageAccountSubjectData();
-	public JTree accountTree(){
+	public DefaultTreeModel MyTreeModel(){
 		DefaultMutableTreeNode accountClassNode = new DefaultMutableTreeNode("Àà");
 		List<String> classlist=masd.getAccountClass();
 		int classlength=classlist.size();
@@ -77,9 +78,9 @@ public class ManageAccountSubject {
 			}
 			accountClassNode.add(classnode);
 		}
-		JTree mtree=new JTree(accountClassNode);
-		return mtree;
-	}
+		DefaultTreeModel dtm=new DefaultTreeModel(accountClassNode);
+		return dtm;
+	};
 	public ManageAccountSubject() {
 		MFrame=new JFrame();
 		MFrame.setBounds(100,100,500,700);
@@ -94,7 +95,8 @@ public class ManageAccountSubject {
 		rm.add(addas);
 		rm.add("ÐÞ¸Ä");
 		rm.add("É¾³ý");
-		MTree=accountTree();
+		MTree=new JTree();
+		MTree.setModel(MyTreeModel());
 		MTree.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -111,6 +113,7 @@ public class ManageAccountSubject {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				TreePath[] selectpath=MTree.getSelectionPaths();
+				TreePath tp=MTree.getSelectionPath();
 					String s=selectpath[0].toString().replace("[", "");
 					s=s.replace("]", "");
 					s=s.replace(":", ",");
@@ -119,14 +122,16 @@ public class ManageAccountSubject {
 					s=s+",12,test";
 					System.out.println(s);
 					String[] st=s.split(",");
-					MTree=accountTree();
-					jsp.setViewportView(MTree);
+					masd.addSubject(st);
+					MTree.setModel(MyTreeModel());
+					MTree.updateUI();
+					MTree.expandRow(2);
 				/*	System.out.println(st.length);
 					System.out.println(st[0]);
 					for(String ss:st){
 						System.out.println(ss);
 					}*/
-					masd.addSubject(st);
+					
 				}
 			
 			
