@@ -6,7 +6,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -14,13 +13,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 public class ManageAccountSubject {
 	static private JFrame MFrame; 
 	static private JTree MTree;
 	ManageAccountSubjectData masd=new ManageAccountSubjectData();
-	public DefaultTreeModel MyTreeModel(){
+	public JTree MyTree(){
 		DefaultMutableTreeNode accountClassNode = new DefaultMutableTreeNode("Àà");
 		List<String> classlist=masd.getAccountClass();
 		int classlength=classlist.size();
@@ -79,7 +79,8 @@ public class ManageAccountSubject {
 			accountClassNode.add(classnode);
 		}
 		DefaultTreeModel dtm=new DefaultTreeModel(accountClassNode);
-		return dtm;
+		JTree mytree=new JTree(dtm);
+		return mytree;
 	};
 	public ManageAccountSubject() {
 		MFrame=new JFrame();
@@ -95,8 +96,8 @@ public class ManageAccountSubject {
 		rm.add(addas);
 		rm.add("ÐÞ¸Ä");
 		rm.add("É¾³ý");
-		MTree=new JTree();
-		MTree.setModel(MyTreeModel());
+		//MTree=new JTree();
+		MTree=MyTree();
 		MTree.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -112,29 +113,30 @@ public class ManageAccountSubject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				TreePath[] selectpath=MTree.getSelectionPaths();
-				TreePath tp=MTree.getSelectionPath();
+					TreePath[] selectpath=MTree.getSelectionPaths();
+					TreePath t=MTree.getSelectionPath();
+					DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) MTree
+							 .getLastSelectedPathComponent();
+					System.out.println(new TreePath(treeNode));
 					String s=selectpath[0].toString().replace("[", "");
 					s=s.replace("]", "");
 					s=s.replace(":", ",");
 					s=s.replace(" ", "");
 					s=s.substring(2, s.length());
 					s=s+",12,test";
-					System.out.println(s);
 					String[] st=s.split(",");
 					masd.addSubject(st);
-					MTree.setModel(MyTreeModel());
+					DefaultMutableTreeNode newNode=new DefaultMutableTreeNode("12:test");
+					treeNode.add(newNode);
+					DefaultTreeModel model=(DefaultTreeModel) MTree.getModel();
+					TreeNode[] nodes = model.getPathToRoot(newNode);    
+					TreePath path = new TreePath(nodes);    
+					MTree.scrollPathToVisible(path);  
+					MTree.setSelectionPath(path);
 					MTree.updateUI();
-					MTree.expandRow(2);
-				/*	System.out.println(st.length);
-					System.out.println(st[0]);
-					for(String ss:st){
-						System.out.println(ss);
-					}*/
-					
+					//MTree.expandPath(t);
+					System.out.println(t);
 				}
-			
-			
 		});
 		jsp.setViewportView(MTree);
 		jsp.setBounds(10,10,470,650);
