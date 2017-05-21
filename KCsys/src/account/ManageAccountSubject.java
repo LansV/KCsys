@@ -231,6 +231,8 @@ public class ManageAccountSubject {
 			@Override
 			public void windowClosing(WindowEvent e) {
 				// TODO 自动生成的方法
+				subidT.setText("");
+				subnameT.setText("");
 				MFrame.setEnabled(true);
 				inputFrame.dispose();
 			}
@@ -269,7 +271,16 @@ public class ManageAccountSubject {
 				int subgrade=t.getPathCount()-2;
 				System.out.println("本次删除科目等级："+subgrade);
 				if(subgrade>1){
-					
+					DefaultMutableTreeNode dnode=(DefaultMutableTreeNode) t.getLastPathComponent();
+					String temp=new TreePath(dnode).toString();
+					DefaultTreeModel model=(DefaultTreeModel) MTree.getModel();
+					model.removeNodeFromParent(dnode);
+					temp=temp.replace("[", "");
+					temp=temp.replace("]", "");
+					String[] tempz=temp.split(":");
+					String deleteid=tempz[0].trim();
+					System.out.println("删除科目编号："+deleteid);
+					masd.deleteSubject(subgrade, deleteid);
 				}else{
 					JOptionPane.showMessageDialog(inputFrame, "主科目禁止修改");
 				}

@@ -54,14 +54,14 @@ public class ManageAccountSubjectData {
 		}
 		return i;
 	}
-	public int deleteSubject(int grade,String subid){
+	public int deleteSubject(int grade,String deleteid){
 		int i=0;
 		String[] subname={"classid","firstsubjectid","secondsubjectid","thirdsubjectid","fourthsubjectid","fifthsubjectid",
 				"sixthsubjectid","seventhsubjectid"};
 		String sn=subname[grade];
 		try {
 			sql = con.createStatement();
-			sql.execute("delete accountsubject where "+sn+" = '"+subid+"'");
+			sql.execute("delete accountsubject where "+sn+" = '"+deleteid+"'");
 			i=1;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
