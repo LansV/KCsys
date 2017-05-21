@@ -35,7 +35,7 @@ public class ManageAccountSubjectData {
 			sql = con.createStatement();
 			sql.execute(sqlString);
 			i=1;
-			System.out.println(i);
+			//System.out.println(i);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			i=2;
@@ -53,6 +53,64 @@ public class ManageAccountSubjectData {
 		     	 }
 		}
 		return i;
+	}
+	public int deleteSubject(int grade,String subid){
+		int i=0;
+		String[] subname={"classid","firstsubjectid","secondsubjectid","thirdsubjectid","fourthsubjectid","fifthsubjectid",
+				"sixthsubjectid","seventhsubjectid"};
+		String sn=subname[grade];
+		try {
+			sql = con.createStatement();
+			sql.execute("delete accountsubject where "+sn+" = '"+subid+"'");
+			i=1;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			i=2;
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return i;
+	}
+	//----------------------------------------------------------------------------------------------------------------
+	public List<String> getExistSubId(int level,String frontid){
+		ArrayList<String> list =new ArrayList<String>();
+		String[] subname={"classid","firstsubjectid","secondsubjectid","thirdsubjectid","fourthsubjectid","fifthsubjectid",
+				"sixthsubjectid","seventhsubjectid"};
+		String sn=subname[level];
+		System.out.println(sn);
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select distinct "+sn+" from accountsubject where "+subname[level-1]+"='"+frontid+"'");
+			while(res.next()){
+				list.add(res.getString(sn));
+				System.out.println(res.getString(sn));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return list;
 	}
 	public List<String> getAccountClass(){
 		ArrayList<String> list =new ArrayList<String>();

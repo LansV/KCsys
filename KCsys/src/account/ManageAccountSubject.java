@@ -3,13 +3,23 @@ package account;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.regex.Pattern;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -93,9 +103,10 @@ public class ManageAccountSubject {
 		JScrollPane jsp=new JScrollPane();
 		final JPopupMenu rm=new JPopupMenu();
 		JMenuItem addas=new JMenuItem("增加");
+		JMenuItem deleteas=new JMenuItem("删除");
 		rm.add(addas);
 		rm.add("修改");
-		rm.add("删除");
+		rm.add(deleteas);
 		//MTree=new JTree();
 		MTree=MyTree();
 		MTree.addMouseListener(new MouseAdapter(){
@@ -109,34 +120,160 @@ public class ManageAccountSubject {
 				}
 			}
 		});
+		//--------------------------------------------------------
+		//-----------------------------------------------------------
+		JFrame inputFrame=new JFrame();
+		inputFrame.setResizable(false);
+		inputFrame.setBounds(500,200,300,120);
+		Container inputFC=inputFrame.getContentPane();
+		inputFC.setLayout(null);
+		JLabel subidL=new JLabel("科目编号:");
+		subidL.setBounds(10,10,60,20);
+		inputFC.add(subidL);
+		JTextField subidT=new JTextField();
+		subidT.setBounds(70, 10, 210, 20);
+		inputFC.add(subidT);
+		JLabel subnameL=new JLabel("科目名称:");
+		subnameL.setBounds(10,50,60,20);
+		inputFC.add(subnameL);
+		JTextField subnameT=new JTextField();
+		subnameT.setBounds(70, 50, 210, 20);
+		inputFC.add(subnameT);
+		JButton addsubB=new JButton();
+		addsubB.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO 自动生成的方法存根
+				String subid=subidT.getText().trim();
+				String subname=subnameT.getText().trim();
+				if(subid.length()!=0&&subname.length()!=0){
+					String regEx="\\D";
+					Pattern p=Pattern.compile(regEx);
+					if(!p.matcher(subid).find()){
+						TreePath[] selectpath=MTree.getSelectionPaths();
+						TreePath t=MTree.getSelectionPath();
+						DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) MTree
+								 .getLastSelectedPathComponent();
+						if(t==null){
+							System.out.println("null");
+							return;
+						}
+						String temp=new TreePath(treeNode).toString();
+						temp=temp.replace("[", "");
+						temp=temp.replace("]", "");
+						String[] tempz=temp.split(":");
+						String parentsubid=tempz[0].trim();
+						int psidl=parentsubid.length();
+						if(subid.length()>psidl){
+							String frontid=subid.substring(0, psidl).trim();
+							if(parentsubid.equals(frontid)){
+								int subgrade=t.getPathCount()-1;
+								System.out.println("本次添加科目等级："+subgrade);
+								List<String> existSubId=masd.getExistSubId(subgrade, frontid);
+								for(String s:existSubId){
+									if(subid.equals(s)){
+										JOptionPane.showMessageDialog(inputFrame, "科目编号重复");
+										return;
+									}
+								}
+								String s=selectpath[0].toString().replace("[", "");
+								s=s.replace("]", "");
+								s=s.replace(":", ",");
+								s=s.replace(" ", "");
+								s=s.substring(2, s.length());
+								s=s+","+subid+","+subname;
+								String[] st=s.split(",");
+								masd.addSubject(st);
+								DefaultMutableTreeNode newNode=new DefaultMutableTreeNode(subid+":"+subname);
+								treeNode.add(newNode);
+								DefaultTreeModel model=(DefaultTreeModel) MTree.getModel();
+								TreeNode[] nodes = model.getPathToRoot(newNode);    
+								TreePath path = new TreePath(nodes);    
+								MTree.scrollPathToVisible(path);  
+								MTree.setSelectionPath(path);
+								MTree.updateUI();
+								subidT.setText("");
+								subnameT.setText("");
+								MFrame.setEnabled(true);
+								inputFrame.dispose();
+							}else{
+								JOptionPane.showMessageDialog(inputFrame, "科目编号非法，前端科目代码错误\n应为"+parentsubid+"***");
+							}
+							System.out.println("上级科目编号："+parentsubid+'\n'+"本次添加科目截取编号："+frontid);
+						}else{
+							JOptionPane.showMessageDialog(inputFrame, "科目编号非法，长度需大于父科目");
+						}
+					}else{
+						JOptionPane.showMessageDialog(inputFrame, "科目编号必须为纯数字");
+					}
+				}else{
+					JOptionPane.showMessageDialog(inputFrame, "请确保值不为空");
+				}
+			}
+			
+		});
+		subidT.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e){
+				if(e.getKeyChar()=='\n'){
+					addsubB.doClick();
+				}
+			}
+		});
+		subnameT.addKeyListener(new KeyAdapter(){
+			public void keyPressed(KeyEvent e){
+				if(e.getKeyChar()=='\n'){
+					addsubB.doClick();
+				}
+			}
+		});
+		inputFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		inputFrame.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO 自动生成的方法
+				MFrame.setEnabled(true);
+				inputFrame.dispose();
+			}
+		});
+		//------------------------------------------
+		//-----------------------------------------
 		addas.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-					TreePath[] selectpath=MTree.getSelectionPaths();
-					TreePath t=MTree.getSelectionPath();
-					DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) MTree
-							 .getLastSelectedPathComponent();
-					System.out.println(new TreePath(treeNode));
-					String s=selectpath[0].toString().replace("[", "");
-					s=s.replace("]", "");
-					s=s.replace(":", ",");
-					s=s.replace(" ", "");
-					s=s.substring(2, s.length());
-					s=s+",12,test";
-					String[] st=s.split(",");
-					masd.addSubject(st);
-					DefaultMutableTreeNode newNode=new DefaultMutableTreeNode("12:test");
-					treeNode.add(newNode);
-					DefaultTreeModel model=(DefaultTreeModel) MTree.getModel();
-					TreeNode[] nodes = model.getPathToRoot(newNode);    
-					TreePath path = new TreePath(nodes);    
-					MTree.scrollPathToVisible(path);  
-					MTree.setSelectionPath(path);
-					MTree.updateUI();
-					//MTree.expandPath(t);
-					System.out.println(t);
+				TreePath t=MTree.getSelectionPath();
+				if(t==null){
+					System.out.println("null");
+					return;
 				}
+				int subgrade=t.getPathCount()-1;
+				System.out.println("本次增加科目等级："+subgrade);
+				if(subgrade>1){
+					MFrame.setEnabled(false);
+					inputFrame.setTitle("填写科目");
+					inputFrame.setVisible(true);
+				}else{
+					JOptionPane.showMessageDialog(inputFrame, "主科目禁止修改");
+				}
+			}
+		});
+		deleteas.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO 自动生成的方法存根
+				TreePath t=MTree.getSelectionPath();
+				if(t==null){
+					System.out.println("null");
+					return;
+				}
+				int subgrade=t.getPathCount()-2;
+				System.out.println("本次删除科目等级："+subgrade);
+				if(subgrade>1){
+					
+				}else{
+					JOptionPane.showMessageDialog(inputFrame, "主科目禁止修改");
+				}
+			}
 		});
 		jsp.setViewportView(MTree);
 		jsp.setBounds(10,10,470,650);
