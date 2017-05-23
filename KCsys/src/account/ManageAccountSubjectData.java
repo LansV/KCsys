@@ -1,5 +1,6 @@
 package account;
 
+import java.math.BigInteger;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,6 +83,45 @@ public class ManageAccountSubjectData {
 		return i;
 	}
 	//----------------------------------------------------------------------------------------------------------------
+	public String getSubId(int level,String frontid){
+		String s=null;
+		String[] subname={"classid","firstsubjectid","secondsubjectid","thirdsubjectid","fourthsubjectid","fifthsubjectid",
+				"sixthsubjectid","seventhsubjectid"};
+		String sn=subname[level];
+		System.out.println(sn);
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select max("+sn+") as subid from accountsubject where "+subname[level-1]+"='"+frontid+"'");
+			String s2 = null;
+			while(res.next()){
+				s2=res.getString("subid");
+			}
+			if(s2!=null){
+				BigInteger bigi1=new BigInteger("1");
+				BigInteger bigi2=new BigInteger(s2);
+				BigInteger result=bigi2.add(bigi1);
+				s=result.toString();
+			}else{
+				s=frontid+"001";
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		return s;
+	}
 	public List<String> getExistSubId(int level,String frontid){
 		ArrayList<String> list =new ArrayList<String>();
 		String[] subname={"classid","firstsubjectid","secondsubjectid","thirdsubjectid","fourthsubjectid","fifthsubjectid",

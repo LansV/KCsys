@@ -69,6 +69,7 @@ public class ManageAccountSubject {
 											List<String> fifthlist=masd.getFifthSubject(fourthid);
 											int fifthlength=fifthlist.size();
 											if(fifthlength!=0){
+												//添加五级科目
 												for(String fifth:fifthlist){
 													DefaultMutableTreeNode fifthnode=new DefaultMutableTreeNode(fifth);
 													fourthnode.add(fifthnode);
@@ -249,13 +250,26 @@ public class ManageAccountSubject {
 					return;
 				}
 				int subgrade=t.getPathCount()-1;
-				System.out.println("本次增加科目等级："+subgrade);
+				DefaultMutableTreeNode treeNode = (DefaultMutableTreeNode) t.getLastPathComponent();
 				if(subgrade>1){
-					MFrame.setEnabled(false);
-					inputFrame.setTitle("填写科目");
-					inputFrame.setVisible(true);
+					if(subgrade<6){
+						System.out.println("本次增加科目等级："+subgrade);
+						String temp=new TreePath(treeNode).toString();
+						temp=temp.replace("[", "");
+						temp=temp.replace("]", "");
+						String[] tempz=temp.split(":");
+						String frontsubid=tempz[0];
+						System.out.println("本次增加科目父科目："+frontsubid);
+						subidT.setText(masd.getSubId(subgrade, frontsubid));
+						MFrame.setEnabled(false);
+						inputFrame.setTitle("填写科目");
+						inputFrame.setVisible(true);
+						subnameT.requestFocus();
+					}else{
+						JOptionPane.showMessageDialog(inputFrame, "最末级科目");
+					}
 				}else{
-					JOptionPane.showMessageDialog(inputFrame, "主科目禁止修改");
+					
 				}
 			}
 		});
