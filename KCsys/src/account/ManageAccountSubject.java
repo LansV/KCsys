@@ -269,7 +269,7 @@ public class ManageAccountSubject {
 						JOptionPane.showMessageDialog(inputFrame, "最末级科目");
 					}
 				}else{
-					
+					JOptionPane.showMessageDialog(inputFrame, "无法添加一级科目");
 				}
 			}
 		});
