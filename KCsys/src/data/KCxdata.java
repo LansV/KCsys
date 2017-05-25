@@ -404,8 +404,8 @@ public class KCxdata {
 		try {
 			sql = con.createStatement();
 			//System.out.println(id);
-			sql.execute("insert into KC(KC_typeid,KC_type,KC_xh,KC_name,KC_jhj,KC_dj,KC_sl,KC_dw,KC_date,KC_jsr,KC_jgsl,KC_state,KC_sbh,KC_gys) "
-					+ "values("+zlid+",'"+zl+"','"+xh+"','"+sp+"',"+jhj+","+dj+","+sl+",'"+dw+"','"+ckd+"','admin',0,0,"+sbh+","+gys+");"
+			sql.execute("insert into KC(KC_typeid,KC_type,KC_xh,KC_name,KC_jhj,KC_dj,KC_sl,KC_dw,KC_date,KC_jsr,KC_jgsl,KC_state,KC_sbh,KC_gys,kc_version) "
+					+ "values("+zlid+",'"+zl+"','"+xh+"','"+sp+"',"+jhj+","+dj+","+sl+",'"+dw+"','"+ckd+"','admin',0,0,"+sbh+","+gys+",0);"
 					+ "insert into KCJL values(1,'"+sbh+"','"+sp+"',"+sl+",'入库','admin','"+ckd+"','"+time+"','添加商品');"
 					+ "insert into YF values('"+getyfdh()+"','"+gys+"',"+jhj*sl+",0,'"+ckd+"',0,'admin','"+sp+"',"+sbh+","+sl+","+jhj+")");
 			JOptionPane.showMessageDialog(null,"添加成功");

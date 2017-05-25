@@ -19,8 +19,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -32,6 +34,7 @@ import security.CheckDate;
 public class GYSmanage {
 	getData gd=new getData();
 	wData w=new wData();
+	GysManageData gmd=new GysManageData();
 	public GYSmanage(){
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 	   	Date date2=new Date();
@@ -263,6 +266,36 @@ public class GYSmanage {
 		};
 		mt.getTableHeader().setReorderingAllowed(false);
 		mt.setModel(dm);
+		JPopupMenu rigthJPo=new JPopupMenu();
+		JMenuItem delete=new JMenuItem("删除");
+		delete.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int r=mt.getSelectedRow();
+				String gysid=mt.getValueAt(r, 1).toString();
+				gmd.deleteGys(gysid);
+				dm.setDataVector(gd.getgys(gycxt.getText()),cn);
+				TableColumn zlc=mt.getColumnModel().getColumn(0);
+				zlc.setPreferredWidth(30);
+				TableColumn mcc=mt.getColumnModel().getColumn(2);
+				mcc.setPreferredWidth(180);
+				TableColumn telc=mt.getColumnModel().getColumn(4);
+				telc.setPreferredWidth(90);
+			}
+			
+		});
+		rigthJPo.add(delete);
+		mt.addMouseListener(new MouseAdapter(){
+			public void mousePressed(MouseEvent e){
+				if(e.getButton()==3){
+					int r=mt.rowAtPoint(e.getPoint());
+					mt.getSelectionModel().setSelectionInterval(r, r);
+					rigthJPo.show(mt, e.getX(), e.getY());
+				}
+			}
+		});
 		TableColumn zlc=mt.getColumnModel().getColumn(0);
 		zlc.setPreferredWidth(30);
 		TableColumn mcc=mt.getColumnModel().getColumn(2);

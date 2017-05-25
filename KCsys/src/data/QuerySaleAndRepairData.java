@@ -41,16 +41,16 @@ public class QuerySaleAndRepairData{
 		return i;
 	}
 	//====================================================get customers info============================
-	public List<String> getcustomerinfo(String s){
+	public List<String> getcustomerinfo(String id){
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from KHx where KH_name ='"+s+"'");
+			res = sql.executeQuery("select*from customerinfo where customerid = "+id);
 			while(res.next()){
-				ls.add(res.getString("KH_name").trim());
-				ls.add(res.getString("KH_llx").trim());
-				ls.add(res.getString("KH_tel").trim());
-				ls.add(res.getString("KH_add").trim());
+				ls.add(res.getString("customername").trim());
+				ls.add(res.getString("contact").trim());
+				ls.add(res.getString("tel").trim());
+				ls.add(res.getString("address").trim());
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -82,17 +82,17 @@ public class QuerySaleAndRepairData{
 		try {
 			sql = con.createStatement();
 			res = sql.executeQuery(""
-					+ "select dh,max(khmc) as khmc,sum(zj) as zj,sum(skje) as skje,Sum(zj)-SUM(skje) as s,max(skdate) as skdate from"
+					+ "select dh,max(khid) as khid,max(khmc) as khmc,sum(zj) as zj,sum(skje) as skje,Sum(zj)-SUM(skje) as s,max(skdate) as skdate from"
 					+ "("
-					+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD "
+					+ "select dh,max(khid) as khid,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from XSD "
 					+ "where khmc like '%"+QueryName+"%' and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' "
 					+ " group by dh"
 					+ " union "
-					+ "select dh,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from WXD "
+					+ "select dh,max(khid) as khid,max(khmc) as khmc,sum(je) as zj,sum(skje) as skje,max(skdate) as skdate from WXD "
 					+ "where khmc like '%"+QueryName+"%' and dh like '%"+QueryNo+"%' and skdate between '"+QueryDate1+"' and '"+QueryDate2+"' "
 					+ " group by dh"
 					+ " union "
-					+ "select dh,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD "
+					+ "select dh,max(khid) as khid,max(khmc) as khmc,-sum(tje) as zj,0 as skje,max(tdate) as skdate from THD "
 					+ "where khmc like '%"+QueryName+"%' and dh like '%"+QueryNo+"%' and tdate between '"+QueryDate1+"' and '"+QueryDate2+"'"
 					+ " group by dh"
 					+ ") "
@@ -109,6 +109,7 @@ public class QuerySaleAndRepairData{
 			+ "temp group by dh"*/
 			while(res.next()){
 					ls.add(res.getString("dh").trim());
+					ls.add(res.getString("khid").trim());
 					ls.add(res.getString("khmc").trim());
 					ls.add(String.format("%.2f",res.getDouble("zj")));
 					ls.add(String.format("%.2f",res.getDouble("skje")));
@@ -139,7 +140,7 @@ public class QuerySaleAndRepairData{
 		     		 
 		     	 }
 		}
-		int xl=6;
+		int xl=7;
 		String[][] data=new String[ls.size()/xl][xl];
 	   	int count=0;
 	   	for(int i=0;i<ls.size()/xl;i++){  //ÐÐ

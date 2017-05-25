@@ -428,7 +428,7 @@ public class QuerySaleAndRepair {
 		JTable qSAR_MainTable = new JTable();
 		qSAR_MainTable.getTableHeader().setReorderingAllowed(false);
 		qSAR_MainTable.setDefaultRenderer(Object.class, tcr);
-		String[] qSAR_MainTable_ColumnName = { "单号", "名称", "总计", "已收", "应收", "最后更新" };
+		String[] qSAR_MainTable_ColumnName = { "单号", "客户编号","名称", "总计", "已收", "应收", "最后更新" };
 		DefaultTableModel xdm = new DefaultTableModel(d.xys("", "", "", ""), qSAR_MainTable_ColumnName) {
 			private static final long serialVersionUID = 1L;
 
