@@ -8,6 +8,8 @@ import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Date;
 import java.util.List;
 
@@ -35,7 +37,6 @@ import javax.swing.tree.TreePath;
 public class AddVoucher {
 	private static JFrame MFrame;
 	private static JTabbedPane MTabbedPane;
-	JTable MTable = null;
 	public AddVoucher(){
 		MFrame=new JFrame("添加凭证");
 		MFrame.setResizable(false);
@@ -43,41 +44,47 @@ public class AddVoucher {
 		MFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		Container MFC=MFrame.getContentPane();
 		MTabbedPane=new JTabbedPane();
-		MTabbedPane.add("收款凭证", recipteVoucherPanel());
-		MTabbedPane.add("付款凭证", recipteVoucherPanel());
-		MTabbedPane.add("转账凭证", recipteVoucherPanel());
+		MTabbedPane.add("收款凭证", voucherPanel(MFrame,"收款凭证",new Color(252,65,83)));
+		MTabbedPane.add("付款凭证", voucherPanel(MFrame,"付款凭证",new Color(48,150,255)));
+		MTabbedPane.add("转账凭证", voucherPanel(MFrame,"转账凭证",new Color(99,220,75)));
 		MFC.add(MTabbedPane);
 		MFrame.setVisible(true);
 	}
 	public static void main(String[] args){
 		new AddVoucher();
 	}
-	public JFrame subjectFrame(JLabel b,JTable t,int r){
+	public JFrame subjectFrame(JFrame mf,JLabel b,JTable tt,int r){
 		JFrame f=new JFrame("选择科目");
 		f.setBounds(100, 100, 370, 700);
 		f.setResizable(false);
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		Container fc=f.getContentPane();
 		JTabbedPane jt=new JTabbedPane();
 		JScrollPane jsp=new JScrollPane();
-		jsp.setViewportView(MyTree("1",b,t,r,f));
+		jsp.setViewportView(MyTree(mf,"1",b,tt,r,f));
 		jt.add("资产类", jsp);
 		JScrollPane jsp2=new JScrollPane();
-		jsp2.setViewportView(MyTree("2",b,t,r,f));
+		jsp2.setViewportView(MyTree(mf,"2",b,tt,r,f));
 		jt.addTab("负债类", jsp2);
 		JScrollPane jsp3=new JScrollPane();
-		jsp3.setViewportView(MyTree("3",b,t,r,f));
+		jsp3.setViewportView(MyTree(mf,"3",b,tt,r,f));
 		jt.addTab("所有者权益类", jsp3);
 		JScrollPane jsp4=new JScrollPane();
-		jsp4.setViewportView(MyTree("4",b,t,r,f));
+		jsp4.setViewportView(MyTree(mf,"4",b,tt,r,f));
 		jt.addTab("成本类", jsp4);
 		JScrollPane jsp5=new JScrollPane();
-		jsp5.setViewportView(MyTree("5",b,t,r,f));
+		jsp5.setViewportView(MyTree(mf,"5",b,tt,r,f));
 		jt.addTab("损益类", jsp5);
 		fc.add(jt);
+		f.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent e){
+				mf.setEnabled(true);
+				f.dispose();
+			}
+		});
 		return f;
 	}
-	public JTree MyTree(String classid,JLabel b,JTable t,int r,JFrame f){
+	public JTree MyTree(JFrame mf,String classid,JLabel b,JTable tt,int r,JFrame f){
 		
 		AddVoucherData avd=new AddVoucherData();
 		DefaultMutableTreeNode accountClassNode = new DefaultMutableTreeNode("请选择科目");
@@ -146,9 +153,10 @@ public class AddVoucher {
 						 if(b!=null){
 							 b.setText(node.toString());
 						 }
-						 if(t!=null){
-							 t.setValueAt(node.toString(), r, 1);
+						 if(tt!=null){
+							 tt.setValueAt(node.toString(), r, 1);
 						 }
+						 mf.setEnabled(true);
 						 f.dispose();
 						 //JOptionPane.showMessageDialog(tree, "末级科目:"+node);
 					 }
@@ -158,61 +166,17 @@ public class AddVoucher {
 		});
 		return tree;
 	};
-	public JTable tableTemplate(JPanel p,Color c){
-		
+	public DefaultTableModel tableModel(JTable tt,int col){
 		DefaultTableModel dm;
-		JTable t=new JTable(){
-
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 3032682468682010521L;
-/*			 public void processKeyEvent(KeyEvent e){
-				 if(t.getEditorComponent() == null && 
-				 e.getKeyCode() != KeyEvent.VK_UP && 
-				 e.getKeyCode() != KeyEvent.VK_DOWN) //等等其他有用的按键
-				return;
-				else
-				super.processKeyEvent(e);
-				}*/
-			public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-				if(columnIndex==0&&rowIndex==7){
-					String s=aValue.toString();
-					if(s.length()!=0){
-						try{
-							int i=Integer.parseInt(s);
-							if(i>=0){
-								super.setValueAt("附件  "+Integer.toString(i)+"  张", rowIndex, columnIndex);
-								return;
-							}else{
-								JOptionPane.showMessageDialog(p, "只能输入整数");
-								return;
-							}
-						}catch(Exception e){
-							JOptionPane.showMessageDialog(p, "只能输入整数");
-							return;
-						}
-					}
-				}
-				if(columnIndex==2&&rowIndex!=7){
-						String s=aValue.toString();
-						if(s.length()!=0){
-							try{
-								double d=Double.parseDouble(s);
-								super.setValueAt(String.format("%.2f", d), rowIndex, columnIndex);
-								return;
-							}catch(Exception e){
-								JOptionPane.showMessageDialog(p, "只能输入数字");
-								return;
-							}
-						}
-					
-				}
-				super.setValueAt(aValue, rowIndex, columnIndex);
-			}
-		};
-		String[] cn={"摘要","贷方科目","金额"};
-		String[][] arr=new String[8][3];
+		String[] cn = null;
+		String[][] arr = null;
+		if(col==3){
+			cn=new String[]{"摘要","贷方科目","金额"};
+			arr=new String[8][3];
+		}else{
+			cn=new String[]{"摘要","会计科目","借方金额","贷方金额"};
+			arr=new String[8][4];
+		}
 		dm=new DefaultTableModel(arr,cn){
 
 			/**
@@ -229,51 +193,60 @@ public class AddVoucher {
 			}
 			
 		};
-		
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer();
 		tcr.setHorizontalAlignment(JLabel.CENTER);
-		t.setDefaultRenderer(Object.class, tcr);
-		t.setModel(dm);
+		tt.setDefaultRenderer(Object.class, tcr);
+		tt.setModel(dm);
 		dm.addTableModelListener(new TableModelListener(){
 
 			@Override
 			public void tableChanged(TableModelEvent e) {
 				// TODO 自动生成的方法存根
-				if(e.getColumn()==2){
+				if(e.getColumn()==2||e.getColumn()==3){
 					int r = e.getFirstRow();
 					int c = e.getColumn();
-					if(r<7&&c==2){
-						t.setValueAt("2", 7, c);
+					if(r<7&&c==2||r<7&&c==3){
+						if(tt.getValueAt(r, c)!=null){
+							String s=tt.getValueAt(r, c).toString();
+							if(s.length()!=0){
+								try{
+									Double res=0.0;
+									for(int i=0;i<=r;i++){
+										if(tt.getValueAt(i, c)!=null){
+											if(tt.getValueAt(i, c).toString().length()!=0){
+												String s1=tt.getValueAt(i, c).toString();
+												Double d=Double.parseDouble(s1);
+												res=res+d;
+											}
+										}
+									}
+									tt.setValueAt(res, 7, c);
+								}catch(Exception e1){
+									JOptionPane.showMessageDialog(tt, "合计错误！");
+								}
+							}
+						}
 					}
 				}
 			}
 			
 		});
-	
-		t.setValueAt("合              计", 7, 1);
-		t.setGridColor(c);
-		t.getTableHeader().setReorderingAllowed(false);
-		JTableHeader th=t.getTableHeader();
-		th.setPreferredSize(new Dimension(th.getWidth(),30)); 
-		t.setRowHeight(24);
-		setTableHeaderColor(t,0,c);
-		setTableHeaderColor(t,1,c);
-		setTableHeaderColor(t,2,c);
-		setTableCellColor(t,1,c);
-		setTableCellColor(t,0,c);
-		return t;
-		
+		return dm;
 	}
-	public JPanel recipteVoucherPanel(){
+	public JPanel voucherPanel(JFrame mf,String name,Color c){
 		JPanel panel;
 		JLabel skL, leftsubL, selectsubL, subdateL, voucherNoL,footerL;
-		
 		panel=new JPanel();
 		panel.setLayout(null);
-		skL=new JLabel("收款凭证");
-		leftsubL=new JLabel("借方科目：");
-		selectsubL=new JLabel("请选择借方科目",JLabel.CENTER);
-		panel.add(selectsubL);
+		skL=new JLabel(name);
+		if(!name.equals("转账凭证")){
+			leftsubL=new JLabel("借方科目：");
+			selectsubL=new JLabel("请选择借方科目",JLabel.CENTER);
+			panel.add(selectsubL);
+		}else{
+			leftsubL=new JLabel("");
+			selectsubL=new JLabel();
+		}
 		Date date=new Date();
 		String year=String.format("%tY", date);
 		String month=String.format("%tm", date);
@@ -288,26 +261,26 @@ public class AddVoucher {
 		dayL.setBounds(422,50,40,20);
 		panel.add(dayL);
 		subdateL=new JLabel("     年"+"      月"+"       日 ");
-		subdateL.setForeground(new Color(252,65,83));
+		subdateL.setForeground(c);
 		subdateL.setBounds(360,50,120,20);
 		panel.add(subdateL);
 		JLabel voucherNoTL=new JLabel("001");
 		voucherNoTL.setBounds(732,50,80,20);
 		panel.add(voucherNoTL);
 		voucherNoL=new JLabel("字第            号");
-		voucherNoL.setForeground(new Color(252,65,83));
+		voucherNoL.setForeground(c);
 		voucherNoL.setBounds(700,50,80,20);
 		panel.add(voucherNoL);
 		//-----------------------------------------------------------
 		skL.setBounds(350,10,120,25);
 		panel.add(skL);
 		Font skfont=new Font("宋体",1,24);
-		skL.setForeground(new Color(252,65,83));
+		skL.setForeground(c);
 		skL.setFont(skfont);
 		leftsubL.setBounds(10,50,80,20);
-		leftsubL.setForeground(new Color(252,65,83));
+		leftsubL.setForeground(c);
 		panel.add(leftsubL);
-		selectsubL.setBounds(75,50,160,20);
+		selectsubL.setBounds(75,50,250,20);
 		selectsubL.setOpaque(true);
 		selectsubL.setBackground(Color.white);
 		selectsubL.addMouseListener(new MouseAdapter(){
@@ -316,9 +289,9 @@ public class AddVoucher {
 			public void mouseClicked(MouseEvent e) {
 				// TODO 自动生成的方法存根
 				if(e.getClickCount()==1&&e.getButton()==1){
-					JFrame f=subjectFrame(selectsubL,null,-1);
+					mf.setEnabled(false);
+					JFrame f=subjectFrame(mf,selectsubL,null,-1);
 					f.setVisible(true);
-					//JOptionPane.showMessageDialog(selectsubL, "open");
 				}
 			}
 			
@@ -335,7 +308,26 @@ public class AddVoucher {
 			}
 			
 		});
-		JTable t= tableTemplate(panel,new Color(252,65,83));
+		JTable t= new VoucherJTable();
+		if(!name.equals("转账凭证")){
+			t.setModel(tableModel(t,3));
+		}else{
+			t.setModel(tableModel(t,4));
+		}
+		t.setValueAt("合              计", 7, 1);
+		t.setGridColor(c);
+		t.getTableHeader().setReorderingAllowed(false);
+		JTableHeader th=t.getTableHeader();
+		th.setPreferredSize(new Dimension(th.getWidth(),30)); 
+		t.setRowHeight(24);
+		setTableHeaderColor(t,0,c);
+		setTableHeaderColor(t,1,c);
+		setTableHeaderColor(t,2,c);
+		if(name.equals("转账凭证")){
+			setTableHeaderColor(t,3,c);
+		}
+		setTableCellColor(t,1,c);
+		setTableCellColor(t,0,c);
 		t.addMouseListener(new MouseAdapter(){
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -346,19 +338,20 @@ public class AddVoucher {
 					if(c==1&&e.getClickCount()==2){
 						if(r>0){
 							if(t.getValueAt(r-1,c)!=null){
-								JFrame f=subjectFrame(null, t, r);
+								mf.setEnabled(false);
+								JFrame f=subjectFrame(mf,null, t, r);
+								
 								f.setVisible(true);
 									//JOptionPane.showMessageDialog(MFrame, "open");
-								
 							}else{
 								JOptionPane.showMessageDialog(t, "上行信息不全\n请先核对上行信息");
 							}
 						}else{
-							JFrame f=subjectFrame(null, t, r);
+							mf.setEnabled(false);
+							JFrame f=subjectFrame(mf,null, t, r);
 							f.setVisible(true);
 								//JOptionPane.showMessageDialog(MTable, "open");
 						}
-						
 					}
 				}
 			}
@@ -369,13 +362,83 @@ public class AddVoucher {
 		panel.add(jsp);
 		footerL=new JLabel("会计主管                                          记账                                           出纳                                            审核                                          制证");
 		footerL.setBounds(10,300,700,25);
-		footerL.setForeground(new Color(252,65,83));
+		footerL.setForeground(c);
 		panel.add(footerL);
 		JButton addB=new JButton("添加凭证");
 		addB.setBounds(340,330,100,25);
 		panel.add(addB);
 		//-----------------------------------------
 		return panel;
+	}
+	class VoucherJTable extends JTable{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		public VoucherJTable(){
+			super();
+		}
+		public void processKeyEvent(KeyEvent e){
+			 if(this.getEditorComponent() == null && 
+			 e.getKeyCode() != KeyEvent.VK_UP && 
+			 e.getKeyCode() != KeyEvent.VK_DOWN) 
+			return;
+			else
+			super.processKeyEvent(e);
+			}
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			if(columnIndex==0&&rowIndex==7){
+				String s=aValue.toString();
+				if(s.length()!=0){
+					try{
+						int i=Integer.parseInt(s);
+						if(i>=0){
+							super.setValueAt("附件  "+Integer.toString(i)+"  张", rowIndex, columnIndex);
+							return;
+						}else{
+							JOptionPane.showMessageDialog(this, "只能输入正整数");
+							return;
+						}
+					}catch(Exception e){
+						JOptionPane.showMessageDialog(this, "只能输入整数");
+						return;
+					}
+				}
+			}
+			if(columnIndex==2&&rowIndex<7||columnIndex==3&&rowIndex<7){
+					String s=aValue.toString();
+					if(this.getValueAt(rowIndex, 1)!=null){
+						if(this.getValueAt(rowIndex, 1).toString().length()!=0){
+							if(s.length()!=0){
+								try{
+									double d=Double.parseDouble(s);
+									if(d>0){
+										super.setValueAt(String.format("%.2f", d), rowIndex, columnIndex);
+										return;
+									}else{
+										JOptionPane.showMessageDialog(this, "只能输入正数");
+										return;
+									}
+								}catch(Exception e){
+									JOptionPane.showMessageDialog(this, "只能输入数字");
+									return;
+								}
+							}else{
+								return;
+							}
+						}else{
+							JOptionPane.showMessageDialog(this, "请先选择科目");
+							return;
+						}
+					}else{
+						JOptionPane.showMessageDialog(this, "请先选择科目");
+						return;
+					}
+					
+			}
+			super.setValueAt(aValue, rowIndex, columnIndex);
+		}
 	}
 	void setTableHeaderColor(JTable table, int columnIndex, Color c)
     {
@@ -408,6 +471,14 @@ public class AddVoucher {
 	void setTableCellColor(JTable table, int columnIndex, Color c)
     {
 		TableColumn column = table.getColumnModel().getColumn(columnIndex);
+		if(columnIndex==0){
+			column.setMaxWidth(200);
+			column.setMinWidth(200);
+		}
+		if(columnIndex==1){
+			column.setMaxWidth(400);
+			column.setMinWidth(400);
+		}
         DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer(){
         	/**
 			 * 
@@ -424,12 +495,10 @@ public class AddVoucher {
         			comp.setForeground(c);
         			comp.setFont(font);
         			//comp.setBorder(BorderFactory.createMatteBorder(1, 0, 1, 1, c)); 
-        			
         		}else{
         			comp.setForeground(Color.black);
         		}
             		//comp.setBorder(BorderFactory.createRaisedBevelBorder());  
-            		 
             		//comp.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         		return comp;
         	}
