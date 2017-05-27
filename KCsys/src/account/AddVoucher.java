@@ -382,7 +382,8 @@ public class AddVoucher {
 		public void processKeyEvent(KeyEvent e){
 			 if(this.getEditorComponent() == null && 
 			 e.getKeyCode() != KeyEvent.VK_UP && 
-			 e.getKeyCode() != KeyEvent.VK_DOWN) 
+			 e.getKeyCode() != KeyEvent.VK_DOWN&&e.getKeyCode()!=KeyEvent.VK_RIGHT&&e.getKeyCode()!=KeyEvent.VK_LEFT&&
+			 e.getKeyCode()!=KeyEvent.VK_TAB) 
 			return;
 			else
 			super.processKeyEvent(e);
@@ -491,6 +492,8 @@ public class AddVoucher {
         		JComponent comp = (JComponent) 
         				super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         		Font font=new Font("ËÎÌו",1,14);
+        		table.setCellSelectionEnabled(isEnabled());
+        		//table.setSelectionBackground(c);
         		if(row==7){
         			comp.setForeground(c);
         			comp.setFont(font);
