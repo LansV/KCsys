@@ -10,9 +10,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -36,6 +38,13 @@ public class KCx {
 	wData w=new wData();
 	JTable mtt;
 	public JTable mt(String[][] arr){
+		JComboBox<String> c=new JComboBox<String>();
+		c.addItem("请选择供应商");
+		String[][] list=wx.getGysNameAndId("");
+		int t=list.length;
+		for(int i=0;i<t;i++){
+			c.addItem(list[i][1].trim());
+		}
 		JTable maintable=new JTable(){
 			/**
 			 * 
@@ -43,6 +52,11 @@ public class KCx {
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
 				Double num;
+				if(columnIndex==3){
+					if(aValue.equals("请选择供应商")){
+						return;
+					}
+				}
 				if(columnIndex>4&&columnIndex<9){
 	                try{
 	                	String st=(String) aValue;
@@ -92,6 +106,23 @@ public class KCx {
 				}
 			}
 		});*/
+		c.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO 自动生成的方法存根
+				if(e.getStateChange()==ItemEvent.SELECTED){
+					int r=maintable.getSelectedRow();
+					if(r>=0){
+						int s=c.getSelectedIndex();
+						if(s>0){
+							maintable.setValueAt(list[s-1][0], r, 2);
+						}else{
+							//maintable.setValueAt(list[s][0], r, 2);
+						}
+					}
+				}
+			}
+		});
 		maintable.getTableHeader().setReorderingAllowed(false);
 		String[] cn={"种类编号","种类","供应商编号","供应商名称","名称","进货价","分销价","经销价","单价","数量","单位","修改日期","警告数量","库存位置"};
 		DefaultTableModel maindm=new DefaultTableModel(arr,cn){
@@ -100,7 +131,7 @@ public class KCx {
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm>3&&colunm!=11&&colunm!=9){
+				if(colunm>2&&colunm!=11&&colunm!=9){
 					return true;
 				}
 				return false;
@@ -150,6 +181,7 @@ public class KCx {
 			}
 		});
 		maintable.setModel(maindm);
+		maintable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(c));
     	TableColumn mtablecl2=maintable.getColumnModel().getColumn(3);   //设置列宽    
     	mtablecl2.setPreferredWidth(160);   
     	mtablecl2.setMinWidth(160);

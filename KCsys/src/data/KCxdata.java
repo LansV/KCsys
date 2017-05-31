@@ -19,6 +19,44 @@ public class KCxdata {
 	Date date=new Date();		
 	SimpleDateFormat timef= new SimpleDateFormat("HH:mm:ss");
 	//*******************************************读取****************************************************
+	//------------------------------------------获取供应商名称及编号--------------------------------------
+	public String[][] getGysNameAndId(String cx){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select*from GYs where GYs_name like '%"+cx+"%' order by GYs_zl");
+			while(res.next()){
+				ls.add(res.getString("GYs_bh"));
+				ls.add(res.getString("GYs_name"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=2;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
 	//-----------------------------------------------获取商品编号---------------------------------------
 	public String getspid(int cx){
 		String s="";
