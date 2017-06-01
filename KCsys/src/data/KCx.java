@@ -10,10 +10,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,19 +29,25 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-
 import security.Lock;
 public class KCx {
 	KCxdata wx=new KCxdata();
 	wData w=new wData();
 	JTable mtt;
 	public JTable mt(String[][] arr){
-		JComboBox<String> c=new JComboBox<String>();
-		c.addItem("请选择供应商");
-		String[][] list=wx.getGysNameAndId("");
-		int t=list.length;
+		JComboBox<String> chooseType=new JComboBox<String>();
+		chooseType.addItem("请选择种类");
+		String[][] typeList=wx.getType("");
+		int t1=typeList.length;
+		for(int i=0;i<t1;i++){
+			chooseType.addItem(typeList[i][1].trim());
+		}
+		JComboBox<String> chooseGys=new JComboBox<String>();
+		chooseGys.addItem("请选择供应商");
+		String[][] gysList=wx.getGysNameAndId("");
+		int t=gysList.length;
 		for(int i=0;i<t;i++){
-			c.addItem(list[i][1].trim());
+			chooseGys.addItem(gysList[i][1].trim());
 		}
 		JTable maintable=new JTable(){
 			/**
@@ -52,6 +56,11 @@ public class KCx {
 			private static final long serialVersionUID = 1L;
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex){
 				Double num;
+				if(columnIndex==1){
+					if(aValue.equals("请选择种类")){
+						return;
+					}
+				}
 				if(columnIndex==3){
 					if(aValue.equals("请选择供应商")){
 						return;
@@ -93,32 +102,57 @@ public class KCx {
 				}	
 			}
 		};
-/*		maintable.addMouseListener(new MouseAdapter(){
-			@Override
-			public void mousePressed(MouseEvent e){
-				// TODO Auto-generated method stub
-				if(e.getButton()==3){
-					int r=maintable.rowAtPoint(e.getPoint());
-					if(maintable.getRowSelectionAllowed()==true){
-						maintable.setRowSelectionInterval(r,r);
-						pm.show(maintable,e.getX()+10,e.getY()+10);
-					}
-				}
-			}
-		});*/
-		c.addItemListener(new ItemListener(){
+		chooseType.addItemListener(new ItemListener(){
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				// TODO 自动生成的方法存根
 				if(e.getStateChange()==ItemEvent.SELECTED){
-					int r=maintable.getSelectedRow();
+					int r=maintable.getEditingRow();
 					if(r>=0){
-						int s=c.getSelectedIndex();
-						if(s>0){
-							maintable.setValueAt(list[s-1][0], r, 2);
-						}else{
-							//maintable.setValueAt(list[s][0], r, 2);
+						int sr=chooseType.getSelectedIndex();
+						if(sr>0){
+							int isChange = JOptionPane.showConfirmDialog(chooseType, 
+									"是否更改【"+maintable.getValueAt(r, 4)+"】种类\n原种类："+maintable.getValueAt(r, 1)
+									+"\n更新种类："+chooseType.getItemAt(sr)+"\n","修改提示",
+									JOptionPane.YES_NO_OPTION);
+							if(isChange==JOptionPane.YES_OPTION){
+								String s=wx.getspid(Integer.parseInt(typeList[sr-1][0]));
+								wx.changeType(chooseType, 
+										maintable.getValueAt(r, 0).toString(), s, typeList[sr-1][0], typeList[sr-1][1]);
+								maintable.setValueAt(s, r, 0);
+								System.out.println(s);
+							}else{
+								chooseType.setSelectedIndex(0);
+							}
 						}
+					}
+				}
+			}
+		});
+		chooseGys.addItemListener(new ItemListener(){
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				// TODO 自动生成的方法存根
+				if(e.getStateChange()==ItemEvent.SELECTED){
+					int r=maintable.getEditingRow();
+					if(r>=0){
+						int s=chooseGys.getSelectedIndex();
+						if(s>0){
+							System.out.println(maintable.getValueAt(r, 3));
+							int isChange = JOptionPane.showConfirmDialog(chooseGys, 
+									"是否更改【"+maintable.getValueAt(r, 4)+"】供应商\n原供应商： "
+									+maintable.getValueAt(r, 3).toString()
+									+"\n更改供应商： "+chooseGys.getItemAt(s)+"\n","修改提示",
+									JOptionPane.YES_NO_OPTION);
+							if(isChange==JOptionPane.YES_OPTION){
+								String sbh=maintable.getValueAt(r, 0).toString();
+								wx.changeGys(chooseType, sbh,gysList[s-1][0].trim());
+								maintable.setValueAt(gysList[s-1][0], r, 2);
+							}else{
+								chooseGys.setSelectedIndex(0);
+							}
+						}
+						System.out.println(r);
 					}
 				}
 			}
@@ -131,7 +165,7 @@ public class KCx {
 			 */
 			private static final long serialVersionUID = 1L;
 			public boolean isCellEditable(int row,int colunm){
-				if(colunm>2&&colunm!=11&&colunm!=9){
+				if(colunm>0&&colunm!=11&&colunm!=9&&colunm!=2){
 					return true;
 				}
 				return false;
@@ -181,7 +215,8 @@ public class KCx {
 			}
 		});
 		maintable.setModel(maindm);
-		maintable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(c));
+		maintable.getColumnModel().getColumn(1).setCellEditor(new DefaultCellEditor(chooseType));
+		maintable.getColumnModel().getColumn(3).setCellEditor(new DefaultCellEditor(chooseGys));
     	TableColumn mtablecl2=maintable.getColumnModel().getColumn(3);   //设置列宽    
     	mtablecl2.setPreferredWidth(160);   
     	mtablecl2.setMinWidth(160);

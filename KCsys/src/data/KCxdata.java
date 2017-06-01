@@ -1,5 +1,6 @@
 package data;
 
+import java.awt.Component;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,6 +20,45 @@ public class KCxdata {
 	Date date=new Date();		
 	SimpleDateFormat timef= new SimpleDateFormat("HH:mm:ss");
 	//*******************************************读取****************************************************
+
+	//------------------------------------------获取种类及编号--------------------------------------------
+	public String[][] getType(String cx){
+		List<String> ls=new ArrayList<String>();
+		try {
+			sql = con.createStatement();
+			res = sql.executeQuery("select*from CPz order by CPz_typeid");
+			while(res.next()){
+				ls.add(res.getString("CPz_typeid"));
+				ls.add(res.getString("CPz_type"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 
+		     	 }
+		}
+		int xl=2;
+		String[][] data=new String[ls.size()/xl][xl];
+	   	int count=0;
+	   	for(int i=0;i<ls.size()/xl;i++){  //行
+	   		for(int j=0;j<xl;j++){  //列
+	   			data[i][j]=ls.get(j+count*xl);
+	   			
+	   		}
+	   		count++;
+	   	}
+	   	count=0;
+		return data;
+	}
 	//------------------------------------------获取供应商名称及编号--------------------------------------
 	public String[][] getGysNameAndId(String cx){
 		List<String> ls=new ArrayList<String>();
@@ -399,10 +439,78 @@ public class KCxdata {
 	}
 	
 	//******************************************写入***************************************************
-	
+	public int changeType(Component c,String sbh,String newsbh,String typeid,String type){
+		int i=0;
+		try {
+			sql = con.createStatement();
+			sql.execute("update KC set KC_sbh = '"+newsbh+"',KC_typeid='"+typeid+"',KC_type='"+type+"' where KC_sbh='"+sbh+"'");
+			System.out.println(sbh+" "+newsbh+" "+typeid+" "+type);
+			i=1;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			i=2;
+			JOptionPane.showMessageDialog(c,"写入数据错误！","错误",0);
+		}finally{
+			if(res!=null){
+				try {
+					res.close();
+					res=null;
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					i=3;
+					JOptionPane.showMessageDialog(c,"断开数据连接错误");
+				}
+			}
+			if(sql!=null){
+				try {
+					sql.close();
+					sql=null;
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					i=4;
+					JOptionPane.showMessageDialog(c,"断开数据连接错误");
+				}
+			}
+		}
+		return i;
+	}
 	
 	
 	//******************************************************************************************************
+	public int changeGys(Component c,String sbh,String gys){
+		int i=0;
+		try {
+			sql = con.createStatement();
+			sql.execute("update KC set KC_gys = '"+gys+"' where KC_sbh='"+sbh+"'");
+			i=1;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			i=2;
+			JOptionPane.showMessageDialog(c,"写入数据错误！","错误",0);
+		}finally{
+			if(res!=null){
+				try {
+					res.close();
+					res=null;
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					i=3;
+					JOptionPane.showMessageDialog(c,"断开数据连接错误");
+				}
+			}
+			if(sql!=null){
+				try {
+					sql.close();
+					sql=null;
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					i=4;
+					JOptionPane.showMessageDialog(c,"断开数据连接错误");
+				}
+			}
+		}
+		return i;
+	}
 	//-------------------------------------------添加应付----------------------------------------
 	public void addyf(String gys,Double jhj,int sl,String sp,String bh){
 		Date date2=new Date();
