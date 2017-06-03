@@ -50,7 +50,7 @@ public class TJCHFdata {
 						+ "and qx!=2 and bh=KC_sbh and jldate between '"+qdate+"' and '"+edate+"' "
 						+ "and sp like '%"+sp+"%' and qx=3"
 						+ "order by dh");
-			}else if(qx.equals("测试")){
+			}else if(qx.equals("库存调整")){
 				res = sql.executeQuery("select qx as dh,bh as xh,sp,KC_dw as dw,sl,KC_jhj,NULL as dj,NULL as zk,jldate as date from KCJL,KC where Stata=0 and qx!=1 "
 						+ "and qx!=2 and bh=KC_sbh and jldate between '"+qdate+"' and '"+edate+"' "
 						+ "and sp like '%"+sp+"%' and qx=4"
@@ -71,7 +71,7 @@ public class TJCHFdata {
 					Double dj=res.getDouble("dj");
 					Double zk=res.getDouble("zk");
 					Double jhzj=sl*jhj;
-					Double xszj=sl*dj*zk;
+					Double xszj=sl*dj*zk/10;
 					ls.add(res.getString("zk").trim());
 					ls.add(String.format("%.3f",jhzj));
 					ls.add(String.format("%.3f",xszj));
@@ -91,7 +91,7 @@ public class TJCHFdata {
 					if(d==3){
 						ls.add("组装");
 					}else if(d==4){
-						ls.add("测试");
+						ls.add("库存调整");
 					}else{
 						ls.add("error");
 					}

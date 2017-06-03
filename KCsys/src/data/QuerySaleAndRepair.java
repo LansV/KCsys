@@ -13,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,10 +41,7 @@ public class QuerySaleAndRepair {
 	int wzy;
 
 	public QuerySaleAndRepair(String user) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-	   	Date date2=new Date();
-	   	String s1=sdf.format(date2);
-	   	CheckDate.ReturnCheckDateResult(s1);
+	   	
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "收款", "备注" };
@@ -110,6 +106,7 @@ public class QuerySaleAndRepair {
 		xxtable.addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
 				if (e.getButton() == 1 && e.getClickCount() == 2) {
+					CheckDate.ReturnCheckDateResult(xxtable);
 					xxf.setEnabled(false);
 					int r = xxtable.getSelectedRow();
 					int sl = Integer.parseInt(xxtable.getValueAt(r, 6).toString());
@@ -128,6 +125,7 @@ public class QuerySaleAndRepair {
 					}
 				}
 				if (e.getButton() == 3) {
+					CheckDate.ReturnCheckDateResult(xxtable);
 					int r = xxtable.rowAtPoint(e.getPoint());
 					if (xxtable.getRowSelectionAllowed() == true) {
 						xxtable.setRowSelectionInterval(r, r);
@@ -353,6 +351,7 @@ public class QuerySaleAndRepair {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
+				CheckDate.ReturnCheckDateResult(th);
 				xxf.setEnabled(false);
 				int r = xxtable.getSelectedRow();
 				int sl = Integer.parseInt(xxtable.getValueAt(r, 6).toString());
@@ -380,6 +379,7 @@ public class QuerySaleAndRepair {
 		sk.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				CheckDate.ReturnCheckDateResult(sk);
 				// TODO Auto-generated method stub
 				xxf.setEnabled(false);
 				int r = xxtable.getSelectedRow();

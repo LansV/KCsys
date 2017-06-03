@@ -8,11 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -41,9 +38,7 @@ public class YS {
 	int tabler;
 	int wzx;
 	int wzy;
-	
 	public YS(String user) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
 		DefaultTableCellRenderer tcr = new DefaultTableCellRenderer(); // 创建渲染器
 		tcr.setHorizontalAlignment(JLabel.CENTER); // 全局居中
 		String[] mcn = { "序号", "商品型号", "商品名称", "单位", "折扣", "单价", "数量", "金额", "收款", "备注" };
@@ -295,7 +290,7 @@ public class YS {
 				listkh.add(lxrtelt.getText().trim());
 				listkh.add(addrt.getText().trim());
 				listkh.add(jc.getSelectedItem());
-				listkh.add("补单");
+				listkh.add("补打");
 				int cr = xxtable.getRowCount();
 				int slhj = 0;
 				Double hj = 0.0;
@@ -431,9 +426,7 @@ public class YS {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n') {
 					new SQLFilter(thtyz,thtyz.getText().trim(),user);
-					Date date2 = new Date();
-					String s1 = sdf.format(date2);
-					CheckDate.ReturnCheckDateResult(s1);
+					CheckDate.ReturnCheckDateResult(thtyz);
 					if (thtsl.isEnabled()) {
 						// one product return
 						int r = xxtable.getSelectedRow();
@@ -610,9 +603,7 @@ public class YS {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n') {
 					new SQLFilter(thtsl,thtsl.getText().trim(),user);
-					Date date2 = new Date();
-					String s1 = sdf.format(date2);
-					CheckDate.ReturnCheckDateResult(s1);
+					CheckDate.ReturnCheckDateResult(thtsl);
 					if (thtyz.getText().trim().length() == 0) {
 						JOptionPane.showMessageDialog(null, "原因为空");
 					} else {
@@ -841,9 +832,7 @@ public class YS {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == '\n') {
 					new SQLFilter(hzt,hzt.getText().trim(),user);
-					Date date2 = new Date();
-					String s1 = sdf.format(date2);
-					CheckDate.ReturnCheckDateResult(s1);
+					CheckDate.ReturnCheckDateResult(hzt);
 					int r = table.getSelectedRow();
 					String dh = table.getValueAt(r, 0).toString().trim();
 					String kh = table.getValueAt(r, 1).toString().trim();
@@ -990,9 +979,7 @@ public class YS {
 				// TODO Auto-generated method stub
 				if (e.getKeyCode() == '\n') {
 					new SQLFilter(xt,xt.getText().trim(),user);
-					Date date2 = new Date();
-					String s1 = sdf.format(date2);
-					CheckDate.ReturnCheckDateResult(s1);
+					CheckDate.ReturnCheckDateResult(xt);
 					if (xxf.isVisible() == true) {
 						int sr = xxtable.getSelectedRow();
 						String s = xt.getText().trim();
@@ -1080,99 +1067,66 @@ public class YS {
 								if (sk > 0) {
 									Double ys = Double.parseDouble(table.getValueAt(sr, 4).toString());
 									String dh = table.getValueAt(sr, 0).toString();
-									System.out.println(sr);
-									if (sk >= ys) { // proceeds more than
+									//System.out.println(sr);
+									if (sk > ys) { // proceeds more than
 													// receivables
-										int j = xxtable.getRowCount();
-										for (int k = 0; k < j; k++) {
-											Double je = Double.parseDouble(xxtable.getValueAt(k, 7).toString());
-											if (dh.substring(0, 1).equals("X")) {
-												d.updateWxys(dh, k + 1, je, 0);
-											} else {
-												d.updatexsys(dh, k + 1, je, 0);
-											}
+										if (dh.substring(0, 1).equals("X")) {
+											//d.updateWxys(dh, k + 1, je, 0);
+											//d.upDateAllWxYs(dh);
+										} else {
+											//d.updatexsys(dh, k + 1, je, 0);
+											//d.upDateAllXsYs(dh);
 										}
 										sk = sk - ys;
-										while (sk > 0) {
-											int srtable = table.getRowCount();
-											for (int i = 0; i < srtable; i++) {
-												if (i != sr) {
-													Double ys2 = Double.parseDouble(table.getValueAt(i, 4).toString());
-													String dh2 = table.getValueAt(i, 0).toString();
-													if (dh2.substring(0, 1).equals("X")) {
-														xxmdm.setDataVector(d.wxd(dh2), mcn);
-													} else {
-														xxmdm.setDataVector(d.xsd(dh2), mcn);
-													}
-													if (sk >= ys2) {
-														int l = xxtable.getRowCount();
-														for (int k = 0; k < l; k++) {
-															Double je = Double
-																	.parseDouble(xxtable.getValueAt(k, 7).toString());
-															if (dh.substring(0, 1).equals("X")) {
-																d.updateWxys(dh2, k + 1, je, 0);
-															} else {
-																d.updatexsys(dh2, k + 1, je, 0);
-															}
-														}
-														sk = sk - ys2;
-													} else if (sk < ys2) {
-														int l = xxtable.getRowCount();
-														for (int k = 0; k < l; k++) {
-															Double zje = Double
-																	.parseDouble(xxtable.getValueAt(k, 7).toString());
-															Double ysk = Double
-																	.parseDouble(xxtable.getValueAt(k, 8).toString());
-															if (zje > ysk) {
-																// System.out.println(i+1);
-																if (sk - (zje - ysk) >= 0) {
-																	if (dh2.substring(0, 1).equals("X")) {
-																		d.updateWxys(dh2, k + 1, zje, 0);
-																	} else {
-																		d.updatexsys(dh2, k + 1, zje, 0);
-																	}
-																	sk = 0.0;
-																} else {
-																	if (dh.substring(0, 1).equals("X")) {
-																		d.updateWxys(dh2, k + 1, sk + ysk, 1);
-																	} else {
-																		d.updatexsys(dh2, k + 1, sk + ysk, 1);
-																	}
-																	sk = 0.0;
-																	break;
-																}
-															}
-														}
-														break;
-													}
-												}
-											}
-										}
-									} else if (sk < ys) {
-										// System.out.println("<");
-										int j = xxtable.getRowCount();
-										for (int i = 0; i < j; i++) {
-											Double zje = Double.parseDouble(xxtable.getValueAt(i, 7).toString());
-											Double ysk = Double.parseDouble(xxtable.getValueAt(i, 8).toString());
-											if (zje > ysk) {
-												// System.out.println(i+1);
-												if (sk - (zje - ysk) >= 0) {
-													if (dh.substring(0, 1).equals("X")) {
-														d.updateWxys(dh, i + 1, zje, 0);
-													} else {
-														d.updatexsys(dh, i + 1, zje, 0);
-													}
-													sk = sk - (zje - ysk);
-												} else {
-													if (dh.substring(0, 1).equals("X")) {
-														d.updateWxys(dh, i + 1, sk + ysk, 1);
-													} else {
-														d.updatexsys(dh, i + 1, sk + ysk, 1);
-													}
+										int cr=table.getRowCount();
+										int i=0;
+										while(sk>0){
+											if(sr!=i){
+												if(i==cr){
 													break;
 												}
+												System.out.println("剩余收款费用："+sk);
+												Double ys1 = Double.parseDouble(table.getValueAt(i, 4).toString());
+												String dh1 = table.getValueAt(i, 0).toString();
+												if(sk-ys1>=0){
+													if (dh1.substring(0, 1).equals("X")) {
+														//d.updateWxys(dh, k + 1, je, 0);
+														//d.upDateAllWxYs(dh1);
+														sk=sk-ys1;
+													} else {
+														//d.updatexsys(dh, k + 1, je, 0);
+														//d.upDateAllXsYs(dh1);
+														sk=sk-ys1;
+													}
+												}else{
+													if (dh1.substring(0, 1).equals("X")) {
+														xxmdm.setDataVector(d.wxd(dh1), mcn);
+													} else {
+														xxmdm.setDataVector(d.xsd(dh1), mcn);
+													}
+													int xrc=xxtable.getRowCount();
+													for(int t=0;t<xrc;t++){
+														Double je=Double.parseDouble(xxtable.getValueAt(t, 7).toString());
+														Double ys2=Double.parseDouble(xxtable.getValueAt(t, 8).toString());
+														//System.out.println("详细应收单价："+(je-ys2));
+														if(sk-je+ys2>=0){
+															System.out.println("全收:"+(je));
+															sk=sk-je+ys2;
+														}else{
+															System.out.println("单件商品已收:"+(sk+ys2));
+															sk=sk-je+ys2;
+															break;
+														}
+													}
+												}
 											}
+											
+											i++;
 										}
+									} else if (sk == ys) {
+										
+									}else {
+										// System.out.println("<");
 									}
 								} else {
 									JOptionPane.showMessageDialog(null, "输入为负或为零");

@@ -49,10 +49,6 @@ public class RepairList {
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
 	public RepairList(String user) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-		Date date2 = new Date();
-		String s1 = sdf.format(date2);
-		CheckDate.ReturnCheckDateResult(s1);
 		RepairListData gd = new RepairListData(); // 调用数据类
 		wData w = new wData();
 		List<String> spcount = new ArrayList<String>(); // 商品名称
@@ -65,7 +61,6 @@ public class RepairList {
 		rightmenu.add(deleteItem);
 		JTable mtable = new JTable() {
 			private static final long serialVersionUID = 1L;
-
 			public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 				if (columnIndex == 4) {
 					try {
@@ -599,6 +594,7 @@ public class RepairList {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				CheckDate.ReturnCheckDateResult(mxsb);
 				int cr = mtable.getRowCount();
 				if (cr == 0) {
 					JOptionPane.showMessageDialog(null, "无数据");

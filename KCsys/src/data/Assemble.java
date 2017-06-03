@@ -8,11 +8,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,10 +38,6 @@ public class Assemble {
 		new Assemble("test");
 	}
 	public Assemble(String user){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-	   	Date date2=new Date();
-	   	String s1=sdf.format(date2);
-	   	CheckDate.ReturnCheckDateResult(s1);
 		DefaultTableCellRenderer tcr= new DefaultTableCellRenderer();  //创建渲染器
 	    tcr.setHorizontalAlignment(JLabel.CENTER);
 	    String[] assembleFrame_ColumnN={"序号","商品型号","商品名称","单位","单价","数量","金额"};
@@ -175,6 +168,7 @@ public class Assemble {
 		//================================================组装=================================================
 		AssembleQuantity_T.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
+				CheckDate.ReturnCheckDateResult(AssembleQuantity_T);
 				if(e.getKeyCode()=='\n'){
 					int row=Assemble_MFrame_Table.getSelectedRow();
 					String sbh=Assemble_MFrame_Table.getValueAt(row, 0).toString();
@@ -222,6 +216,7 @@ public class Assemble {
 		AM_deleteItem.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				CheckDate.ReturnCheckDateResult(AM_deleteItem);
 				// TODO Auto-generated method stub
 				int row=Assemble_MFrame_Table.getSelectedRow();
 				String sbh=Assemble_MFrame_Table.getValueAt(row, 0).toString();
@@ -464,6 +459,7 @@ public class Assemble {
 		//======================================组装命名价格监听=============================================
 		assembleNameFrame_PriceT.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
+				CheckDate.ReturnCheckDateResult(assembleNameFrame_PriceT);
 				if(e.getKeyCode()=='\n'){
 					String name=assembleNameFrame_NameT.getText().trim();
 					String sprice=assembleNameFrame_PriceT.getText().trim();

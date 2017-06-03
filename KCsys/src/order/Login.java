@@ -18,9 +18,6 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -47,9 +44,6 @@ public class Login extends JFrame {
 		Dao d = new Dao();
 		Connection con = d.getcon();
 		Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-		Date date2=new Date();
-		String s1=sdf.format(date2);
 		// -----------------------------------------------
 		JFrame changePassW = new JFrame("请输入密码");
 		changePassW.setResizable(false);
@@ -185,7 +179,7 @@ public class Login extends JFrame {
 										JOptionPane.showMessageDialog(changePassW, "\t初始密码\n请修改密码");
 										changePassW.setVisible(true);
 									} else {
-										if(CheckDate.ReturnCheckDateResult(s1)==true){
+										if(CheckDate.ReturnCheckDateResult(JB_login)==true){
 										dispose();
 										sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values(" + id + ",'"
 												+ PcName + "','" + PcMac + "')");

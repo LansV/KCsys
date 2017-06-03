@@ -10,11 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -36,10 +32,7 @@ public class GYSmanage {
 	wData w=new wData();
 	GysManageData gmd=new GysManageData();
 	public GYSmanage(){
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-	   	Date date2=new Date();
-	   	String s1=sdf.format(date2);
-	   	CheckDate.ReturnCheckDateResult(s1);
+	   	
 		//------------------------------------------添加面板----------------------------------------
 		JFrame tjf=new JFrame("添加供应商");
 		tjf.setBounds(500,50,380,580);
@@ -356,6 +349,7 @@ public class GYSmanage {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				CheckDate.ReturnCheckDateResult(addb);
 				if(jtbh.getText().length()==0){
 					JOptionPane.showMessageDialog(null,"必要数据为空");
 				}else{
@@ -423,6 +417,7 @@ public class GYSmanage {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				CheckDate.ReturnCheckDateResult(xgb);
 				if(xjtmc.getText().length()==0){
 						JOptionPane.showMessageDialog(null,"名称不能为空");
 					}else{

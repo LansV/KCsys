@@ -51,10 +51,7 @@ public class XSF {
 	JLabel showkhid = new JLabel();
 
 	public XSF(String user) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-		Date date2 = new Date();
-		String s1 = sdf.format(date2);
-		CheckDate.ReturnCheckDateResult(s1);
+		
 		xsfData gd = new xsfData(); // 调用数据类
 		List<String> spcount = new ArrayList<String>(); // 商品名称
 		List<Integer> kccount = new ArrayList<Integer>(); // 库存数量
@@ -600,6 +597,7 @@ public class XSF {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				CheckDate.ReturnCheckDateResult(mxsb);
 				int cr = mtable.getRowCount();
 				if (cr == 0) {
 					JOptionPane.showMessageDialog(null, "无数据");

@@ -531,6 +531,50 @@ public class YSdata {
 		     	 }
 		}
 	}
+	//--------------------------------------------------------------------------------------------------------.
+	public void upDateAllXsYs(String dh){
+		Date date2=new Date();
+		String ckd=String.format("%tF", date2);
+		try{
+			sql = con.createStatement();
+			sql.execute("update WXD set skje=je,skstatus=0,skdate='"+ckd+"' where dh='"+dh+"';");
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"更新收款数据错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
+		     	 }
+		}
+	}
+	//---------------------------------------------------------------------------------------------------------
+	public void upDateAllWxYs(String dh){
+		Date date2=new Date();
+		String ckd=String.format("%tF", date2);
+		try{
+			sql = con.createStatement();
+			sql.execute("update WXD set skje=je,skstatus=0,skdate='"+ckd+"' where dh='"+dh+"';");
+		}catch(Exception e){
+			JOptionPane.showMessageDialog(null,"更新收款数据错误");
+		}finally{
+		   	 try{
+		     	   if(res!=null){
+		     		   res.close();
+		     	   }
+		     	   if(sql!=null){
+		     		   sql.close();
+		     	   }
+		     	 }catch(Exception e){
+		     		 JOptionPane.showMessageDialog(null,"断开错误");
+		     	 }
+		}
+	}
 	//---------------------------------------------------更新应收------------------------------------------------
 	public void updateWxys(String dh,int bh,Double je,int zt){
 		Date date2=new Date();

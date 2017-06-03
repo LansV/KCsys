@@ -23,7 +23,7 @@ public class Printclass {
 	static String add;
 	static String js;
 	static String jsr;
-	static String receiptStatus="";
+	static String receiptStatus;
 	static List<Object> kh=new ArrayList<Object>();
 	static List<Object> sp=new ArrayList<Object>();
 	static List<Object> hj=new ArrayList<Object>();
@@ -37,6 +37,8 @@ public class Printclass {
 		js=kh.get(5).toString().trim();
 		if(kh.size()==7){
 			receiptStatus=kh.get(6).toString().trim();
+		}else{
+			receiptStatus="";
 		}
 		Date d=new Date();
 		date=String.format("%tF",d);

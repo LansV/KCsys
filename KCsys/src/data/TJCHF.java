@@ -70,7 +70,7 @@ public class TJCHF {
 			jehj=je+jehj;
 		}
 		JTextField tqx=new JTextField();
-		tqx.setBounds(20,465,40,25);
+		tqx.setBounds(20,465,80,25);
 		JTextField tdate=new JTextField();
 		tdate.setBounds(120,465,80,25);
 		JTextField tedate=new JTextField();

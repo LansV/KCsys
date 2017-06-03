@@ -13,14 +13,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,9 +39,6 @@ public class Login extends JFrame {
 	boolean EqualsVersion = false;
 
 	public Login() {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);// 输出北京时间
-		Date date2 = new Date();
-		String s1 = sdf.format(date2);
 		Dao d = new Dao();
 		Connection con = d.getcon();
 		setAlwaysOnTop(true);
@@ -124,8 +117,10 @@ public class Login extends JFrame {
 				}
 				PcMac = sb.toString().toUpperCase();
 				// System.out.println(PcMac);
-			} catch (SocketException e) {
+			} catch (Exception e) {
 				PcMac = "";
+				JOptionPane.showMessageDialog(this, "适配器被禁用或出现问题\n请检查后重试");
+				System.exit(0);
 			}
 			try {
 				Image img = Toolkit.getDefaultToolkit().getImage("order/Image/TLogo.png");
@@ -185,10 +180,11 @@ public class Login extends JFrame {
 										JOptionPane.showMessageDialog(c, "\t初始密码\n请修改密码");
 										changePassW.setVisible(true);
 									} else {
-										if (CheckDate.ReturnCheckDateResult(s1) == true) {
-											dispose();
+										
+										if (CheckDate.ReturnCheckDateResult(JB_login) == true) {
 											sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values(" + id
 													+ ",'" + PcName + "','" + PcMac + "')");
+											dispose();
 											new MF(id, xuser);
 										}
 									}
