@@ -1092,10 +1092,12 @@ public class YS {
 													if (dh1.substring(0, 1).equals("X")) {
 														//d.updateWxys(dh, k + 1, je, 0);
 														//d.upDateAllWxYs(dh1);
+														System.out.println("全单收:"+ys1);
 														sk=sk-ys1;
 													} else {
 														//d.updatexsys(dh, k + 1, je, 0);
 														//d.upDateAllXsYs(dh1);
+														System.out.println("全单收:"+ys1);
 														sk=sk-ys1;
 													}
 												}else{
