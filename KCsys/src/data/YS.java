@@ -1072,10 +1072,10 @@ public class YS {
 													// receivables
 										if (dh.substring(0, 1).equals("X")) {
 											//d.updateWxys(dh, k + 1, je, 0);
-											//d.upDateAllWxYs(dh);
+											d.upDateAllWxYs(dh);
 										} else {
 											//d.updatexsys(dh, k + 1, je, 0);
-											//d.upDateAllXsYs(dh);
+											d.upDateAllXsYs(dh);
 										}
 										sk = sk - ys;
 										int cr=table.getRowCount();
@@ -1091,12 +1091,12 @@ public class YS {
 												if(sk-ys1>=0){
 													if (dh1.substring(0, 1).equals("X")) {
 														//d.updateWxys(dh, k + 1, je, 0);
-														//d.upDateAllWxYs(dh1);
+														d.upDateAllWxYs(dh1);
 														System.out.println("全单收:"+ys1);
 														sk=sk-ys1;
 													} else {
 														//d.updatexsys(dh, k + 1, je, 0);
-														//d.upDateAllXsYs(dh1);
+														d.upDateAllXsYs(dh1);
 														System.out.println("全单收:"+ys1);
 														sk=sk-ys1;
 													}
@@ -1110,11 +1110,20 @@ public class YS {
 													for(int t=0;t<xrc;t++){
 														Double je=Double.parseDouble(xxtable.getValueAt(t, 7).toString());
 														Double ys2=Double.parseDouble(xxtable.getValueAt(t, 8).toString());
-														//System.out.println("详细应收单价："+(je-ys2));
 														if(sk-je+ys2>=0){
+															if (dh1.substring(0, 1).equals("X")) {
+																d.updateWxys(dh1, t + 1, je, 0);
+															} else {
+																d.updatexsys(dh1, t + 1, je, 0);
+															}
 															System.out.println("全收:"+(je));
 															sk=sk-je+ys2;
 														}else{
+															if (dh1.substring(0, 1).equals("X")) {
+																d.updateWxys(dh1, t + 1, ys2+sk, 1);
+															} else {
+																d.updatexsys(dh1, t + 1, ys2+sk, 1);
+															}
 															System.out.println("单件商品已收:"+(sk+ys2));
 															sk=sk-je+ys2;
 															break;

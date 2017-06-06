@@ -537,7 +537,7 @@ public class YSdata {
 		String ckd=String.format("%tF", date2);
 		try{
 			sql = con.createStatement();
-			sql.execute("update WXD set skje=je,skstatus=0,skdate='"+ckd+"' where dh='"+dh+"';");
+			sql.execute("update XSD set skje=je,skstatus=0,skdate='"+ckd+"' where dh='"+dh+"';");
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"更新收款数据错误");
 		}finally{
