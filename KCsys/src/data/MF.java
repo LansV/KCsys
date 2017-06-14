@@ -2,6 +2,10 @@ package data;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
@@ -9,8 +13,17 @@ import security.Lock;
 public class MF {
 	public MF(int userid,String user){
 		JFrame mf=new JFrame("主菜单");
+		mf.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		mf.addWindowListener(new WindowAdapter(){
+			@Override
+			public void windowClosing(WindowEvent e) {
+				// TODO 自动生成的方法存根
+				Lock.deleteAllLock(mf, new File("lock/"));
+				System.exit(0);
+			}
+		});
 		mf.setResizable(false);
-		mf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		mf.setBounds(100,100,250,500);
 		Container mfc=mf.getContentPane();
 		mfc.setLayout(null);

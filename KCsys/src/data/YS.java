@@ -541,7 +541,7 @@ public class YS {
 							int r = table.getSelectedRow();
 							String yy = thtyz.getText().trim();
 							String dh = table.getValueAt(r, 0).toString().trim();
-							String kh = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
+							String kh = jtab.getValueAt(jtab.getSelectedRow(), 1).toString();
 							int xrc = xxtable.getRowCount();
 							String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 							for (int i = 0; i < xrc; i++) {
@@ -585,7 +585,7 @@ public class YS {
 									d.alterSkstatus(dh, i + 1, 3);
 								}
 							}
-							xdm.setDataVector(d.xys(kh), xcn);
+							xdm.setDataVector(d.xys(sid), xcn);
 							TableColumn cktablecxh = table.getColumnModel().getColumn(1); // 设置列宽
 							cktablecxh.setPreferredWidth(180);
 							cktablecxh.setMinWidth(180);
@@ -1088,7 +1088,7 @@ public class YS {
 												System.out.println("剩余收款费用："+sk);
 												Double ys1 = Double.parseDouble(table.getValueAt(i, 4).toString());
 												String dh1 = table.getValueAt(i, 0).toString();
-												if(sk-ys1>=0){
+												if(sk-ys1>=0) {
 													if (dh1.substring(0, 1).equals("X")) {
 														//d.updateWxys(dh, k + 1, je, 0);
 														d.upDateAllWxYs(dh1);
@@ -1131,13 +1131,47 @@ public class YS {
 													}
 												}
 											}
-											
 											i++;
 										}
-									} else if (sk == ys) {
-										
+									} else if (sk.equals(ys)) {
+										System.out.println(sk+"="+ys);
+										if (dh.substring(0, 1).equals("X")) {
+											//d.updateWxys(dh, k + 1, je, 0);
+											d.upDateAllWxYs(dh);
+										} else {
+											//d.updatexsys(dh, k + 1, je, 0);
+											d.upDateAllXsYs(dh);
+										}
 									}else {
-										// System.out.println("<");
+										System.out.println(sk+"<"+ys);
+										if (dh.substring(0, 1).equals("X")) {
+											xxmdm.setDataVector(d.wxd(dh), mcn);
+										} else {
+											xxmdm.setDataVector(d.xsd(dh), mcn);
+										}
+										int xrc=xxtable.getRowCount();
+										for(int t=0;t<xrc;t++){
+											Double je=Double.parseDouble(xxtable.getValueAt(t, 7).toString());
+											Double ys2=Double.parseDouble(xxtable.getValueAt(t, 8).toString());
+											if(sk-je+ys2>=0){
+												if (dh.substring(0, 1).equals("X")) {
+													d.updateWxys(dh, t + 1, je, 0);
+												} else {
+													d.updatexsys(dh, t + 1, je, 0);
+												}
+												System.out.println("全收:"+(je));
+												sk=sk-je+ys2;
+											}else{
+												if (dh.substring(0, 1).equals("X")) {
+													d.updateWxys(dh, t + 1, ys2+sk, 1);
+												} else {
+													d.updatexsys(dh, t + 1, ys2+sk, 1);
+												}
+												System.out.println("单件商品已收:"+(sk+ys2));
+												sk=sk-je+ys2;
+												break;
+											}
+										}
 									}
 								} else {
 									JOptionPane.showMessageDialog(null, "输入为负或为零");
@@ -1215,7 +1249,7 @@ public class YS {
 	}
 
 	public static void main(String[] args) {
-		new YS("test");
+		new YS("杨永莲");
 	}
 
 	public String changenum(Double numb) {

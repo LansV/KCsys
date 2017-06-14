@@ -59,7 +59,7 @@ public class CustomerInfo {
 			@Override
 			public void windowClosing(WindowEvent arg0) {
 				// TODO Auto-generated method stub
-				if (Lock.SingleUnLock(CI_MainFrame, "order/lock/CustomerInfo.txt")) {
+				if (Lock.SingleUnLock(CI_MainFrame, "lock/CustomerInfo.txt")) {
 					CI_MainFrame.dispose();
 				}
 			}

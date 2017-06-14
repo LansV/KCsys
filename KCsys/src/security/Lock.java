@@ -12,6 +12,16 @@ import javax.swing.JOptionPane;
 
 public class Lock {
 	static FileOutputStream out = null;
+	public static void deleteAllLock(JFrame jop,File oldPath){
+		if(oldPath.isDirectory()){
+			 File[] files = oldPath.listFiles();
+	           for (File file : files) {
+	             deleteAllLock(jop,file);
+	           }
+		}else{
+			oldPath.delete();
+		}
+	}
 	public static boolean SingleLock(JFrame JOP, String filename) {
 		File file = new File(filename);
 		if (file.exists() == true) {

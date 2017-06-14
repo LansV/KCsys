@@ -1,10 +1,14 @@
 package test;
 
 
-import java.util.*;
-import java.awt.*;
-import javax.swing.*;
-import javax.swing.tree.*;
+import java.awt.Container;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
+import javax.swing.JFrame;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 public class Test extends JFrame {
 	private static final long serialVersionUID=20110125L;
 	public Test() {
@@ -42,6 +46,17 @@ public class Test extends JFrame {
 	}
 	public static void main(String[] args) {
 		new Test();
+		String s="2017-6-5";
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");//小写的mm表示的是分钟  
+		String dstr=s;  
+		try {
+			java.util.Date date=sdf.parse(dstr);
+			System.out.println(date);
+		} catch (ParseException e) {
+			// TODO 自动生成的 catch 块
+			e.printStackTrace();
+		} 
+
 	}
 }
 

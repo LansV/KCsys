@@ -112,12 +112,7 @@ public class Printclass {
 									int row=0;
 									int count=0;
 									List<Object> lsx=new ArrayList<Object>();
-						/*			for(int i=0;i<11;i++){
-										lsx.add("");lsx.add("");lsx.add("");lsx.add("");lsx.add("");
-										lsx.add("");lsx.add("");lsx.add("");lsx.add("");
-									}*/
 									lsx=sp;
-									//System.out.println(lsx.size());
 									for(int i=0;i<lsx.size()/9+3;i++){    //»­ºáÏß
 										y=115+row*18;
 										if(i==1){
