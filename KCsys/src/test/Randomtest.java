@@ -4,7 +4,7 @@ import java.util.HashSet;
 
 public class Randomtest {
 	public static void main(String[] args) {
-		int neednum = 6;
+		int neednum = 4;
 		int count1=0;
 		int count2=0;
 		int count3=0;
@@ -66,7 +66,7 @@ public class Randomtest {
 		}
 		int setSize = 0;
 		while (true) {
-			int num = (int) (Math.random() * (max - min)) + min+1;
+			int num = (int) (Math.random() * (max - min)) + min;
 			set.add(num);// 将不同的数存入HashSet中
 			setSize = set.size();
 			if (setSize >= n) {
