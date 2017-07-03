@@ -68,12 +68,12 @@ public class RepairList {
 						if (st.length() != 0) {
 							Double price = Double.parseDouble(st);
 							if (price < 0) {
-								JOptionPane.showMessageDialog(null, "只能输入正数");
+								JOptionPane.showMessageDialog(mp, "只能输入正数");
 								return;
 							}
 						}
 					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						JOptionPane.showMessageDialog(mp, "只能输入数字!");
 						return;
 					}
 				}
@@ -82,11 +82,11 @@ public class RepairList {
 						String st = aValue.toString();
 						Double price = Double.parseDouble(st);
 						if (price < 0) {
-							JOptionPane.showMessageDialog(null, "只能输入正数");
+							JOptionPane.showMessageDialog(mp, "只能输入正数");
 							return;
 						}
 					} catch (Exception ex) {
-						JOptionPane.showMessageDialog(null, "只能输入数字!");
+						JOptionPane.showMessageDialog(mp, "只能输入数字!");
 						return;
 					}
 				}
@@ -702,7 +702,7 @@ public class RepairList {
 								eq = gd.wx(dh, khid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz, jc.getSelectedIndex(),
 										user, repairid, repairman, sPumpNo);
 								if (eq) {
-									if (sp.equals("人工费") == false) {
+									if (xh.length()!=0) {
 										int error = w.wkcout(xh, sp, sl, "2", user, dh);
 										if (error > 0) {
 											switch (error) {
@@ -786,12 +786,65 @@ public class RepairList {
 		});
 		mxsb.setBounds(300, 560, 60, 25);
 		// ----------------------------------------------------------------------
-		JFrame rL_LabourFrame = new JFrame("人工费");
+		JFrame rL_LabourFrame = new JFrame("非库存费用");
 		rL_LabourFrame.setResizable(false);
 		rL_LabourFrame.setBounds(700, 150, 250, 120);
 		Container rL_LabourFrame_Content = rL_LabourFrame.getContentPane();
 		rL_LabourFrame_Content.setLayout(null);
+		JTextField name = new JTextField();
 		JTextField rL_LabourFrame_TextF = new JTextField();
+		name.setBounds(10, 10, 120, 25);
+		rL_LabourFrame_Content.add(name);
+		name.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int mr = mtable.getRowCount();
+				if (e.getKeyChar() == '\n') {
+					new SQLFilter(rL_LabourFrame_TextF, rL_LabourFrame_TextF.getText().trim(), user);
+					String na=name.getText().trim();
+					if(na.length()!=0){
+						boolean b=false;
+						if(spcount.size()==0){
+							b=true;
+						}
+						for (int i = 0; i < spcount.size(); i++) {
+							if (spcount.get(i).equals(na) == true) {
+								JOptionPane.showMessageDialog(rL_LabourFrame, "请勿重复添加");
+							} else {
+								//rL_LabourFrame.setVisible(true);
+								b=true;
+							}
+						}
+						if(b){
+							try {
+								Double LF_labour = Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
+								if (LF_labour <= 0) {
+									JOptionPane.showMessageDialog(null, "费用必须大于零");
+								} else {
+									mdm.addRow(row);
+									mtable.setValueAt(mr + 1, mr, 0);
+									mtable.setValueAt("", mr, 1);
+									mtable.setValueAt(na, mr, 2);
+									mtable.setValueAt("件", mr, 3);
+									mtable.setValueAt("", mr, 4);
+									mtable.setValueAt(String.format("%.2f", LF_labour), mr, 5);
+									kccount.add(1);
+									mtable.setValueAt("1", mr, 6);
+									mf.setEnabled(true);
+									rL_LabourFrame.dispose();
+									spcount.add(na);
+									name.setText("");
+									rL_LabourFrame_TextF.setText("");
+								}
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog(null, "请输入数字");
+							}
+						}
+					}else{
+						JOptionPane.showMessageDialog(null, "请输入费用名");
+					}
+				}
+			}
+		});
 		rL_LabourFrame_TextF.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -799,50 +852,60 @@ public class RepairList {
 				int mr = mtable.getRowCount();
 				if (e.getKeyChar() == '\n') {
 					new SQLFilter(rL_LabourFrame_TextF, rL_LabourFrame_TextF.getText().trim(), user);
-					try {
-						Double LF_labour = Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
-						if (LF_labour <= 0) {
-							JOptionPane.showMessageDialog(null, "人工费必须大于零");
-						} else {
-							mdm.addRow(row);
-							mtable.setValueAt(mr + 1, mr, 0);
-							mtable.setValueAt("", mr, 1);
-							mtable.setValueAt("人工费", mr, 2);
-							mtable.setValueAt("件", mr, 3);
-							mtable.setValueAt("", mr, 4);
-							mtable.setValueAt(String.format("%.2f", LF_labour), mr, 5);
-							kccount.add(1);
-							mtable.setValueAt("1", mr, 6);
-							mf.setEnabled(true);
-							rL_LabourFrame.dispose();
-							spcount.add("人工费");
-							rL_LabourFrame_TextF.setText("");
+					String na=name.getText().trim();
+					if(na.length()!=0){
+						boolean b=false;
+						if(spcount.size()==0){
+							b=true;
 						}
-					} catch (Exception e1) {
-						JOptionPane.showMessageDialog(null, "请输入数字");
+						for (int i = 0; i < spcount.size(); i++) {
+							if (spcount.get(i).equals(na) == true) {
+								JOptionPane.showMessageDialog(rL_LabourFrame, "请勿重复添加");
+							} else {
+								//rL_LabourFrame.setVisible(true);
+								b=true;
+							}
+						}
+						if(b){
+							try {
+								Double LF_labour = Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
+								if (LF_labour <= 0) {
+									JOptionPane.showMessageDialog(null, "费用必须大于零");
+								} else {
+									mdm.addRow(row);
+									mtable.setValueAt(mr + 1, mr, 0);
+									mtable.setValueAt("", mr, 1);
+									mtable.setValueAt(na, mr, 2);
+									mtable.setValueAt("件", mr, 3);
+									mtable.setValueAt("", mr, 4);
+									mtable.setValueAt(String.format("%.2f", LF_labour), mr, 5);
+									kccount.add(1);
+									mtable.setValueAt("1", mr, 6);
+									mf.setEnabled(true);
+									rL_LabourFrame.dispose();
+									spcount.add(na);
+									name.setText("");
+									rL_LabourFrame_TextF.setText("");
+								}
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog(null, "请输入数字");
+							}
+						}
+					}else{
+						JOptionPane.showMessageDialog(null, "请输入费用名");
 					}
 				}
 			}
 		});
-		rL_LabourFrame_TextF.setBounds(10, 27, 120, 25);
+		rL_LabourFrame_TextF.setBounds(10, 50, 120, 25);
 		rL_LabourFrame_Content.add(rL_LabourFrame_TextF);
-		JButton rL_LabourFrame_LabourB = new JButton("人工费");
-		rL_LabourFrame_LabourB.setBounds(450, 560, 75, 25);
+		JButton rL_LabourFrame_LabourB = new JButton("其他费用");
+		rL_LabourFrame_LabourB.setBounds(450, 560,90, 25);
 		rL_LabourFrame_LabourB.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				if (spcount.size() == 0) {
-					rL_LabourFrame.setVisible(true);
-				} else {
-					for (int i = 0; i < spcount.size(); i++) {
-						if (spcount.get(i).equals("人工费") == true) {
-							JOptionPane.showMessageDialog(rL_LabourFrame, "请勿重复添加");
-						} else {
-							rL_LabourFrame.setVisible(true);
-						}
-					}
-				}
+				rL_LabourFrame.setVisible(true);
 			}
 		});
 		mfc.add(rL_LabourFrame_LabourB);

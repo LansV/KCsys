@@ -169,14 +169,14 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select  max(bh) as bh,xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,"
+			res = sql.executeQuery("select  bh,max(xh) as xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,"
 					+ "max(dj) as dj,sum(sl) as sl,sum(je) as je,sum(skje) as skje,MAX(bz) as bz from "
 					+ "("
 					+ "select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from WXD where dh='"+dh+"' "
 					+ "union "
-					+ "select max(bh),xh,max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz "
-					+ "from THD where dh='"+dh+"' group by xh"
-					+ ") temp group by xh order by bh");
+					+ "select bh,max(xh),max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz "
+					+ "from THD where dh='"+dh+"' group by bh"
+					+ ") temp group by bh order by bh");
 			while(res.next()){
 				ls.add(res.getString("bh").trim());
 				ls.add(res.getString("xh").trim());
@@ -326,14 +326,14 @@ public class YSdata {
 		List<String> ls=new ArrayList<String>();
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select  max(bh) as bh,xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,"
+			res = sql.executeQuery("select bh,max(xh) as xh,max(sp) as sp,max(dw) as dw,max(zk) as zk,"
 					+ "max(dj) as dj,sum(sl) as sl,sum(je) as je,sum(skje) as skje,MAX(bz) as bz from "
 					+ "("
 					+ "select bh,xh,sp,dw,zk,dj,sl,je,skje,bz from XSD where dh='"+dh+"' "
 					+ "union "
-					+ "select max(bh),xh,max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz "
-					+ "from THD where dh='"+dh+"' group by xh"
-					+ ") temp group by xh order by bh");
+					+ "select bh,max(xh),max(sp),max(dw),max(zk),max(dj),-sum(tsl),-sum(tje),0 as skje,'' as bz "
+					+ "from THD where dh='"+dh+"' group by bh"
+					+ ") temp group by bh order by bh");
 			while(res.next()){
 				ls.add(res.getString("bh").trim());
 				ls.add(res.getString("xh").trim());

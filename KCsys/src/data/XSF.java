@@ -49,9 +49,7 @@ public class XSF {
 	Double hj; // 合计
 	JLabel showhj = new JLabel(); // 显示合计
 	JLabel showkhid = new JLabel();
-
 	public XSF(String user) {
-		
 		xsfData gd = new xsfData(); // 调用数据类
 		List<String> spcount = new ArrayList<String>(); // 商品名称
 		List<Integer> kccount = new ArrayList<Integer>(); // 库存数量
@@ -135,7 +133,6 @@ public class XSF {
 			 * 
 			 */
 			private static final long serialVersionUID = 1L;
-
 			public boolean isCellEditable(int row, int colunm) {
 				if (colunm > 3 && colunm < 9 && colunm != 7) {
 					return true;
@@ -702,22 +699,23 @@ public class XSF {
 								listsp.add(bz);
 								eqinsert = gd.wxs(dh, customerid, mc, bh, xh, sp, dw, zk, dj, sl, je, bz,
 										jc.getSelectedIndex(), user, saleid, salename);
-								if (eqinsert) {
-									gd.wkcout(xh, sp, sl, "1," + dh, user);
-								} else {
-									if (dh.equals(gd.xsdh()) == true) {
-										JOptionPane.showMessageDialog(mf, "发生未知错误！请重试");
+								if(xh.length()!=0){
+									if (eqinsert) {
+										gd.wkcout(xh, sp, sl, "1," + dh, user);
 									} else {
-										JOptionPane.showMessageDialog(mf, "并发错误！单号重复，自动修正单号");
-										ml.setText(gd.xsdh());
-										JOptionPane.showMessageDialog(mf, "修正成功");
+										if (dh.equals(gd.xsdh()) == true) {
+											JOptionPane.showMessageDialog(mf, "发生未知错误！请重试");
+										} else {
+											JOptionPane.showMessageDialog(mf, "并发错误！单号重复，自动修正单号");
+											ml.setText(gd.xsdh());
+											JOptionPane.showMessageDialog(mf, "修正成功");
+										}
+										break;
 									}
-									break;
 								}
 								String[][] sparr = gd.spcxdj(spjt.getText().trim());
 								DefaultTableModel spdm = new DefaultTableModel(sparr, spcn) {
 									private static final long serialVersionUID = 1L;
-
 									public boolean isCellEditable(int row, int colunm) {
 										return false;
 									}
@@ -767,6 +765,130 @@ public class XSF {
 		});
 		mxsb.setBounds(300, 560, 60, 25);
 		mfc.setLayout(null);
+		//-------------------------------------------------------------------------------------
+		JFrame rL_LabourFrame = new JFrame("非库存费用");
+		rL_LabourFrame.setResizable(false);
+		rL_LabourFrame.setBounds(700, 150, 250, 120);
+		Container rL_LabourFrame_Content = rL_LabourFrame.getContentPane();
+		rL_LabourFrame_Content.setLayout(null);
+		JTextField name = new JTextField();
+		JTextField rL_LabourFrame_TextF = new JTextField();
+		name.setBounds(10, 10, 120, 25);
+		rL_LabourFrame_Content.add(name);
+		name.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				int mr = mtable.getRowCount();
+				if (e.getKeyChar() == '\n') {
+					new SQLFilter(rL_LabourFrame_TextF, rL_LabourFrame_TextF.getText().trim(), user);
+					String na=name.getText().trim();
+					if(na.length()!=0){
+						boolean b=false;
+						if(spcount.size()==0){
+							b=true;
+						}
+						for (int i = 0; i < spcount.size(); i++) {
+							if (spcount.get(i).equals(na) == true) {
+								JOptionPane.showMessageDialog(rL_LabourFrame, "请勿重复添加");
+							} else {
+								//rL_LabourFrame.setVisible(true);
+								b=true;
+							}
+						}
+						if(b){
+							try {
+								Double LF_labour = Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
+								if (LF_labour <= 0) {
+									JOptionPane.showMessageDialog(null, "费用必须大于零");
+								} else {
+									mdm.addRow(row);
+									mtable.setValueAt(mr + 1, mr, 0);
+									mtable.setValueAt("", mr, 1);
+									mtable.setValueAt(na, mr, 2);
+									mtable.setValueAt("件", mr, 3);
+									mtable.setValueAt("", mr, 4);
+									mtable.setValueAt(String.format("%.2f", LF_labour), mr, 5);
+									kccount.add(1);
+									mtable.setValueAt("1", mr, 6);
+									mf.setEnabled(true);
+									rL_LabourFrame.dispose();
+									spcount.add(na);
+									name.setText("");
+									rL_LabourFrame_TextF.setText("");
+								}
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog(null, "请输入数字");
+							}
+						}
+					}else{
+						JOptionPane.showMessageDialog(null, "请输入费用名");
+					}
+				}
+			}
+		});
+		rL_LabourFrame_TextF.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// TODO Auto-generated method stub
+				int mr = mtable.getRowCount();
+				if (e.getKeyChar() == '\n') {
+					new SQLFilter(rL_LabourFrame_TextF, rL_LabourFrame_TextF.getText().trim(), user);
+					String na=name.getText().trim();
+					if(na.length()!=0){
+						boolean b=false;
+						if(spcount.size()==0){
+							b=true;
+						}
+						for (int i = 0; i < spcount.size(); i++) {
+							if (spcount.get(i).equals(na) == true) {
+								JOptionPane.showMessageDialog(rL_LabourFrame, "请勿重复添加");
+							} else {
+								//rL_LabourFrame.setVisible(true);
+								b=true;
+							}
+						}
+						if(b){
+							try {
+								Double LF_labour = Double.parseDouble(rL_LabourFrame_TextF.getText().trim());
+								if (LF_labour <= 0) {
+									JOptionPane.showMessageDialog(null, "费用必须大于零");
+								} else {
+									mdm.addRow(row);
+									mtable.setValueAt(mr + 1, mr, 0);
+									mtable.setValueAt("", mr, 1);
+									mtable.setValueAt(na, mr, 2);
+									mtable.setValueAt("件", mr, 3);
+									mtable.setValueAt("", mr, 4);
+									mtable.setValueAt(String.format("%.2f", LF_labour), mr, 5);
+									kccount.add(1);
+									mtable.setValueAt("1", mr, 6);
+									mf.setEnabled(true);
+									rL_LabourFrame.dispose();
+									spcount.add(na);
+									name.setText("");
+									rL_LabourFrame_TextF.setText("");
+								}
+							} catch (Exception e1) {
+								JOptionPane.showMessageDialog(null, "请输入数字");
+							}
+						}
+					}else{
+						JOptionPane.showMessageDialog(null, "请输入费用名");
+					}
+				}
+			}
+		});
+		rL_LabourFrame_TextF.setBounds(10, 50, 120, 25);
+		rL_LabourFrame_Content.add(rL_LabourFrame_TextF);
+		JButton rL_LabourFrame_LabourB = new JButton("其他费用");
+		rL_LabourFrame_LabourB.setBounds(450, 560,90, 25);
+		rL_LabourFrame_LabourB.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				rL_LabourFrame.setVisible(true);
+			}
+		});
+		mfc.add(rL_LabourFrame_LabourB);
 		mfc.add(jtp);
 		mfc.add(mxsb);
 		mfc.add(ml);

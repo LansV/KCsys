@@ -29,6 +29,7 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+
 import security.Lock;
 public class KCx {
 	KCxdata wx=new KCxdata();
@@ -158,7 +159,7 @@ public class KCx {
 			}
 		});
 		maintable.getTableHeader().setReorderingAllowed(false);
-		String[] cn={"种类编号","种类","供应商编号","供应商名称","名称","进货价","分销价","经销价","单价","数量","单位","修改日期","警告数量","库存位置"};
+		String[] cn={"编号","种类","供应商编号","供应商名称","名称","进货价","分销价","经销价","单价","数量","单位","修改日期","警告数量","库存位置"};
 		DefaultTableModel maindm=new DefaultTableModel(arr,cn){
 			/**
 			 * 
@@ -293,6 +294,7 @@ public class KCx {
 		JPopupMenu pm=new JPopupMenu();
 		JMenuItem mit=new JMenuItem("入库");
 		JMenuItem xit=new JMenuItem("出库");
+		JMenuItem delete=new JMenuItem("删除");
 		//JMenuItem orderitem=new JMenuItem("添加到订货单");
 		xit.addActionListener(new ActionListener(){
 			@Override
@@ -318,8 +320,10 @@ public class KCx {
 				slf.setVisible(true);
 			}
 		});
+		
 		pm.add(mit);
 		pm.add(xit);
+		pm.add(delete);
 		//pm.add(orderitem);
 		mtt.addMouseListener(new MouseAdapter(){
 			@Override
@@ -386,6 +390,28 @@ public class KCx {
 					}
 				});
 				mainjsp.setViewportView(mtt);
+				Double hjjhj=0.0;
+				for(int i=0;i<crow;i++){
+					String sjhj=mtt.getValueAt(i,5).toString();
+					String ssl=mtt.getValueAt(i,9).toString();
+					Double jhj=Double.parseDouble(sjhj);
+					int sl=Integer.parseInt(ssl);
+					hjjhj=sl*jhj+hjjhj;
+				}
+				showjhj.setText(String.format("%.3f",hjjhj));
+			}
+		});
+		//-------
+		delete.addActionListener(new ActionListener(){
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO 自动生成的方法存根
+				int r=mtt.getSelectedRow();
+				String sbh=mtt.getValueAt(r, 0).toString();
+				wx.deleteProduct(mainf, sbh);
+				DefaultTableModel dm = (DefaultTableModel) mtt.getModel();
+				dm.removeRow(r);
 				Double hjjhj=0.0;
 				for(int i=0;i<crow;i++){
 					String sjhj=mtt.getValueAt(i,5).toString();

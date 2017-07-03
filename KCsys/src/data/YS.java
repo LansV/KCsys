@@ -462,7 +462,7 @@ public class YS {
 										}
 										String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 										d.gth(dh, sid, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
-										if (sp.equals("人工费") == false) {
+										if (xh.length()!=0) {
 											//-- qx 1 销售
 											//-- qx 2 维修
 											//-- qx 3 采购入库
@@ -563,7 +563,7 @@ public class YS {
 										thje = dj * sl * zk / 10;
 									}
 									d.gth(dh, sid, kh, i + 1, xh, sp, dw, zk, dj, sl, thje, yy, 3, user);
-									if (sp.equals("人工费") == false) {
+									if (xh.length()!=0) {
 										//-- qx 1 销售
 										//-- qx 2 维修
 										//-- qx 3 采购入库
@@ -637,7 +637,7 @@ public class YS {
 									}
 									String sid = jtab.getValueAt(jtab.getSelectedRow(), 0).toString();
 									d.gth(dh, sid, kh, bh, xh, sp, dw, zk, dj, thsl, thje, yy, 2, user);
-									if (sp.equals("人工费") == false) {
+									if (xh.length()!=0) {
 										w.wkcin(xh, sp, thsl, kh + "退货", user, dh);
 									}
 									if (dh.substring(0, 1).equals("X")) {

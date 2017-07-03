@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 public class KCxdata {
@@ -439,6 +440,40 @@ public class KCxdata {
 	}
 	
 	//******************************************写入***************************************************
+	public void deleteProduct(JFrame c,String sbh){
+		@SuppressWarnings("unused")
+		int i=0;
+		try {
+			sql = con.createStatement();
+			sql.execute("delete KC where KC_sbh="+sbh);
+			i=1;
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			i=2;
+			JOptionPane.showMessageDialog(c,"写入数据错误！","错误",0);
+		}finally{
+			if(res!=null){
+				try {
+					res.close();
+					res=null;
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					i=3;
+					JOptionPane.showMessageDialog(c,"断开数据连接错误");
+				}
+			}
+			if(sql!=null){
+				try {
+					sql.close();
+					sql=null;
+				} catch (SQLException e1) {
+					// TODO Auto-generated catch block
+					i=4;
+					JOptionPane.showMessageDialog(c,"断开数据连接错误");
+				}
+			}
+		}
+	}
 	public int changeType(Component c,String sbh,String newsbh,String typeid,String type){
 		int i=0;
 		try {
