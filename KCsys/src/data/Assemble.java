@@ -2,6 +2,8 @@ package data;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
@@ -118,8 +121,8 @@ public class Assemble {
 		JButton Assemble_MFrame_QueryB=new JButton("查询");
 		Assemble_MFrame_QueryB.setBounds(220, 10, 60, 24);
 		Assemble_MFrame_Content.add(Assemble_MFrame_QueryB);
-		JButton Assemble_MFrame_AddB=new JButton("添加");
-		Assemble_MFrame_AddB.setBounds(320, 645, 60, 24);
+		JButton Assemble_MFrame_AddB=new JButton("添加组装表");
+		Assemble_MFrame_AddB.setBounds(280, 645, 100, 24);
 		Assemble_MFrame_Content.add(Assemble_MFrame_AddB);
 		//------------------------------------------MFrame_Table--------------------------------------
 		JTable Assemble_MFrame_Table=new JTable();
@@ -168,8 +171,8 @@ public class Assemble {
 		//================================================组装=================================================
 		AssembleQuantity_T.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
-				CheckDate.ReturnCheckDateResult(AssembleQuantity_T);
 				if(e.getKeyCode()=='\n'){
+					CheckDate.ReturnCheckDateResult(AssembleQuantity_T);
 					int row=Assemble_MFrame_Table.getSelectedRow();
 					String sbh=Assemble_MFrame_Table.getValueAt(row, 0).toString();
 					String name=Assemble_MFrame_Table.getValueAt(row, 1).toString();
@@ -276,8 +279,30 @@ public class Assemble {
 		assembleNameFrame_NameL.setBounds(10,10,60,25);
 		JTextField assembleNameFrame_NameT=new JTextField();
 		assembleNameFrame_NameT.setBounds(60,10,150,25);
-//		JLabel xhl=new JLabel("型号:");
-//		xhl.setBounds(10,45,60,25);
+		String[][] typeList = d.getType("");
+		JComboBox<String> assembleType=new JComboBox<String>();
+		assembleType.addItem("请选择种类");
+		int t1 = typeList.length;
+		for (int i = 0; i < t1; i++) {
+			assembleType.addItem(typeList[i][1].trim());
+		}
+		assembleType.setBounds(60,45,150,25);
+		JLabel typel=new JLabel("");
+		assembleNameFrame_Content.add(assembleType);
+		typel.setBounds(10,45,60,25);
+		assembleNameFrame_Content.add(typel);
+		assembleType.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					int i=assembleType.getSelectedIndex();
+					if(i<1){
+						typel.setText("");
+					}else{
+						typel.setText(typeList[i-1][0]);
+					}
+				}
+			}
+		});
 //		JTextField xht=new JTextField();
 //		xht.setBounds(60,45,150,25);
 		JLabel assembleNameFrame_PriceL=new JLabel("价格:");
@@ -418,7 +443,7 @@ public class Assemble {
     	AssembleFrame_JSP.setViewportView(AssembleFrame_Table);
     	AssembleFrame_JSP.setBounds(7,0,470,580);
 		AssembleFrame_Pane.add(AssembleFrame_JSP);
-		JButton assembleFrame_AssembleB=new JButton("添加");
+		JButton assembleFrame_AssembleB=new JButton("组装");
 		assembleFrame_AssembleB.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -459,44 +484,48 @@ public class Assemble {
 		//======================================组装命名价格监听=============================================
 		assembleNameFrame_PriceT.addKeyListener(new KeyAdapter(){
 			public void keyPressed(KeyEvent e){
-				CheckDate.ReturnCheckDateResult(assembleNameFrame_PriceT);
 				if(e.getKeyCode()=='\n'){
+					CheckDate.ReturnCheckDateResult(assembleNameFrame_PriceT);
 					String name=assembleNameFrame_NameT.getText().trim();
 					String sprice=assembleNameFrame_PriceT.getText().trim();
 					if(name.length()!=0&&sprice.length()!=0){
 						if(d.zzjl(name)==false){
-							String sbh=d.getspid(1);
-							System.out.println(sbh);
-							try{
-								Double price=Double.parseDouble(sprice);
-								int rowc=AssembleFrame_Table.getRowCount();
-								for(int i=0;i<rowc;i++){
-									int bh=Integer.parseInt(AssembleFrame_Table.getValueAt(i,0).toString());
-									String psbh=AssembleFrame_Table.getValueAt(i,1).toString();
-									String sp=AssembleFrame_Table.getValueAt(i,2).toString();
-									String dw=AssembleFrame_Table.getValueAt(i,3).toString();
-									Double dj=Double.parseDouble(AssembleFrame_Table.getValueAt(i,4).toString());
-									int sl=Integer.parseInt(AssembleFrame_Table.getValueAt(i,5).toString());
-									Double je=Double.parseDouble(AssembleFrame_Table.getValueAt(i,6).toString());
-									boolean b=d.wzz(sbh,name, bh, psbh, sp, dw, dj, sl, je, user);
-									if(b==false){
-										JOptionPane.showMessageDialog(assembleNameFrame,"循环失败");
-										break;
+							if(typel.getText().length()!=0){
+								String sbh=d.getspid(typel.getText().trim());
+								System.out.println(sbh);
+								try{
+									Double price=Double.parseDouble(sprice);
+									int rowc=AssembleFrame_Table.getRowCount();
+									for(int i=0;i<rowc;i++){
+										int bh=Integer.parseInt(AssembleFrame_Table.getValueAt(i,0).toString());
+										String psbh=AssembleFrame_Table.getValueAt(i,1).toString();
+										String sp=AssembleFrame_Table.getValueAt(i,2).toString();
+										String dw=AssembleFrame_Table.getValueAt(i,3).toString();
+										Double dj=Double.parseDouble(AssembleFrame_Table.getValueAt(i,4).toString());
+										int sl=Integer.parseInt(AssembleFrame_Table.getValueAt(i,5).toString());
+										Double je=Double.parseDouble(AssembleFrame_Table.getValueAt(i,6).toString());
+										boolean b=d.wzz(sbh,name, bh, psbh, sp, dw, dj, sl, je, user);
+										if(b==false){
+											JOptionPane.showMessageDialog(assembleNameFrame,"循环失败");
+											break;
+										}
+										if(i==rowc-1){
+											Double jhj=Double.parseDouble(assembleFrame_TotalL.getText().trim());
+											d.wkc(typel.getText().trim(),assembleType.getSelectedItem().toString(),name, jhj,price,sbh, user);
+										}
 									}
-									if(i==rowc-1){
-										Double jhj=Double.parseDouble(assembleFrame_TotalL.getText().trim());
-										d.wkc("",name, jhj,price,sbh, user);
-									}
+									AssembleFrame.setEnabled(true);
+									assembleFrame_TotalL.setText("");
+									assembleNameFrame_PriceT.setText("");
+									assembleNameFrame_NameT.setText("");
+									assembleNameFrame.dispose();
+									AssembleFrame_TableModel.setRowCount(0);
+									Assemble_MFrame_TableModel.setDataVector(d.zm(Assemble_MFrame_JT.getText().trim()),Assemble_MFrame_TableColumn);
+								}catch(Exception e1){
+									JOptionPane.showMessageDialog(assembleNameFrame,"请输入数字！");
 								}
-								AssembleFrame.setEnabled(true);
-								assembleFrame_TotalL.setText("");
-								assembleNameFrame_PriceT.setText("");
-								assembleNameFrame_NameT.setText("");
-								assembleNameFrame.dispose();
-								AssembleFrame_TableModel.setRowCount(0);
-								Assemble_MFrame_TableModel.setDataVector(d.zm(Assemble_MFrame_JT.getText().trim()),Assemble_MFrame_TableColumn);
-							}catch(Exception e1){
-								JOptionPane.showMessageDialog(assembleNameFrame,"请输入数字！");
+							}else{
+								JOptionPane.showMessageDialog(assembleNameFrame,"请选择种类！");
 							}
 						}else{
 							JOptionPane.showMessageDialog(assembleNameFrame,"产品已存在！");
@@ -619,8 +648,8 @@ public class Assemble {
 		productsFrame.setBounds(930,100,500,650);
 		productsFrame.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent e){
-				productsFrame.dispose();
 				AssembleFrame.setEnabled(true);
+				productsFrame.dispose();
 			}
 		});
 		//productsFrame.setVisible(true);

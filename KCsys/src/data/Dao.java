@@ -20,7 +20,7 @@ public class Dao {
 	 		   System.exit(0);
 	 	   }
 	 	   try{
-	 		   con=DriverManager.getConnection("jdbc:sqlserver://192.168.0.13:1433;DatabaseName=CKsys3_new","sa","llfaicly1314@^");
+	 		   con=DriverManager.getConnection("jdbc:sqlserver://192.168.0.13:1433;DatabaseName=CKsys3","sa","llfaicly1314@^");
 	 	   }catch(SQLException e){
 	 		  JFrame j=new JFrame();
 	 		   j.setAlwaysOnTop(true);

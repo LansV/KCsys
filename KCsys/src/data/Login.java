@@ -17,6 +17,7 @@ import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -43,6 +44,9 @@ public class Login extends JFrame {
 		Connection con = d.getcon();
 		setAlwaysOnTop(true);
 		Point p = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
+		JFrame jf=this;
+		setAlwaysOnTop(true);
+		ArrayList<String> sinfo = ServerIP.getServerInfo(jf);
 		// -----------------------------------------------
 		JFrame changePassW = new JFrame("请输入密码");
 		changePassW.setResizable(false);
@@ -141,10 +145,18 @@ public class Login extends JFrame {
 			JL_pass.setBounds(50, 65, 40, 20);
 			JTextField JT_user = new JTextField();
 			JT_user.setBounds(95, 20, 140, 24);
+			JT_user.setText(sinfo.get(1));
 			JPasswordField JT_pass = new JPasswordField();
 			JT_pass.setBounds(95, 65, 140, 24);
+			JLabel serveripL=new JLabel("服务器IP：");
+			serveripL.setBounds(50, 100, 80, 25);
+			c.add(serveripL);
+			JTextField serveripT=new JTextField();
+			serveripT.setBounds(115, 100, 120, 25);
+			serveripT.setText(sinfo.get(0));
+			c.add(serveripT);
 			JButton JB_login = new JButton("登陆");
-			JB_login.setBounds(50, 120, 60, 25);
+			JB_login.setBounds(50, 135, 60, 25);
 			JB_login.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -152,7 +164,11 @@ public class Login extends JFrame {
 					String user = JT_user.getText().trim();
 					String pass = new String(JT_pass.getPassword());
 					try {
-						if (user.length() == 0 || pass.length() == 0) {
+						if (user.length() == 0 || pass.length() == 0||serveripT.getText().length()==0) {
+							if(serveripT.getText().length()==0){
+								JOptionPane.showMessageDialog(c, "服务器IP不能为空");
+								serveripT.requestFocus();
+							}
 							if (user.length() == 0 && pass.length() == 0) {
 								JOptionPane.showMessageDialog(c, "用户名与密码不能为空");
 								JT_user.requestFocus();
@@ -168,39 +184,46 @@ public class Login extends JFrame {
 								}
 							}
 						} else {
-							new SQLFilter(JB_login, user + ";" + pass, user);
-							Statement sql = con.createStatement();
-							ResultSet res = sql.executeQuery("select*from UserB where username='" + user + "'");
-							if (res.next()) {
-								String xuser = res.getString("username").trim();
-								String xpass = res.getString("pass").trim();
-								int id = res.getInt("id");
-								if (user.equals(xuser) && pass.equals(xpass)) {
-									if (xpass.equals("123456")) {
-										JOptionPane.showMessageDialog(c, "\t初始密码\n请修改密码");
-										changePassW.setVisible(true);
-									} else {
-										
-										if (CheckDate.ReturnCheckDateResult(JB_login) == true) {
-											sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values(" + id
-													+ ",'" + PcName + "','" + PcMac + "')");
-											dispose();
-											new MF(id, xuser);
+							String ip=serveripT.getText();
+							new SQLFilter(JB_login, user + ";" + pass+";"+ip, user);
+							if(isRightIp(ip)){
+								ServerIP.writeSeverIP(jf,  "IP:"+ip+"\r\nUser:"+user);
+								ServerIP.getServerInfo(jf);
+								Statement sql = con.createStatement();
+								ResultSet res = sql.executeQuery("select*from UserB where username='" + user + "'");
+								if (res.next()) {
+									String xuser = res.getString("username").trim();
+									String xpass = res.getString("pass").trim();
+									int id = res.getInt("id");
+									if (user.equals(xuser) && pass.equals(xpass)) {
+										if (xpass.equals("123456")) {
+											JOptionPane.showMessageDialog(c, "\t初始密码\n请修改密码");
+											changePassW.setVisible(true);
+										} else {
+											
+											if (CheckDate.ReturnCheckDateResult(JB_login) == true) {
+												sql.execute("insert into LoginLog(UserId,Pc_name,Pc_Mac) values(" + id
+														+ ",'" + PcName + "','" + PcMac + "')");
+												dispose();
+												new MF(id, xuser);
+											}
 										}
+									} else {
+										JOptionPane.showMessageDialog(c, "用户名或密码错误！");
+										JT_pass.setText("");
+										JT_pass.requestFocus();
 									}
 								} else {
 									JOptionPane.showMessageDialog(c, "用户名或密码错误！");
+									JT_user.setText("");
 									JT_pass.setText("");
-									JT_pass.requestFocus();
+									JT_user.requestFocus();
 								}
-							} else {
-								JOptionPane.showMessageDialog(c, "用户名或密码错误！");
-								JT_user.setText("");
-								JT_pass.setText("");
-								JT_user.requestFocus();
+							}else{
+								JOptionPane.showMessageDialog(c, "IP有误");
+								serveripT.requestFocus();
 							}
 						}
-						;
 					} catch (Exception e1) {
 						JOptionPane.showMessageDialog(c, "数据库链接故障！请与管理员联系");
 					}
@@ -263,7 +286,7 @@ public class Login extends JFrame {
 					}
 				}
 			});
-			JB_exit.setBounds(180, 120, 90, 25);
+			JB_exit.setBounds(180, 135, 90, 25);
 			changePassW_B.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -302,6 +325,9 @@ public class Login extends JFrame {
 			c.add(JL_pass);
 			c.add(JL_user);
 			setVisible(true);
+			if(sinfo.get(1).length()!=0){
+				JT_pass.requestFocus();
+			}
 		} else {
 			JOptionPane.showMessageDialog(null, "\t当前 [ " + Version + " ] 版本过低！\n请联系天澜公司\n获取最新版本后重试");
 			System.exit(0);
@@ -311,5 +337,21 @@ public class Login extends JFrame {
 	public static void main(String[] args) {
 		new Login();
 	}
-
+	private boolean isRightIp(String ipAddress){  
+        
+        String ips[] = ipAddress.split("\\.");  
+          
+        if(ips.length==4){  
+            for(String ip : ips){  
+                //System.out.println(ip);  
+                if(Integer.parseInt(ip)<0||Integer.parseInt(ip)>255){  
+                    return false;  
+                }  
+            }  
+            return true;  
+        }else{  
+             return false;  
+        }  
+  
+    }  
 }

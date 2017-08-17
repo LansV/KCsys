@@ -14,7 +14,7 @@ public class CheckDate {
 	public static boolean ReturnCheckDateResult(Component c) {
 		Date d=new Date();
 		String sd=String.format("%tF", d);
-		System.out.println(sd);
+		//System.out.println(sd);
 		String webUrl4 = "http://www.ntsc.ac.cn";// 中国科学院国家授时中心
 		try {
 			URL url = new URL(webUrl4);// 取得资源对象

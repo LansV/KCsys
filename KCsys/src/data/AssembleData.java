@@ -128,7 +128,7 @@ public class AssembleData {
 		return b;
 	}
 	//---------------------------------------------写入库存------------------------------------------------
-	public boolean wkc(String xh,String sp,Double jhj,Double dj,String sbh,String user){
+	public boolean wkc(String typeid,String type,String sp,Double jhj,Double dj,String sbh,String user){
 		Date date2=new Date();
 		String ckd=String.format("%tF", date2);
 		//String time=timef.format(date2);
@@ -138,8 +138,8 @@ public class AssembleData {
 		try {
 			sql = con.createStatement();
 			//System.out.println(id);
-			sql.execute("insert into KC(KC_typeid,KC_type,KC_xh,KC_name,KC_jhj,KC_dj,KC_sl,KC_dw,KC_date,KC_jsr,KC_jgsl,KC_state,KC_sbh,KC_gys) "
-					+ "values(1,'成品','"+xh+"','"+sp+"',"+jhj+","+dj+",0,'台','"+ckd+"','"+user+"',0,0,"+sbh+",127)");
+			sql.execute("insert into KC(KC_typeid,KC_type,KC_name,KC_jhj,KC_dj,KC_sl,KC_dw,KC_date,KC_jsr,KC_jgsl,KC_state,KC_sbh,KC_gys) "
+					+ "values("+typeid+",'"+type+"','"+sp+"',"+jhj+","+dj+",0,'台','"+ckd+"','"+user+"',0,0,"+sbh+",1001)");
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			JOptionPane.showMessageDialog(f,"写入数据错误！","错误",0);
@@ -197,7 +197,7 @@ public class AssembleData {
 		boolean b=false;
 		try {
 			sql = con.createStatement();
-			res = sql.executeQuery("select*from assembleB where zname='"+cx+"'");
+			res = sql.executeQuery("select*from assembleB where zname='"+cx+"' and cstatus != 1");
 			if(res.next()){
 				b=true;
 			}
@@ -218,8 +218,46 @@ public class AssembleData {
 		}
 		return b;
 	}
+	//------------------------------------------获取种类及编号--------------------------------------------
+		public String[][] getType(String cx){
+			List<String> ls=new ArrayList<String>();
+			try {
+				sql = con.createStatement();
+				res = sql.executeQuery("select*from CPz order by CPz_typeid");
+				while(res.next()){
+					ls.add(res.getString("CPz_typeid"));
+					ls.add(res.getString("CPz_type"));
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally{
+			   	 try{
+			     	   if(res!=null){
+			     		   res.close();
+			     	   }
+			     	   if(sql!=null){
+			     		   sql.close();
+			     	   }
+			     	 }catch(Exception e){
+			     		 
+			     	 }
+			}
+			int xl=2;
+			String[][] data=new String[ls.size()/xl][xl];
+		   	int count=0;
+		   	for(int i=0;i<ls.size()/xl;i++){  //行
+		   		for(int j=0;j<xl;j++){  //列
+		   			data[i][j]=ls.get(j+count*xl);
+		   			
+		   		}
+		   		count++;
+		   	}
+		   	count=0;
+			return data;
+		}
 	//-----------------------------------------------获取商品编号---------------------------------------
-	public String getspid(int cx){
+	public String getspid(String cx){
 		String s="";
 		int i=0;
 		try {
@@ -244,7 +282,7 @@ public class AssembleData {
 		     	 }
 		}
 		if(i==0){
-			int sl=(cx+100)*1000+1;
+			int sl=(Integer.parseInt(cx)+100)*1000+1;
 			s=Integer.toString(sl);
 		}else{
 			s=Integer.toString(i+1);

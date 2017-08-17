@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -44,7 +45,8 @@ public class Printclass {
 	int data = 0;
 	int len = 0;
 	int page = 0;
-	int h=0;
+	int h = 0;
+
 	public static void setkhls(List<Object> kh) {
 		Printclass.kh = kh;
 		dh = kh.get(0).toString().trim();
@@ -88,12 +90,12 @@ public class Printclass {
 		jf.setResizable(false);
 		jf.setSize(595, 842);
 		Container c = jf.getContentPane();
-		//c.setLayout(new GridLayout(1,1));
+		// c.setLayout(new GridLayout(1,1));
 		c.setLayout(null);
 		JPanel dr = new Draw();
-		dr.setPreferredSize(new Dimension(550,2000));
-		JScrollPane jsp=new JScrollPane(dr);
-		jsp.setBounds(2,25,585,800);
+		dr.setPreferredSize(new Dimension(550, 2000));
+		JScrollPane jsp = new JScrollPane(dr);
+		jsp.setBounds(2, 25, 585, 800);
 		c.add(jsp);
 		JButton b = new JButton("打印");
 		b.setBounds(250, 0, 60, 25);
@@ -115,11 +117,11 @@ public class Printclass {
 				int sps = sp.size();
 				int row = 0;
 				// int count=0;
-				System.out.println(sps);
+				//System.out.println(sps);
 				for (int i = 0; i < sps / 9; i++) {
 					ArrayList<String> remark = CutRemark.getRemark(sp.get(8 + i * 9).toString());
 					int rm = remark.size();
-					//System.out.println(rm);
+					// System.out.println(rm);
 					if (rm > 1) {
 						row = row + rm - 1;
 						markrow = markrow + rm - 1;
@@ -129,6 +131,13 @@ public class Printclass {
 					row++;
 				}
 				totalrow = row;
+				if(row<=10){
+					JOptionPane.showConfirmDialog(jf, "请放入1张A5单", "需要纸张", JOptionPane.DEFAULT_OPTION,JOptionPane. INFORMATION_MESSAGE);
+				}else if(row>10&&row<=32){
+					JOptionPane.showConfirmDialog(jf, "请放入2张A5单", "需要纸张", JOptionPane.DEFAULT_OPTION,JOptionPane. INFORMATION_MESSAGE);
+				}else if(row>32){
+					JOptionPane.showConfirmDialog(jf, "请先放入2张A5单，待打印完成后再放入2张A5单", "需要纸张", JOptionPane.DEFAULT_OPTION,JOptionPane. INFORMATION_MESSAGE);
+				}
 				page = row / 36;
 				System.out.println("页数：" + (page + 1) + "   行数：" + totalrow + "  数据：" + data);
 				book.append(new PrintTest(), pf);
@@ -161,21 +170,19 @@ public class Printclass {
 		jf.setVisible(true);
 	}
 
-	public static void main(String[] args) {
-	/*	List<Object> kh = new ArrayList<Object>();
+/*	public static void main(String[] args) {
+		List<Object> kh = new ArrayList<Object>();
 		for (int i = 0; i < 6; i++) {
 			kh.add("数据" + i);
-
 		}
 		List<Object> sp = new ArrayList<Object>();
 		// int count=0;
 		for (int i = 0; i < 325; i++) {
 			if (i == 8 || i == 323) {
-				 sp.add("测试");
+				sp.add("测试");
 			} else {
 				sp.add("数据" + i);
 			}
-
 		}
 		List<Object> hj = new ArrayList<Object>();
 		for (int i = 0; i < 3; i++) {
@@ -187,8 +194,8 @@ public class Printclass {
 		setkhls(kh);
 		setsp(sp);
 		sethj(hj);
-		new Printclass();*/
-	}
+		new Printclass();
+	}*/
 
 	public class PrintTest implements Printable {
 
@@ -419,12 +426,12 @@ public class Printclass {
 				g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联", 20,
 						y + 40);
 			}
-			if(pageIndex==0&&page!=0){
-				g2.drawString("第 " + (pageIndex + 1) + " 页", 20, y +15);
-			}else{
-				g2.drawString("第 " + (pageIndex + 1) + " 页", 20, y + 60);
+			if (pageIndex == 0 && page != 0) {
+				g2.drawString("第 " + (pageIndex + 1) + " 页" + "     共 " + (page + 1) + " 页", 20, y + 15);
+			} else {
+				g2.drawString("第 " + (pageIndex + 1) + " 页" + "     共 " + (page + 1) + " 页", 20, y + 60);
 			}
-			
+
 			return Printable.PAGE_EXISTS;
 
 		}
@@ -600,8 +607,8 @@ public class Printclass {
 			g2.drawString("开单人:" + user + "              业务员:" + jsr + "                  经手人:                  收货人:",
 					20, y + 20);
 			g2.drawString("白色:存根联                  红色:记账联                 蓝色:收款联                  黄色:收货联", 20, y + 40);
-			//this.setPreferredSize(new Dimension(600, 2000));
-			//h=y+40;
+			// this.setPreferredSize(new Dimension(600, 2000));
+			// h=y+40;
 		}
 	}
 }
